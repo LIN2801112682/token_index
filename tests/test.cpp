@@ -77,19 +77,19 @@ int main()
         create_and_save_inverted_index(file_path, index_path);
         token_index::index_manager manager;
         manager.load_inverted_index(index_path);
-
+        std::cout << "file, union, cout ----------" << std::endl;
         test_out_result(manager, query_vec, true, std::cout);
-
+        std::cout << "file, intersection, cout ----------" << std::endl;
         test_out_result(manager, query_vec, false, std::cout);
-
+        std::cout << "file, union, ofs ----------" << std::endl;
         ofs.open(union_result_path, std::ofstream::out);
         test_out_result(manager, query_vec, true, ofs);
         ofs.close();
-
+        std::cout << "file, intersection, ofs ----------" << std::endl;
         ofs.open(intersection_result_path, std::ofstream::out);
         test_out_result(manager, query_vec, false, ofs);
         ofs.close();
-
+        std::cout << "file, frequency ----------" << std::endl;
         manager.print_token_frequency();
     }
 
@@ -97,19 +97,19 @@ int main()
         create_and_save_inverted_index(depattern_file_path, depattern_index_path);
         token_index::index_manager manager;
         manager.load_inverted_index(depattern_index_path);
-
+        std::cout << "depattern, union, cout ----------" << std::endl;
         test_out_result(manager, query_vec, true, std::cout);
-
+        std::cout << "depattern, intersection, cout ----------" << std::endl;
         test_out_result(manager, query_vec, false, std::cout);
-
+        std::cout << "depattern, union, ofs ----------" << std::endl;
         ofs.open(depattern_union_result_path, std::ofstream::out);
         test_out_result(manager, query_vec, true, ofs);
         ofs.close();
-
+        std::cout << "depattern, intersection, ofs ----------" << std::endl;
         ofs.open(depattern_intersection_result_path, std::ofstream::out);
         test_out_result(manager, query_vec, false, ofs);
         ofs.close();
-
+        std::cout << "depattern, frequency ----------" << std::endl;
         manager.print_token_frequency();
     }
 
