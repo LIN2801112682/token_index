@@ -191,7 +191,10 @@ namespace token_index
             if (iter != std::end(_inverted_index))
             {
                 if (!inited)
+                {
                     index_set.insert(std::begin(iter->second), std::end(iter->second));
+                    inited = true;
+                }
                 else
                 {
                     index_set_t intersection_set;
@@ -201,8 +204,6 @@ namespace token_index
                     index_set = intersection_set;
                 }
             }
-            else
-                return index_set_t{};
         }
         return index_set;
     }

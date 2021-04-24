@@ -48,8 +48,8 @@ std::vector<int> BM(const char s[], const char t[])
     return result;
 }
 
-static const token_index::path_t file_path{"../resource/depattern_doc.txt"};
-static const token_index::path_t query_path{"../resource/query.txt"};
+static const token_index::path_t file_path{"../resource/doc2.txt"};
+static const token_index::path_t query_path{"../resource/query2.txt"};
 
 int main()
 {
@@ -77,30 +77,20 @@ int main()
     {
         token_index::query_t query = query_vec[i];
         token_index::line_t query_line = querys[i];
-        token_index::index_set_t intersection_set = manager.retrieve_intersection(query);
-        for (const auto &token : query)
+        token_index::index_set_t index_set = manager.retrieve_intersection(query);
+        for (const auto &index : index_set)
         {
-            token_index::index_set_t index_set = manager.retrieve(token);
-            if (index_set.size() > 1000)
-                continue;
-            //std::cout << token << std::endl;
-            for (const auto &index : index_set)
+            token_index::line_t document_line = documents[index];
+            const auto &result = BM(document_line.c_str(), query_line.c_str());
+            if (result.size() != 0)
             {
-                token_index::line_t document_line = documents[index]; 
-                auto result = BM(document_line.c_str(), query_line.c_str());
-                if (intersection_set.find(index) != std::end(intersection_set))
-                {
-                    std::cout << "yes:" << std::endl;
-                    std::cout << "  token:" << token << "," << std::endl;
-                    std::cout << "  query:" << query_line << "," << std::endl;
-                    std::cout << "  document:" << document_line << "," << std::endl;
-                    std::cout << "  BM:";
-                    for (const auto &num : result)
-                        std::cout << num << ',';
-                    std::cout << std::endl;
-                }
+                std::cout << "  query:" << query_line << "," << std::endl;
+                std::cout << "  document:" << document_line << "," << std::endl;
+                std::cout << "  BM:";
+                for (const auto &num : result)
+                    std::cout << num << ',';
+                std::cout << std::endl;
             }
         }
     }
-
 }
