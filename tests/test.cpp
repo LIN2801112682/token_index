@@ -42,13 +42,13 @@ void test_out_result(const token_index::index_manager &manager, const token_inde
             os << index << token_index::SET_DLM;
         os << std::endl;
         auto end_time = std::chrono::high_resolution_clock::now();
-        auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time);
+        auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time);
         auto program_times = elapsed_time.count();
         std::cout << "      Location time:" << program_times
                   << ",Result doc size:" << index_set.size() << std::endl;
     }
     auto end_time = std::chrono::high_resolution_clock::now();
-    auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time);
+    auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time);
     auto program_times = elapsed_time.count();
     std::cout << "Location time:" << program_times << std::endl;
     std::cout << "Average location time:" << double(program_times) / double(query_vec.size()) << std::endl;
