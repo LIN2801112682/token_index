@@ -14,6 +14,7 @@ namespace token_index
 {
     using path_t = std::string;
     using line_t = std::string;
+    using line_vec_t = std::vector<line_t>;
     using token_t = std::string;
     using document_t = std::unordered_set<token_t>;
     using collection_t = std::vector<document_t>;

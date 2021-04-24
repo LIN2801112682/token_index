@@ -159,6 +159,15 @@ namespace token_index
     }
 
     index_set_t
+    index_manager::retrieve(const token_t &token) const
+    {
+        auto iter = _inverted_index.find(token);
+        if (iter != std::end(_inverted_index))
+            return iter->second;
+        return index_set_t{};
+    }
+
+    index_set_t
     index_manager::retrieve_union(const query_t &query) const
     {
         index_set_t index_set;
@@ -196,5 +205,15 @@ namespace token_index
                 return index_set_t{};
         }
         return index_set;
+    }
+
+    inverted_index_t
+    index_manager::get_low_frequency_index()
+    {
+        inverted_index_t low_frequency_index;
+        for (const auto &pair : _inverted_index)
+            if (pair.second.size() <= 5)
+                low_frequency_index[pair.first] = pair.second;
+        return low_frequency_index;
     }
 }

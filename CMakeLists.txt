@@ -6,7 +6,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 include_directories(include)
 
-set(SRC src/token_index/token_manager.cpp src/token_index/BM.cpp)
+set(SRC src/token_index/token_manager.cpp)
 
 add_executable (test tests/test.cpp ${SRC})
 add_executable (filter tests/filter.cpp)
+add_executable (test2 tests/test2.cpp ${SRC})

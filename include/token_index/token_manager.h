@@ -23,8 +23,10 @@ namespace token_index
         void load_inverted_index(const path_t &path);
         void inverted_index_build_collection(); 
         static query_vec_t load_query(const path_t &path);
+        index_set_t retrieve(const token_t &token) const;
         index_set_t retrieve_union(const query_t &query) const;
         index_set_t retrieve_intersection(const query_t &query) const;
+        inverted_index_t get_low_frequency_index();
     private:
         index_manager(const index_manager &other) = delete;
         index_manager(index_manager &&other) = delete;
