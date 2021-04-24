@@ -48,8 +48,8 @@ std::vector<int> BM(const char s[], const char t[])
     return result;
 }
 
-static const token_index::path_t file_path{"../resource/doc.txt"};
-static const token_index::path_t query_path{"../resource/query.txt"};
+static const token_index::path_t file_path{"../resource/doc2.txt"};
+static const token_index::path_t query_path{"../resource/query2.txt"};
 
 int main()
 {
@@ -94,7 +94,10 @@ int main()
                 std::cout << "  token:" << token << "," << std::endl;
                 std::cout << "  query:" << query_line << "," << std::endl;
                 std::cout << "  document:" << document_line << "," << std::endl;
-                std::cout << "  BM:" << result[0] << std::endl; 
+                std::cout << "  BM:";
+                for (const auto &num : result)
+                    std::cout << num << ',';
+                std::cout << std::endl; 
             }
         }
     }

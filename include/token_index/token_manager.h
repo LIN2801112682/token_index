@@ -26,7 +26,6 @@ namespace token_index
         index_set_t retrieve(const token_t &token) const;
         index_set_t retrieve_union(const query_t &query) const;
         index_set_t retrieve_intersection(const query_t &query) const;
-        inverted_index_t get_low_frequency_index();
     private:
         index_manager(const index_manager &other) = delete;
         index_manager(index_manager &&other) = delete;

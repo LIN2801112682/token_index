@@ -206,14 +206,4 @@ namespace token_index
         }
         return index_set;
     }
-
-    inverted_index_t
-    index_manager::get_low_frequency_index()
-    {
-        inverted_index_t low_frequency_index;
-        for (const auto &pair : _inverted_index)
-            if (pair.second.size() <= 5)
-                low_frequency_index[pair.first] = pair.second;
-        return low_frequency_index;
-    }
 }
