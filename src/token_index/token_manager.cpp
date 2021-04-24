@@ -204,6 +204,8 @@ namespace token_index
                     index_set = intersection_set;
                 }
             }
+            else
+                return index_set_t{};
         }
         return index_set;
     }
