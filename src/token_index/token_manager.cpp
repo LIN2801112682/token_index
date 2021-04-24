@@ -184,9 +184,13 @@ namespace token_index
                 if (!inited)
                     index_set.insert(std::begin(iter->second), std::end(iter->second));
                 else
+                {
+                    index_set_t intersection_set;
                     std::set_intersection(std::begin(index_set), std::end(index_set),
                         std::begin(iter->second), std::end(iter->second),
-                        std::inserter(index_set, std::begin(index_set)));
+                        std::inserter(intersection_set, std::begin(intersection_set)));
+                    index_set = intersection_set;
+                }
             }
             else
                 return index_set_t{};
