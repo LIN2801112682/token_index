@@ -159,7 +159,7 @@ namespace token_index
     }
 
     index_set_t
-    index_manager::retrieve_union(const query_t &query)
+    index_manager::retrieve_union(const query_t &query) const
     {
         index_set_t index_set;
         for (const token_t &token : query)
@@ -172,7 +172,7 @@ namespace token_index
     }
 
     index_set_t
-    index_manager::retrieve_intersection(const query_t &query)
+    index_manager::retrieve_intersection(const query_t &query) const
     {
         index_set_t index_set;
         bool inited{false};

@@ -9,3 +9,4 @@ include_directories(include)
 set(SRC src/token_index/token_manager.cpp)
 
 add_executable (test tests/test.cpp ${SRC})
+add_executable (filter tests/filter.cpp)
