@@ -133,15 +133,12 @@ void test_bm(const token_index::path_t &doc_path, const token_index::path_t &ind
         {
             token_index::line_t document_line = documents[index];
             const auto &result = bm::bm(query_line.c_str(), document_line.c_str());
-            if (result.size() != 0)
-            {
-                std::cout << "  query:" << query_line << "," << std::endl;
-                std::cout << "  document:" << document_line << "," << std::endl;
-                std::cout << "  BM:";
-                for (const auto &num : result)
-                    std::cout << num << ',';
-                std::cout << std::endl;
-            }
+            std::cout << "  query:" << query_line << "," << std::endl;
+            std::cout << "  document:" << document_line << "," << std::endl;
+            std::cout << "  BM:";
+            for (const auto &num : result)
+                std::cout << num << ',';
+            std::cout << std::endl;
         }
     }
 }
