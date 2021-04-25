@@ -257,10 +257,8 @@ namespace token_index
         for (const token_t &token : query)
         {
             index_set_t index_set = retrieve(token);
-            for (auto &index : index_set)
-                std::cout << token << ":" << index << std::endl;
             if (index_set.empty())
-                return index_set_t{};
+                return index_set;
             if (!inited)
             {
                 intersection_set = index_set;
@@ -269,18 +267,12 @@ namespace token_index
             else
             {
                 index_set_t temp_set;
-                std::set_intersection(
-                    std::begin(index_set), std::end(index_set),
-                    std::begin(intersection_set), std::end(intersection_set),
-                    std::inserter(temp_set, std::begin(temp_set))
-                );
+                for (const auto &index : intersection_set)
+                    if (index_set.find(index) != std::end(index_set))
+                        temp_set.insert(index);
+                if (temp_set.empty())
+                    return temp_set;
                 intersection_set = temp_set;
-                {
-                    std::cout << "temp_set:";
-                    for (auto &index : temp_set)
-                        std::cout << index << ',';
-                    std::cout << std::endl;
-                }
             }
         }
         return intersection_set;
