@@ -1,7 +1,20 @@
 #include "token_index/token_manager.h"
+#include "token_index/types.h"
+#include "token_index/common.h"
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <cstdlib>
 
 namespace token_index
 {
+    static const std::regex KEY_VALUE_REGEX1{"(.*)=(.*)"};
+    static constexpr char KEY_VALUE_DLM1{'='};
+    static const std::regex KEY_VALUE_REGEX2{"(.*):(.*)"};
+    static constexpr char KEY_VALUE_DLM2{':'};
+    static constexpr char SET_DLM1{';'};
+    static constexpr char SET_DLM2{','};
+
     index_manager::index_manager()
         : _collection{},
           _inverted_index{} {}
@@ -19,7 +32,7 @@ namespace token_index
     void
     index_manager::push_line(const line_t &line)
     {
-        document_t document{line_to_document(line)};
+        document_t document{line_to_token_vec(line)};
         push_document(document);
     }
 
@@ -59,16 +72,6 @@ namespace token_index
         }
     }
 
-    document_t
-    index_manager::line_to_document(const line_t &line)
-    {
-        document_t document;
-        token_t token;
-        std::istringstream iss{line};
-        while (iss >> token)
-            document.push_back(token);
-        return document;
-    }
 
     void
     index_manager::print_collection()
@@ -199,25 +202,6 @@ namespace token_index
                 }
             }
         }
-    }
-
-    query_vec_t
-    index_manager::load_query(const path_t &path)
-    {
-        query_vec_t query_vec;
-        std::ifstream ifs{path, std::ifstream::in};
-        line_t line;
-        while (getline(ifs, line))
-        {
-            query_t query;
-            std::istringstream iss{line};
-            token_t token;
-            while (iss >> token)
-                query.push_back(token);
-            query_vec.push_back(query);
-        }
-        ifs.close();
-        return query_vec;
     }
 
     index_set_t
