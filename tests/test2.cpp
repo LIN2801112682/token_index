@@ -58,7 +58,10 @@ int main()
 
     token_index::index_manager manager;
     manager.push_file(file_path);
+    manager.print_inverted_index();
+    manager.print_collection();
 
+    /*
     token_index::line_vec_t documents;
     ifs.open(file_path, std::ifstream::in);
     while (getline(ifs, line))
@@ -84,15 +87,14 @@ int main()
             const auto &result = BM(document_line.c_str(), query_line.c_str());
             if (result.size() != 0)
             {
-                /*
                 std::cout << "  query:" << query_line << "," << std::endl;
                 std::cout << "  document:" << document_line << "," << std::endl;
                 std::cout << "  BM:";
                 for (const auto &num : result)
                     std::cout << num << ',';
                 std::cout << std::endl;
-                */
             }
         }
     }
+    */
 }

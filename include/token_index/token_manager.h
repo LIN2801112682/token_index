@@ -4,9 +4,12 @@
 
 namespace token_index
 {
-    static const std::regex KEY_VALUE_REGEX{"(.*):(.*)"};
-    static constexpr char KEY_VALUE_DLM{':'};
-    static constexpr char SET_DLM{','};
+    static const std::regex KEY_VALUE_REGEX1{"(.*)=(.*)"};
+    static constexpr char KEY_VALUE_DLM1{'='};
+    static const std::regex KEY_VALUE_REGEX2{"(.*):(.*)"};
+    static constexpr char KEY_VALUE_DLM2{':'};
+    static constexpr char SET_DLM1{';'};
+    static constexpr char SET_DLM2{','};
 
     class index_manager
     {

@@ -38,10 +38,10 @@ void test_out_result(const token_index::index_manager &manager, const token_inde
         if (is_save)
         {
             for (const token_index::token_t &token : query)
-                os << token << token_index::SET_DLM;
+                os << token << token_index::SET_DLM1;
             os << ':';
             for (const token_index::index_t &index : index_set)
-                os << index << token_index::SET_DLM;
+                os << index << token_index::SET_DLM1;
             os << std::endl;
         }
         auto end_time = std::chrono::high_resolution_clock::now();
@@ -57,9 +57,9 @@ void test_out_result(const token_index::index_manager &manager, const token_inde
     std::cout << "Average location time:" << double(program_times) / double(query_vec.size()) << std::endl;
 }
 
-static const token_index::path_t query_path{"../resource/query.txt"};
+static const token_index::path_t query_path{"../resource/query2.txt"};
 
-static const token_index::path_t file_path{"../resource/doc.txt"};
+static const token_index::path_t file_path{"../resource/doc2.txt"};
 static const token_index::path_t index_path{"../resource/index.txt"};
 static const token_index::path_t union_result_path{"../resource/union_result.txt"};
 static const token_index::path_t intersection_result_path{"../resource/intersection_result.txt"};
@@ -96,6 +96,7 @@ int main()
         manager.print_token_frequency();
     }
 
+    /*
     {
         create_and_save_inverted_index(depattern_file_path, depattern_index_path);
         token_index::index_manager manager;
@@ -115,6 +116,7 @@ int main()
         std::cout << "depattern, frequency ----------" << std::endl;
         manager.print_token_frequency();
     }
+    */
 
     return 0;
 }

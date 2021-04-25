@@ -28,17 +28,34 @@ namespace token_index
     {
         _collection.push_back(document);
         index_t index{_collection.size() - 1};
-        for (const token_t &token : document)
+        for (offset_t offset = 0; offset < document.size(); ++offset)
         {
-            auto iter = _inverted_index.find(token);
-            if (iter == std::end(_inverted_index))
+            auto token = document[offset];
+            auto iter1 = _inverted_index.find(token);
+            if (iter1 == std::end(_inverted_index))
             {
-                index_set_t index_set;
-                index_set.insert(index);
-                _inverted_index[token] = index_set;
+                index_map_t index_map;
+                offset_set_t offset_set;
+                offset_set.insert(offset);
+                index_map[index] = offset_set; 
+                _inverted_index[token] = index_map;
             }
             else
-                iter->second.insert(index);
+            {
+                auto &index_map = iter1->second;
+                auto iter2 = index_map.find(index);
+                if (iter2 == std::end(index_map))
+                {
+                    offset_set_t offset_set;
+                    offset_set.insert(offset);
+                    index_map[index] = offset_set;
+                }
+                else
+                {
+                    auto &offset_set = iter2->second;
+                    offset_set.insert(offset);
+                }
+            }
         }
     }
 
@@ -49,8 +66,7 @@ namespace token_index
         token_t token;
         std::istringstream iss{line};
         while (iss >> token)
-            if (token.compare(" ") != 0)
-                document.insert(token);
+            document.push_back(token);
         return document;
     }
 
@@ -59,9 +75,9 @@ namespace token_index
     {
         for (index_t index = 0; index < _collection.size(); ++index)
         {
-            std::cout << index << KEY_VALUE_DLM;
+            std::cout << index << KEY_VALUE_DLM1;
             for (const token_t &token : _collection[index])
-                std::cout << token << SET_DLM;
+                std::cout << token << SET_DLM1;
             std::cout << std::endl;
         }
     }
@@ -69,11 +85,20 @@ namespace token_index
     void
     index_manager::print_inverted_index()
     {
-        for (const auto &pair : _inverted_index)
+        for (const auto &pair1 : _inverted_index)
         {
-            std::cout << pair.first << KEY_VALUE_DLM;
-            for (const index_t &index : pair.second)
-                std::cout << index << SET_DLM;
+            const auto &token = pair1.first;
+            std::cout << token << KEY_VALUE_DLM1;
+            const auto &index_map = pair1.second;
+            for (const auto &pair2 : index_map)
+            {
+                const auto &index = pair2.first;
+                std::cout << index << KEY_VALUE_DLM2;
+                const auto &offset_set = pair2.second;
+                for (const auto &offset : offset_set)
+                    std::cout << offset << SET_DLM2;
+                std::cout << SET_DLM1;
+            }
             std::cout << std::endl;
         }
     }
@@ -81,21 +106,40 @@ namespace token_index
     void
     index_manager::print_token_frequency()
     {
-        for (const auto &pair : _inverted_index)
-            std::cout << pair.first << KEY_VALUE_DLM
-                      << pair.first.size() << '-'
-                      << pair.second.size() << std::endl;
+        for (const auto &pair1 : _inverted_index)
+        {
+            const auto &token = pair1.first;
+            //std::cout << token << KEY_VALUE_DLM1;
+            std::cout << token.size() << SET_DLM1;
+            offset_set_t::size_type sum = 0;
+            const auto &index_map = pair1.second;
+            for (const auto &pair2 : index_map)
+            {
+                const auto &offset_set = pair2.second;
+                sum += offset_set.size();
+            }
+            std::cout << sum << std::endl;
+        }
     }
 
     void
     index_manager::save_inverted_index(const path_t &path)
     {
         std::ofstream ofs{path, std::ofstream::out};
-        for (const auto &pair : _inverted_index)
+        for (const auto &pair1 : _inverted_index)
         {
-            ofs << pair.first << KEY_VALUE_DLM;
-            for (const index_t &index : pair.second)
-                ofs << index << SET_DLM;
+            const auto &token = pair1.first;
+            ofs << token << KEY_VALUE_DLM1;
+            const auto &index_map = pair1.second;
+            for (const auto &pair2 : index_map)
+            {
+                const auto &index = pair2.first;
+                ofs << index << KEY_VALUE_DLM2;
+                const auto &offset_set = pair2.second;
+                for (const auto &offset : offset_set)
+                    ofs << offset << SET_DLM2;
+                ofs << SET_DLM1;
+            }
             ofs << std::endl;
         }
         ofs.close();
@@ -109,15 +153,25 @@ namespace token_index
         line_t line;
         while (getline(ifs, line))
         {
+            index_map_t index_map;
             std::smatch result;
-            std::regex_search(line, result, KEY_VALUE_REGEX);
+            std::regex_search(line, result, KEY_VALUE_REGEX1);
             token_t token{result.str(1)};
             std::istringstream iss{result.str(2)};
-            index_set_t index_set;
-            std::string index_str;
-            while (getline(iss, index_str, SET_DLM))
-                index_set.insert(stoi(index_str));
-            _inverted_index[token] = index_set;
+            line_t index_map_str;
+            while (getline(iss, index_map_str, SET_DLM1))
+            {
+                std::smatch result2;
+                std::regex_search(index_map_str, result2, KEY_VALUE_REGEX2);
+                index_t index{static_cast<index_t>(stoi(result2.str(1)))};
+                std::istringstream iss2{result2.str(2)};
+                offset_set_t offset_set;
+                line_t offset_str;
+                while (getline(iss2, offset_str, SET_DLM2))
+                    offset_set.insert(stoi(offset_str));
+                index_map[index] = offset_set;
+            }
+            _inverted_index[token] = index_map;
         }
         inverted_index_build_collection();
     }
@@ -126,15 +180,23 @@ namespace token_index
     index_manager::inverted_index_build_collection()
     {
         _collection.clear();
-        for (const auto &pair : _inverted_index)
+        for (const auto &pair1 : _inverted_index)
         {
-            token_t token = pair.first;
-            index_set_t index_set = pair.second;
-            for (const auto &index : index_set)
+            const auto &token = pair1.first;
+            const auto &index_map = pair1.second;
+            for (const auto &pair2 : index_map)
             {
+                const auto &index = pair2.first;
+                const auto &offset_set = pair2.second;
                 if (index + 1 > _collection.size())
                     _collection.resize(index + 1);
-                _collection[index].insert(token);
+                auto &document = _collection[index];
+                for (const auto &offset : offset_set)
+                {
+                    if (offset + 1 > document.size())
+                        document.resize(offset + 1);
+                    document[offset] = token;
+                }
             }
         }
     }
@@ -163,50 +225,54 @@ namespace token_index
     {
         auto iter = _inverted_index.find(token);
         if (iter != std::end(_inverted_index))
-            return iter->second;
+        {
+            index_set_t index_set;
+            const auto &index_map = iter->second;
+            for (const auto &pair : index_map)
+            {
+                index_set.insert(pair.first);
+            }
+            return index_set;
+        }
         return index_set_t{};
     }
 
     index_set_t
     index_manager::retrieve_union(const query_t &query) const
     {
-        index_set_t index_set;
+        index_set_t union_set{};
         for (const token_t &token : query)
         {
-            auto iter = _inverted_index.find(token);
-            if (iter != std::end(_inverted_index))
-                index_set.insert(std::begin(iter->second), std::end(iter->second));
+            index_set_t index_set = retrieve(token);
+            union_set.insert(std::begin(index_set), std::end(index_set));
         }
-        return index_set;
+        return union_set;
     }
 
     index_set_t
     index_manager::retrieve_intersection(const query_t &query) const
     {
-        index_set_t index_set;
+        index_set_t intersection_set;
         bool inited{false};
         for (const token_t &token : query)
         {
-            auto iter = _inverted_index.find(token);
-            if (iter != std::end(_inverted_index))
+            index_set_t index_set = retrieve(token);
+            if (index_set.empty())
+                return index_set_t{};
+            if (!inited)
             {
-                if (!inited)
-                {
-                    index_set.insert(std::begin(iter->second), std::end(iter->second));
-                    inited = true;
-                }
-                else
-                {
-                    index_set_t intersection_set;
-                    std::set_intersection(std::begin(index_set), std::end(index_set),
-                        std::begin(iter->second), std::end(iter->second),
-                        std::inserter(intersection_set, std::begin(intersection_set)));
-                    index_set = intersection_set;
-                }
+                intersection_set = index_set;
+                inited = true;
             }
             else
-                return index_set_t{};
+            {
+                index_set_t temp_set;
+                std::set_intersection(std::begin(intersection_set), std::end(intersection_set),
+                        std::begin(index_set), std::end(index_set),
+                        std::inserter(temp_set, std::begin(temp_set)));
+                intersection_set = temp_set;
+            }
         }
-        return index_set;
+        return intersection_set;
     }
 }
