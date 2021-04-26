@@ -172,7 +172,7 @@ void test_bm(const token_index::path_t &doc_path, const token_index::path_t &ind
 
 static const token_index::path_t small_doc_path{"../resource/small_doc.txt"};
 static const token_index::path_t small_query_path{"../resource/small_query.txt"};
-static const token_index::path_t doc_path{"../resource/doc.txt"};
+static const token_index::path_t pattern_doc_path{"../resource/doc.txt"};
 static const token_index::path_t depattern_doc_path{"../resource/depattern_doc.txt"};
 static const token_index::path_t query_path{"../resource/query.txt"};
 static const token_index::path_t index_path{"../resource/index.txt"};
@@ -182,10 +182,10 @@ static const token_index::path_t intersection_result_path{"../resource/intersect
 int main()
 {
     //test_save_and_load_inverted_index(small_doc_path, index_path);
-    test_query_group(small_doc_path, index_path, small_query_path, union_result_path, intersection_result_path);
-    //test_query_group(doc_path, index_path, query_path, union_result_path, intersection_result_path);
-    //test_query_group(depattern_doc_path, index_path, query_path, union_result_path, intersection_result_path);
-    test_bm(small_doc_path, index_path, small_query_path);
-    //test_bm(depattern_doc_path, index_path, query_path);
+    //test_query_group(small_doc_path, index_path, small_query_path, union_result_path, intersection_result_path);
+    test_query_group(pattern_doc_path, index_path, query_path, union_result_path, intersection_result_path);
+    test_query_group(depattern_doc_path, index_path, query_path, union_result_path, intersection_result_path);
+    //test_bm(small_doc_path, index_path, small_query_path);
+    test_bm(depattern_doc_path, index_path, query_path);
     return 0;
 }
