@@ -43,26 +43,48 @@ void test_query(const token_index::index_manager &manager, const token_index::qu
     auto begin_time = std::chrono::high_resolution_clock::now();
     for (const auto &query : query_vec)
     {
+        size_t size{0};
         auto begin_time = std::chrono::high_resolution_clock::now();
-        token_index::index_set_t index_set;
         if (is_union)
-            index_set = manager.retrieve_union(query);
-        else
-            index_set = manager.retrieve_intersection(query);
-        if (is_out)
         {
-            for (const token_index::token_t &token : query)
-                os << token << ',';
-            os << ':';
-            for (const token_index::index_t &index : index_set)
-                os << index << ',';
-            os << std::endl;
+            auto union_set = manager.retrieve_union(query);
+            size = union_set.size();
+            if (is_out)
+            {
+                for (const auto &token : query)
+                    os << token << ',';
+                os << ':';
+                for (const auto &index : union_set)
+                    os << index << ',';
+                os << std::endl;
+            }
+        }
+        else
+        {
+            auto intersection_set = manager.retrieve_intersection(query);
+            size = intersection_set.size();
+            if (is_out)
+            {
+                for (const auto &token : query)
+                    os << token << ',';
+                os << ':';
+                for (const auto &pair : intersection_set)
+                {
+                    auto &index = pair.first; 
+                    auto &offset_vec = pair.second;
+                    os << index << '=';
+                    for (auto &offset : offset_vec)
+                        os << offset << ',';
+                    os << ';';
+                }
+                os << std::endl;
+            }
         }
         auto end_time = std::chrono::high_resolution_clock::now();
         auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time);
         auto program_times = elapsed_time.count();
         std::cout << "      Location time:" << program_times
-                  << ",Result doc size:" << index_set.size() << std::endl;
+                  << ",Result doc size:" << size << std::endl;
     }
     auto end_time = std::chrono::high_resolution_clock::now();
     auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time);
@@ -128,13 +150,18 @@ void test_bm(const token_index::path_t &doc_path, const token_index::path_t &ind
     {
         token_index::query_t query = query_vec[i];
         token_index::line_t query_line = querys[i];
-        token_index::index_set_t index_set = manager.retrieve_intersection(query);
-        for (const auto &index : index_set)
+        token_index::index_map_t index_map = manager.retrieve_intersection(query);
+        for (const auto &pair : index_map)
         {
+            const auto &index = pair.first;
             token_index::line_t document_line = documents[index];
-            const auto &result = bm::bm(query_line.c_str(), document_line.c_str());
+            const auto &result = bm::BM(document_line.c_str(), query_line.c_str());
             std::cout << "  query:" << query_line << "," << std::endl;
             std::cout << "  document:" << document_line << "," << std::endl;
+            std::cout << "  offset_set:";
+            for (const auto &offset : pair.second)
+                std::cout << offset << ',';
+            std::cout << std::endl;
             std::cout << "  BM:";
             for (const auto &num : result)
                 std::cout << num << ',';

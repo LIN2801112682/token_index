@@ -4,6 +4,6 @@
 
 namespace bm
 {
-    std::vector<int> bm(const char query[], const char document[]);
-    int dist(const char query[], const char ch);
+    std::vector<int> BM(const char *s, const char *t);
+    int Dist(const char *t, char ch);
 }

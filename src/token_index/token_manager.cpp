@@ -204,60 +204,65 @@ namespace token_index
         }
     }
 
-    index_set_t
+    index_map_t
     index_manager::retrieve(const token_t &token) const
     {
         auto iter = _inverted_index.find(token);
         if (iter != std::end(_inverted_index))
         {
-            index_set_t index_set;
-            const auto &index_map = iter->second;
-            for (const auto &pair : index_map)
-            {
-                index_set.insert(pair.first);
-            }
-            return index_set;
+            return iter->second;
         }
-        return index_set_t{};
+        return index_map_t{};
     }
 
     index_set_t
     index_manager::retrieve_union(const query_t &query) const
     {
         index_set_t union_set{};
-        for (const token_t &token : query)
+        for (const auto &token : query)
         {
-            index_set_t index_set = retrieve(token);
-            union_set.insert(std::begin(index_set), std::end(index_set));
+            const auto &index_map = retrieve(token);
+            for (const auto &pair : index_map)
+                union_set.insert(pair.first);
         }
         return union_set;
     }
 
-    index_set_t
+    index_map_t
     index_manager::retrieve_intersection(const query_t &query) const
     {
-        index_set_t intersection_set;
-        bool inited{false};
-        for (const token_t &token : query)
+        const auto &first_token = query[0];
+        const auto &first_index_map = retrieve(first_token);
+        if (first_index_map.empty())
+            return index_map_t{};
+        auto intersection_set{first_index_map};
+        for (size_t i{1}; i < query.size(); ++i)
         {
-            index_set_t index_set = retrieve(token);
-            if (index_set.empty())
-                return index_set;
-            if (!inited)
+            const auto &token = query[i];
+            const auto &index_map = retrieve(token);
+            if (index_map.empty())
+                return index_map_t{};
+            decltype(intersection_set) temp_set;
+            for (const auto &pair : intersection_set)
             {
-                intersection_set = index_set;
-                inited = true;
+                const auto &index = pair.first; 
+                const auto &iter = index_map.find(index);
+                if (iter == std::end(index_map))
+                    continue;
+                const auto &first_offset_set = pair.second;
+                const auto &offset_set = iter->second;
+                offset_set_t temp_offset_set;
+                for (const auto &offset : first_offset_set)
+                {
+                    if (offset_set.find(offset + i) != std::end(offset_set))
+                        temp_offset_set.insert(offset);
+                }
+                if (!temp_offset_set.empty())
+                    temp_set[index] = temp_offset_set;
             }
-            else
-            {
-                index_set_t temp_set;
-                for (const auto &index : intersection_set)
-                    if (index_set.find(index) != std::end(index_set))
-                        temp_set.insert(index);
-                if (temp_set.empty())
-                    return temp_set;
-                intersection_set = temp_set;
-            }
+            if (temp_set.empty())
+                return index_map_t{};
+            intersection_set = temp_set;
         }
         return intersection_set;
     }

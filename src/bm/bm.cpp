@@ -3,52 +3,52 @@
 
 namespace bm
 {
-    std::vector<int>
-    bm(const char query[], const char document[])
+    int Dist(const char *t, char ch)
     {
-        std::vector<int> result;
-        auto query_len = strlen(query);
-        auto document_len = strlen(document);
-        auto query_index = query_len - 1;
-        auto document_index = query_len - 1;
-        while (0 <= query_index && document_index < document_len)
+        int len = strlen(t);
+        int i = len - 1;
+        if (ch == t[i])
+            return len;
+        i--;
+        while (i >= 0)
         {
-            if (query[query_index] == document[document_index])
+            if (ch == t[i])
+                return len - 1 - i;
+            else
+                i--;
+        }
+        return len;
+    }
+
+    std::vector<int> BM(const char *s, const char *t)
+    {
+        int n = strlen(s);
+        int m = strlen(t);
+        int i = m - 1;
+        int j = m - 1;
+        std::vector<int> result;
+
+        while (j >= 0 && i < n)
+        {
+            if (s[i] == t[j])
             {
-                --query_index;
-                --document_index;
+                i--;
+                j--;
             }
             else
             {
-                query_index = query_len - 1;
-                document_index += dist(query, document[document_index]);
+                i += Dist(t, s[i]);
+                j = m - 1;
             }
-            if (query_index < 0)
+
+            if (j < 0)
             {
-                query_index = query_len - 1;
-                ++document_index;
-                result.push_back(document_index);
-                document_index += 2 * query_len - 2;
+                i = i + 1;
+                result.push_back(i);
+                i += 2 * m - 2;
+                j = m - 1;
             }
         }
         return result;
-    }
-
-    int
-    dist(const char query[], const char ch)
-    {
-        int query_len = strlen(query);
-        int query_index = query_len - 1;
-        if (query[query_index] == ch)
-            return query_len;
-        --query_index;
-        while (0 <= query_index)
-        {
-            if (query[query_index] == ch)
-                return query_len - query_index - 1;
-            else
-                --query_index;
-        }
-        return query_len;
     }
 }
