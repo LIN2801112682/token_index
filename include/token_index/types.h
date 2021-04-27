@@ -31,8 +31,8 @@ namespace ti
         token_t::size_type end;
     };
 
-    using offset_set_t = std::unordered_set<position_t>;
-    using doc_map_t = std::unordered_map<doc_id_t, offset_set_t>;
+    using position_map_t = std::unordered_set<position_t>;
+    using doc_map_t = std::unordered_map<doc_id_t, position_map_t>;
     using inverted_index_t = std::unordered_map<token_t, doc_map_t>;
 
     using query_t = std::vector<token_t>;

@@ -48,7 +48,7 @@ namespace ti
             if (iter1 == std::end(_inverted_index))
             {
                 doc_map_t index_map;
-                offset_set_t offset_set;
+                position_map_t offset_set;
                 offset_set.insert(offset);
                 index_map[index] = offset_set; 
                 _inverted_index[token] = index_map;
@@ -59,7 +59,7 @@ namespace ti
                 auto iter2 = index_map.find(index);
                 if (iter2 == std::end(index_map))
                 {
-                    offset_set_t offset_set;
+                    position_map_t offset_set;
                     offset_set.insert(offset);
                     index_map[index] = offset_set;
                 }
@@ -114,7 +114,7 @@ namespace ti
             const auto &token = pair1.first;
             //std::cout << token << KEY_VALUE_DLM1;
             std::cout << token.size() << SET_DLM1;
-            offset_set_t::size_type sum = 0;
+            position_map_t::size_type sum = 0;
             const auto &index_map = pair1.second;
             for (const auto &pair2 : index_map)
             {
@@ -168,7 +168,7 @@ namespace ti
                 std::regex_search(index_map_str, result2, KEY_VALUE_REGEX2);
                 doc_id_t index{static_cast<doc_id_t>(stoi(result2.str(1)))};
                 std::istringstream iss2{result2.str(2)};
-                offset_set_t offset_set;
+                position_map_t offset_set;
                 line_t offset_str;
                 while (getline(iss2, offset_str, SET_DLM2))
                     offset_set.insert(stoi(offset_str));
@@ -251,7 +251,7 @@ namespace ti
                     continue;
                 const auto &first_offset_set = pair.second;
                 const auto &offset_set = iter->second;
-                offset_set_t temp_offset_set;
+                position_map_t temp_offset_set;
                 for (const auto &offset : first_offset_set)
                 {
                     if (offset_set.find(offset + i) != std::end(offset_set))
