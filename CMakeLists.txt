@@ -12,3 +12,4 @@ set(BM src/bm/bm.cpp)
 
 add_executable (test tests/test.cpp ${TOKEN_INDEX} ${BM})
 add_executable (filter tests/filter.cpp)
+add_executable (test_bm tests/test_bm.cpp ${BM})

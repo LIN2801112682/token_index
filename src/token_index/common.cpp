@@ -12,7 +12,8 @@ namespace ti
         token_t token;
         std::istringstream iss{line};
         while (iss >> token)
-            token_vec.push_back(token);
+            if (token != " ")
+                token_vec.push_back(token);
         return token_vec;
     }
     

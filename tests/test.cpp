@@ -92,9 +92,7 @@ void test_query(const ti::index_manager &manager, const ti::query_vec_t &query_v
 void test_query_group(const ti::path_t &doc_path, const ti::path_t &index_path, const ti::path_t &query_path,
                 const ti::path_t &union_result_path, const ti::path_t &intersection_result_path)
 {
-    //create_and_save_inverted_index(doc_path, index_path);
     ti::index_manager manager;
-    //manager.load_inverted_index(index_path);
     manager.push_col_file(doc_path);
     auto query_vec = ti::load_query_vec(query_path);
     std::ofstream ofs;
@@ -178,10 +176,10 @@ static const ti::path_t intersection_result_path{"../resource/intersection_resul
 int main()
 {
     //test_save_and_load_inverted_index(small_doc_path, index_path);
-    test_query_group(small_doc_path, index_path, small_query_path, union_result_path, intersection_result_path);
-    //test_query_group(pattern_doc_path, index_path, query_path, union_result_path, intersection_result_path);
+    //test_query_group(small_doc_path, index_path, small_query_path, union_result_path, intersection_result_path);
+    test_query_group(pattern_doc_path, index_path, query_path, union_result_path, intersection_result_path);
     //test_query_group(depattern_doc_path, index_path, query_path, union_result_path, intersection_result_path);
-    test_bm(small_doc_path, index_path, small_query_path);
+    //test_bm(small_doc_path, index_path, small_query_path);
     //test_bm(depattern_doc_path, index_path, query_path);
     return 0;
 }
