@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 20)
 include_directories(include)
 include_directories(ext/jsonxx/include)
 
-set(TOKEN_INDEX src/token_index/common.cpp src/token_index/token_manager.cpp)
+set(TOKEN_INDEX src/token_index/common.cpp src/token_index/index_manager.cpp)
 set(BM src/bm/bm.cpp)
 
 add_executable (test tests/test.cpp ${TOKEN_INDEX} ${BM})

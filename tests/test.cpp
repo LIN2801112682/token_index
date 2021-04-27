@@ -1,5 +1,5 @@
 #include "token_index/types.h"
-#include "token_index/token_manager.h"
+#include "token_index/index_manager.h"
 #include "token_index/common.h"
 #include "bm/bm.h"
 #include <iostream>
@@ -7,6 +7,7 @@
 #include <sstream>
 #include <chrono>
 
+/*
 void test_save_and_load_inverted_index(const ti::path_t &file_path, const ti::path_t &index_path)
 {
     {
@@ -36,6 +37,7 @@ void create_and_save_inverted_index(const ti::path_t &file_path, const ti::path_
     manager.push_file(file_path);
     manager.save_inverted_index(index_path);
 }
+*/
 
 void test_query(const ti::index_manager &manager, const ti::query_vec_t &query_vec,
                      const bool &is_union, const bool &is_out, std::ostream &os = std::cout)
@@ -43,48 +45,37 @@ void test_query(const ti::index_manager &manager, const ti::query_vec_t &query_v
     auto begin_time = std::chrono::high_resolution_clock::now();
     for (const auto &query : query_vec)
     {
-        size_t size{0};
         auto begin_time = std::chrono::high_resolution_clock::now();
+        ti::doc_map_t doc_map;
         if (is_union)
-        {
-            auto union_set = manager.retrieve_union(query);
-            size = union_set.size();
-            if (is_out)
-            {
-                for (const auto &token : query)
-                    os << token << ',';
-                os << ':';
-                for (const auto &index : union_set)
-                    os << index << ',';
-                os << std::endl;
-            }
-        }
+            doc_map = manager.retrieve_union(query);
         else
+            doc_map = manager.retrieve_intersection(query);
+        if (is_out)
         {
-            auto intersection_set = manager.retrieve_intersection(query);
-            size = intersection_set.size();
-            if (is_out)
+            for (const auto &token : query)
+                os << token << ',';
+            os << ':';
+            for (const auto &doc_map_pair : doc_map)
             {
-                for (const auto &token : query)
-                    os << token << ',';
-                os << ':';
-                for (const auto &pair : intersection_set)
+                const auto &doc_id = doc_map_pair.first;
+                const auto &position_map = doc_map_pair.second;
+                os << doc_id << '=';
+                for (const auto &position_map_pair : position_map)
                 {
-                    auto &index = pair.first; 
-                    auto &offset_vec = pair.second;
-                    os << index << '=';
-                    for (auto &offset : offset_vec)
-                        os << offset << ',';
-                    os << ';';
+                    const auto &position = position_map_pair.first;
+                    const auto &offset = position_map_pair.second;
+                    os << position << '-' << offset.begin << '~' << offset.end << ',';
                 }
-                os << std::endl;
+                os << ';';
             }
+            os << std::endl;
         }
         auto end_time = std::chrono::high_resolution_clock::now();
         auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time);
         auto program_times = elapsed_time.count();
         std::cout << "      Location time:" << program_times
-                  << ",Result doc size:" << size << std::endl;
+                  << ",Result doc size:" << doc_map.size() << std::endl;
     }
     auto end_time = std::chrono::high_resolution_clock::now();
     auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time);
@@ -101,9 +92,10 @@ void test_query(const ti::index_manager &manager, const ti::query_vec_t &query_v
 void test_query_group(const ti::path_t &doc_path, const ti::path_t &index_path, const ti::path_t &query_path,
                 const ti::path_t &union_result_path, const ti::path_t &intersection_result_path)
 {
-    create_and_save_inverted_index(doc_path, index_path);
+    //create_and_save_inverted_index(doc_path, index_path);
     ti::index_manager manager;
-    manager.load_inverted_index(index_path);
+    //manager.load_inverted_index(index_path);
+    manager.push_col_file(doc_path);
     auto query_vec = ti::load_query_vec(query_path);
     std::ofstream ofs;
 
@@ -127,7 +119,7 @@ void test_query_group(const ti::path_t &doc_path, const ti::path_t &index_path, 
 void test_bm(const ti::path_t &doc_path, const ti::path_t &index_path, const ti::path_t &query_path)
 {
     ti::index_manager manager;
-    manager.push_file(doc_path);
+    manager.push_col_file(doc_path);
 
     std::ifstream ifs;
     ti::line_t line;
@@ -150,17 +142,21 @@ void test_bm(const ti::path_t &doc_path, const ti::path_t &index_path, const ti:
     {
         ti::query_t query = query_vec[i];
         ti::line_t query_line = querys[i];
-        ti::doc_map_t index_map = manager.retrieve_intersection(query);
-        for (const auto &pair : index_map)
+        ti::doc_map_t doc_map = manager.retrieve_intersection(query);
+        for (const auto &doc_map_pair : doc_map)
         {
-            const auto &index = pair.first;
-            ti::line_t document_line = documents[index];
+            const auto &doc_id = doc_map_pair.first;
+            ti::line_t document_line = documents[doc_id];
             const auto &result = bm::BM(document_line.c_str(), query_line.c_str());
             std::cout << "  query:" << query_line << "," << std::endl;
             std::cout << "  document:" << document_line << "," << std::endl;
-            std::cout << "  offset_set:";
-            for (const auto &offset : pair.second)
-                std::cout << offset << ',';
+            for (const auto &position_map_pair : doc_map_pair.second)
+            {
+                const auto &position = position_map_pair.first;
+                std::cout << "  position:" << position << std::endl;
+                const auto &offset = position_map_pair.second;
+                std::cout << "      offset:" << offset.begin << '~' << offset.end << std::endl;
+            }
             std::cout << std::endl;
             std::cout << "  BM:";
             for (const auto &num : result)
@@ -181,7 +177,7 @@ static const ti::path_t intersection_result_path{"../resource/intersection_resul
 
 int main()
 {
-    test_save_and_load_inverted_index(small_doc_path, index_path);
+    //test_save_and_load_inverted_index(small_doc_path, index_path);
     test_query_group(small_doc_path, index_path, small_query_path, union_result_path, intersection_result_path);
     //test_query_group(pattern_doc_path, index_path, query_path, union_result_path, intersection_result_path);
     //test_query_group(depattern_doc_path, index_path, query_path, union_result_path, intersection_result_path);

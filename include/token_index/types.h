@@ -24,14 +24,14 @@ namespace ti
     using col_t = std::vector<doc_t>; // col = collection
 
     using doc_id_t = col_t::size_type;
-    using frequency = int;
+    using frequency_t = int;
     using position_t = doc_t::size_type;
     struct offset_t {
         token_t::size_type begin;
         token_t::size_type end;
     };
 
-    using position_map_t = std::unordered_set<position_t>;
+    using position_map_t = std::unordered_map<position_t, offset_t>;
     using doc_map_t = std::unordered_map<doc_id_t, position_map_t>;
     using inverted_index_t = std::unordered_map<token_t, doc_map_t>;
 

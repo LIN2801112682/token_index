@@ -1,6 +1,7 @@
-#include "token_index/token_manager.h"
+#include "token_index/index_manager.h"
 #include "token_index/types.h"
 #include "token_index/common.h"
+#include "bm/bm.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -20,59 +21,48 @@ namespace ti
           _inverted_index{} {}
 
     void
-    index_manager::push_file(const path_t &path)
+    index_manager::push_col_file(const path_t &col_file_path)
     {
-        std::ifstream ifs{path, std::ifstream::in};
-        line_t line;
-        while (getline(ifs, line))
-            push_line(line);
+        std::ifstream ifs{col_file_path, std::ifstream::in};
+        line_t doc_line;
+        while (getline(ifs, doc_line))
+            push_doc_line(doc_line);
         ifs.close();
     }
 
     void
-    index_manager::push_line(const line_t &line)
+    index_manager::push_doc_line(const line_t &doc_line)
     {
-        doc_t document{line_to_token_vec(line)};
-        push_document(document);
-    }
-
-    void
-    index_manager::push_document(const doc_t &document)
-    {
-        _collection.push_back(document);
-        doc_id_t index{_collection.size() - 1};
-        for (position_t offset = 0; offset < document.size(); ++offset)
+        doc_t doc{line_to_token_vec(doc_line)};
+        _collection.push_back(doc);
+        doc_id_t doc_id{_collection.size() - 1};
+        position_t position{0};
+        for (const auto &token : doc)
         {
-            auto token = document[offset];
-            auto iter1 = _inverted_index.find(token);
-            if (iter1 == std::end(_inverted_index))
-            {
-                doc_map_t index_map;
-                position_map_t offset_set;
-                offset_set.insert(offset);
-                index_map[index] = offset_set; 
-                _inverted_index[token] = index_map;
-            }
-            else
-            {
-                auto &index_map = iter1->second;
-                auto iter2 = index_map.find(index);
-                if (iter2 == std::end(index_map))
-                {
-                    position_map_t offset_set;
-                    offset_set.insert(offset);
-                    index_map[index] = offset_set;
-                }
-                else
-                {
-                    auto &offset_set = iter2->second;
-                    offset_set.insert(offset);
-                }
-            }
+            doc_map_t doc_map{};
+            auto inverted_index_iter = _inverted_index.find(token);
+            if (std::end(_inverted_index) != inverted_index_iter)
+                doc_map = inverted_index_iter->second;
+            
+            position_map_t position_map{};
+            auto doc_map_iter = doc_map.find(doc_id);
+            if (std::end(doc_map) != doc_map_iter)
+                position_map = doc_map_iter->second;
+
+            offset_t offset{};
+            auto result = bm::BM(doc_line.c_str(), token.c_str());
+            offset.begin = result[position_map.size()];
+            offset.end = offset.begin + token.size() - 1;
+
+            position_map[position] = offset;
+            doc_map[doc_id] = position_map;
+            _inverted_index[token] = doc_map;
+
+            ++position;
         }
     }
 
-
+    /*
     void
     index_manager::print_collection()
     {
@@ -203,66 +193,101 @@ namespace ti
             }
         }
     }
+    */
 
-    doc_map_t
-    index_manager::retrieve(const token_t &token) const
+    frequency_t
+    index_manager::calc_frequency(const token_t &token) const
     {
-        auto iter = _inverted_index.find(token);
-        if (iter != std::end(_inverted_index))
+        frequency_t frequency{0};
+        const auto &doc_map = retrieve(token);
+        for (const auto &doc_map_pair : doc_map)
         {
-            return iter->second;
+            const auto &position_map = doc_map_pair.second;
+            frequency += position_map.size();
         }
-        return doc_map_t{};
+        return frequency;
     }
 
-    index_set_t
+    const doc_map_t
+    index_manager::retrieve(const token_t &token) const
+    {
+        doc_map_t doc_map{};
+        auto inverted_index_iter = _inverted_index.find(token);
+        if (std::end(_inverted_index) != inverted_index_iter)
+            doc_map = inverted_index_iter->second;
+        return doc_map;
+    }
+
+    const doc_map_t
     index_manager::retrieve_union(const query_t &query) const
     {
-        index_set_t union_set{};
+        doc_map_t union_set{};
         for (const auto &token : query)
         {
-            const auto &index_map = retrieve(token);
-            for (const auto &pair : index_map)
-                union_set.insert(pair.first);
+            const auto &doc_map = retrieve(token);
+            for (const auto &doc_map_pair : doc_map)
+            {
+                const auto &doc_id = doc_map_pair.first;
+                const auto &position_map = doc_map_pair.second;
+                position_map_t temp_position_map{};
+                auto union_set_iter = union_set.find(doc_id); 
+                if (std::end(union_set) != union_set_iter)
+                    temp_position_map = union_set_iter->second;
+                for (const auto &position_map_pair : position_map)
+                {
+                    const auto &position = position_map_pair.first;
+                    const auto &offset = position_map_pair.second;
+                    temp_position_map[position] = offset;
+                }
+                union_set[doc_id] = temp_position_map;
+            }
         }
         return union_set;
     }
 
-    doc_map_t
+    const doc_map_t
     index_manager::retrieve_intersection(const query_t &query) const
     {
         const auto &first_token = query[0];
         const auto &first_index_map = retrieve(first_token);
         if (first_index_map.empty())
-            return doc_map_t{};
+            return {};
         auto intersection_set{first_index_map};
         for (size_t i{1}; i < query.size(); ++i)
         {
             const auto &token = query[i];
-            const auto &index_map = retrieve(token);
-            if (index_map.empty())
-                return doc_map_t{};
-            decltype(intersection_set) temp_set;
-            for (const auto &pair : intersection_set)
+            const auto &doc_map = retrieve(token);
+            if (doc_map.empty())
+                return {};
+            doc_map_t temp_doc_map{};
+            for (const auto &intersection_doc_map_pair : intersection_set)
             {
-                const auto &index = pair.first; 
-                const auto &iter = index_map.find(index);
-                if (iter == std::end(index_map))
+                const auto &doc_id = intersection_doc_map_pair.first; 
+                const auto &doc_map_iter = doc_map.find(doc_id);
+                if (std::end(doc_map) == doc_map_iter)
                     continue;
-                const auto &first_offset_set = pair.second;
-                const auto &offset_set = iter->second;
-                position_map_t temp_offset_set;
-                for (const auto &offset : first_offset_set)
+                const auto &intersection_position_map = intersection_doc_map_pair.second;
+                const auto &position_map = doc_map_iter->second;
+                position_map_t temp_position_map;
+                for (const auto &intersection_position_map_pair : intersection_position_map)
                 {
-                    if (offset_set.find(offset + i) != std::end(offset_set))
-                        temp_offset_set.insert(offset);
+                    const auto &position = intersection_position_map_pair.first;
+                    const auto &position_map_iter = position_map.find(position + i);
+                    if (std::end(position_map) == position_map_iter)
+                        continue;
+                    const auto &intersection_offset = intersection_position_map_pair.second;
+                    const auto &offset = position_map_iter->second;
+                    offset_t temp_offset{};
+                    temp_offset.begin = intersection_offset.begin;
+                    temp_offset.end = offset.end;
+                    temp_position_map[position] = temp_offset;
                 }
-                if (!temp_offset_set.empty())
-                    temp_set[index] = temp_offset_set;
+                if (!temp_position_map.empty())
+                    temp_doc_map[doc_id] = temp_position_map;
             }
-            if (temp_set.empty())
-                return doc_map_t{};
-            intersection_set = temp_set;
+            if (temp_doc_map.empty())
+                return {};
+            intersection_set = temp_doc_map;
         }
         return intersection_set;
     }

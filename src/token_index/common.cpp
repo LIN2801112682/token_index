@@ -8,7 +8,7 @@ namespace ti
     std::vector<token_t>
     line_to_token_vec(const line_t &line)
     {
-        std::vector<token_t> token_vec;
+        std::vector<token_t> token_vec{};
         token_t token;
         std::istringstream iss{line};
         while (iss >> token)
