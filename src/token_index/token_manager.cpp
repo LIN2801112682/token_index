@@ -47,7 +47,7 @@ namespace ti
             auto iter1 = _inverted_index.find(token);
             if (iter1 == std::end(_inverted_index))
             {
-                index_map_t index_map;
+                doc_map_t index_map;
                 offset_set_t offset_set;
                 offset_set.insert(offset);
                 index_map[index] = offset_set; 
@@ -156,7 +156,7 @@ namespace ti
         line_t line;
         while (getline(ifs, line))
         {
-            index_map_t index_map;
+            doc_map_t index_map;
             std::smatch result;
             std::regex_search(line, result, KEY_VALUE_REGEX1);
             token_t token{result.str(1)};
@@ -204,7 +204,7 @@ namespace ti
         }
     }
 
-    index_map_t
+    doc_map_t
     index_manager::retrieve(const token_t &token) const
     {
         auto iter = _inverted_index.find(token);
@@ -212,7 +212,7 @@ namespace ti
         {
             return iter->second;
         }
-        return index_map_t{};
+        return doc_map_t{};
     }
 
     index_set_t
@@ -228,20 +228,20 @@ namespace ti
         return union_set;
     }
 
-    index_map_t
+    doc_map_t
     index_manager::retrieve_intersection(const query_t &query) const
     {
         const auto &first_token = query[0];
         const auto &first_index_map = retrieve(first_token);
         if (first_index_map.empty())
-            return index_map_t{};
+            return doc_map_t{};
         auto intersection_set{first_index_map};
         for (size_t i{1}; i < query.size(); ++i)
         {
             const auto &token = query[i];
             const auto &index_map = retrieve(token);
             if (index_map.empty())
-                return index_map_t{};
+                return doc_map_t{};
             decltype(intersection_set) temp_set;
             for (const auto &pair : intersection_set)
             {
@@ -261,7 +261,7 @@ namespace ti
                     temp_set[index] = temp_offset_set;
             }
             if (temp_set.empty())
-                return index_map_t{};
+                return doc_map_t{};
             intersection_set = temp_set;
         }
         return intersection_set;

@@ -150,7 +150,7 @@ void test_bm(const ti::path_t &doc_path, const ti::path_t &index_path, const ti:
     {
         ti::query_t query = query_vec[i];
         ti::line_t query_line = querys[i];
-        ti::index_map_t index_map = manager.retrieve_intersection(query);
+        ti::doc_map_t index_map = manager.retrieve_intersection(query);
         for (const auto &pair : index_map)
         {
             const auto &index = pair.first;

@@ -9,7 +9,8 @@ namespace ti
 {
     enum class index_level
     {
-        doc_id,
+        doc_id = 1,
+        frequency,
         position,
         offset, 
     };
@@ -23,6 +24,7 @@ namespace ti
     using col_t = std::vector<doc_t>; // col = collection
 
     using doc_id_t = col_t::size_type;
+    using frequency = int;
     using position_t = doc_t::size_type;
     struct offset_t {
         token_t::size_type begin;
@@ -30,8 +32,8 @@ namespace ti
     };
 
     using offset_set_t = std::unordered_set<position_t>;
-    using index_map_t = std::unordered_map<doc_id_t, offset_set_t>;
-    using inverted_index_t = std::unordered_map<token_t, index_map_t>;
+    using doc_map_t = std::unordered_map<doc_id_t, offset_set_t>;
+    using inverted_index_t = std::unordered_map<token_t, doc_map_t>;
 
     using query_t = std::vector<token_t>;
     using query_vec_t = std::vector<query_t>;

@@ -18,9 +18,9 @@ namespace ti
         void save_inverted_index(const path_t &path);
         void load_inverted_index(const path_t &path);
         void inverted_index_build_collection(); 
-        index_map_t retrieve(const token_t &token) const;
+        doc_map_t retrieve(const token_t &token) const;
         index_set_t retrieve_union(const query_t &query) const;
-        index_map_t retrieve_intersection(const query_t &query) const;
+        doc_map_t retrieve_intersection(const query_t &query) const;
     private:
         index_manager(const index_manager &other) = delete;
         index_manager(index_manager &&other) = delete;
