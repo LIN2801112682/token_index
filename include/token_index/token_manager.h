@@ -3,7 +3,7 @@
 #include "token_index/types.h"
 #include <regex>
 
-namespace token_index
+namespace ti
 {
     class index_manager
     {
@@ -11,7 +11,7 @@ namespace token_index
         index_manager();
         void push_file(const path_t &path);
         void push_line(const line_t &line);
-        void push_document(const document_t &document);
+        void push_document(const doc_t &document);
         void print_collection();
         void print_inverted_index();
         void print_token_frequency();
@@ -26,7 +26,7 @@ namespace token_index
         index_manager(index_manager &&other) = delete;
         index_manager operator=(const index_manager &other) = delete;
         index_manager operator=(index_manager &&other) = delete;
-        collection_t _collection;
+        col_t _collection;
         inverted_index_t _inverted_index;
     };
 }

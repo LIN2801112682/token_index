@@ -6,7 +6,7 @@
 #include <sstream>
 #include <cstdlib>
 
-namespace token_index
+namespace ti
 {
     static const std::regex KEY_VALUE_REGEX1{"(.*)=(.*)"};
     static constexpr char KEY_VALUE_DLM1{'='};
@@ -32,16 +32,16 @@ namespace token_index
     void
     index_manager::push_line(const line_t &line)
     {
-        document_t document{line_to_token_vec(line)};
+        doc_t document{line_to_token_vec(line)};
         push_document(document);
     }
 
     void
-    index_manager::push_document(const document_t &document)
+    index_manager::push_document(const doc_t &document)
     {
         _collection.push_back(document);
-        index_t index{_collection.size() - 1};
-        for (offset_t offset = 0; offset < document.size(); ++offset)
+        doc_id_t index{_collection.size() - 1};
+        for (position_t offset = 0; offset < document.size(); ++offset)
         {
             auto token = document[offset];
             auto iter1 = _inverted_index.find(token);
@@ -76,7 +76,7 @@ namespace token_index
     void
     index_manager::print_collection()
     {
-        for (index_t index = 0; index < _collection.size(); ++index)
+        for (doc_id_t index = 0; index < _collection.size(); ++index)
         {
             std::cout << index << KEY_VALUE_DLM1;
             for (const token_t &token : _collection[index])
@@ -166,7 +166,7 @@ namespace token_index
             {
                 std::smatch result2;
                 std::regex_search(index_map_str, result2, KEY_VALUE_REGEX2);
-                index_t index{static_cast<index_t>(stoi(result2.str(1)))};
+                doc_id_t index{static_cast<doc_id_t>(stoi(result2.str(1)))};
                 std::istringstream iss2{result2.str(2)};
                 offset_set_t offset_set;
                 line_t offset_str;

@@ -3,12 +3,12 @@
 #include <sstream>
 #include <fstream>
 
-namespace token_index
+namespace ti
 {
-    token_vec_t
+    std::vector<token_t>
     line_to_token_vec(const line_t &line)
     {
-        token_vec_t token_vec;
+        std::vector<token_t> token_vec;
         token_t token;
         std::istringstream iss{line};
         while (iss >> token)

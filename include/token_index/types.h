@@ -5,24 +5,35 @@
 #include <unordered_map>
 #include <unordered_set>
 
-namespace token_index
+namespace ti
 {
+    enum class index_level
+    {
+        doc_id,
+        position,
+        offset, 
+    };
+
     using path_t = std::string;
     using line_t = std::string;
     using line_vec_t = std::vector<line_t>;
 
     using token_t = std::string;
-    using token_vec_t = std::vector<token_t>;
-    using document_t = token_vec_t;
-    using collection_t = std::vector<document_t>;
+    using doc_t = std::vector<token_t>; //doc = document
+    using col_t = std::vector<doc_t>; // col = collection
 
-    using index_t = collection_t::size_type;
-    using offset_t = document_t::size_type;
-    using offset_set_t = std::unordered_set<offset_t>;
-    using index_map_t = std::unordered_map<index_t, offset_set_t>;
+    using doc_id_t = col_t::size_type;
+    using position_t = doc_t::size_type;
+    struct offset_t {
+        token_t::size_type begin;
+        token_t::size_type end;
+    };
+
+    using offset_set_t = std::unordered_set<position_t>;
+    using index_map_t = std::unordered_map<doc_id_t, offset_set_t>;
     using inverted_index_t = std::unordered_map<token_t, index_map_t>;
 
-    using query_t = token_vec_t;
+    using query_t = std::vector<token_t>;
     using query_vec_t = std::vector<query_t>;
-    using index_set_t = std::unordered_set<index_t>;
+    using index_set_t = std::unordered_set<doc_id_t>;
 }
