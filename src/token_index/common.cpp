@@ -29,3 +29,28 @@ namespace ti
         return query_vec;
     }
 }
+
+std::ostream &operator<<(std::ostream &os, const ti::doc_id_set_t &doc_id_set)
+{
+    for (const auto &doc_id : doc_id_set)
+        os << doc_id << ", ";
+    return os;
+}
+
+std::ostream &operator<<(std::ostream &os, const ti::doc_id_map_t &doc_id_map)
+{
+    for (const auto &doc_id_map_pair : doc_id_map)
+    {
+        const auto &doc_id = doc_id_map_pair.first;
+        os << doc_id << "= ";
+        const auto &position_offset_vec = doc_id_map_pair.second;
+        for (const auto &position_offset : position_offset_vec)
+        {
+            const auto &position = position_offset.position;
+            const auto &offset = position_offset.offset;
+            os << position << "- " << offset.begin << " ~ " << offset.end << ", ";
+        }
+        os << "; ";
+    }
+    return os;
+}

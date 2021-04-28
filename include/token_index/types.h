@@ -4,6 +4,7 @@
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
+#include <map>
 
 namespace ti
 {
@@ -24,18 +25,24 @@ namespace ti
     using col_t = std::vector<doc_t>; // col = collection
 
     using doc_id_t = col_t::size_type;
-    using frequency_t = int;
     using position_t = doc_t::size_type;
-    struct offset_t {
-        token_t::size_type begin;
-        token_t::size_type end;
+    struct offset_t
+    {
+        line_t::size_type begin;
+        line_t::size_type end;
     };
+    struct position_offset_t
+    {
+        position_t position;
+        offset_t offset;
+    };
+    using position_offset_vec_t = std::vector<position_offset_t>;
+    using doc_id_map_t = std::map<doc_id_t, position_offset_vec_t>;
+    using inverted_index_t = std::unordered_map<token_t, doc_id_map_t>;
 
-    using position_map_t = std::unordered_map<position_t, offset_t>;
-    using doc_map_t = std::unordered_map<doc_id_t, position_map_t>;
-    using inverted_index_t = std::unordered_map<token_t, doc_map_t>;
+    using frequency_t = position_offset_vec_t::size_type;
 
     using query_t = std::vector<token_t>;
     using query_vec_t = std::vector<query_t>;
-    using index_set_t = std::unordered_set<doc_id_t>;
+    using doc_id_set_t = std::unordered_set<doc_id_t>;
 }
