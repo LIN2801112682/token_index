@@ -1,7 +1,6 @@
 #pragma once
 
 #include "token_index/types.h"
-#include <regex>
 
 namespace ti
 {
@@ -11,8 +10,8 @@ namespace ti
         index_manager();
         void push_col_file(const path_t &col_file_path);
         void push_doc_line(const line_t &doc_line);
-        //void print_collection();
-        //void print_inverted_index();
+        void print_col() const;
+        void print_inverted_index() const;
         //void print_token_frequency();
         //void save_inverted_index(const path_t &path);
         //void load_inverted_index(const path_t &path);
@@ -26,7 +25,7 @@ namespace ti
         index_manager(index_manager &&other) = delete;
         index_manager operator=(const index_manager &other) = delete;
         index_manager operator=(index_manager &&other) = delete;
-        col_t _collection;
+        col_t _col;
         inverted_index_t _inverted_index;
     };
 }

@@ -9,15 +9,8 @@
 
 namespace ti
 {
-    static const std::regex KEY_VALUE_REGEX1{"(.*)=(.*)"};
-    static constexpr char KEY_VALUE_DLM1{'='};
-    static const std::regex KEY_VALUE_REGEX2{"(.*):(.*)"};
-    static constexpr char KEY_VALUE_DLM2{':'};
-    static constexpr char SET_DLM1{';'};
-    static constexpr char SET_DLM2{','};
-
     index_manager::index_manager()
-        : _collection{},
+        : _col{},
           _inverted_index{} {}
 
     void
@@ -34,8 +27,8 @@ namespace ti
     index_manager::push_doc_line(const line_t &doc_line)
     {
         doc_t doc{line_to_token_vec(doc_line)};
-        _collection.push_back(doc);
-        doc_id_t doc_id{_collection.size() - 1};
+        _col.push_back(doc);
+        doc_id_t doc_id{_col.size() - 1};
 
         std::map<token_t, std::vector<position_t>> token_position_map{};
         for (position_t position{0}; position < doc.size(); ++position)
@@ -54,56 +47,40 @@ namespace ti
         for (const auto &token_position_pair : token_position_map)
         {
             const auto &token = token_position_pair.first;
+            doc_id_map_t doc_id_map{};
+            auto inverted_index_iter = _inverted_index.find(token);
+            if (std::end(_inverted_index) != inverted_index_iter)
+                doc_id_map = inverted_index_iter->second;
+
             const auto &position_vec = token_position_pair.second;
             const auto &offset_begin_vec = bm::BoyerMoore(doc_line.c_str(), doc_line.size(), token.c_str(), token.size());
             position_offset_vec_t position_offset_vec{};
-            for (position_offset_vec_t::size_type i{0}; position_offset_vec.size(); ++i)
+            for (std::size_t i{0}; i < position_vec.size(); ++i)
             {
                 const auto &position = position_vec[i];
                 const line_t::size_type &offset_begin = offset_begin_vec[i];
-                position_offset_t position_offset{position, offset_t{offset_begin, offset_begin + token.size()}};
+                position_offset_t position_offset{position, offset_t{offset_begin, offset_begin + token.size() - 1}};
                 position_offset_vec.push_back(position_offset);
             }
-            doc_id_map_t doc_id_map{};
+
             doc_id_map[doc_id] = position_offset_vec;
             _inverted_index[token] = doc_id_map;
         }
     }
 
+    void
+    index_manager::print_col() const
+    {
+        std::cout << _col;
+    }
+
+    void
+    index_manager::print_inverted_index() const
+    {
+        std::cout << _inverted_index;
+    }
+
     /*
-    void
-    index_manager::print_collection()
-    {
-        for (doc_id_t index = 0; index < _collection.size(); ++index)
-        {
-            std::cout << index << KEY_VALUE_DLM1;
-            for (const token_t &token : _collection[index])
-                std::cout << token << SET_DLM1;
-            std::cout << std::endl;
-        }
-    }
-
-    void
-    index_manager::print_inverted_index()
-    {
-        for (const auto &pair1 : _inverted_index)
-        {
-            const auto &token = pair1.first;
-            std::cout << token << KEY_VALUE_DLM1;
-            const auto &index_map = pair1.second;
-            for (const auto &pair2 : index_map)
-            {
-                const auto &index = pair2.first;
-                std::cout << index << KEY_VALUE_DLM2;
-                const auto &offset_set = pair2.second;
-                for (const auto &offset : offset_set)
-                    std::cout << offset << SET_DLM2;
-                std::cout << SET_DLM1;
-            }
-            std::cout << std::endl;
-        }
-    }
-
     void
     index_manager::print_token_frequency()
     {

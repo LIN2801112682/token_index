@@ -30,6 +30,30 @@ namespace ti
     }
 }
 
+std::ostream &operator<<(std::ostream &os, const ti::col_t &col)
+{
+    for (ti::doc_id_t doc_id{0}; doc_id < col.size(); ++doc_id)
+    {
+        os << doc_id << ": ";
+        for (const auto &token : col[doc_id])
+            os << token << ", ";
+        os << std::endl;
+    }
+    return os;
+}
+
+std::ostream &operator<<(std::ostream &os, const ti::inverted_index_t &inverted_index)
+{
+    for (const auto &inverted_index_pair : inverted_index)
+    {
+        const auto &token = inverted_index_pair.first;
+        os << token << ": ";
+        const auto &doc_id_map = inverted_index_pair.second;
+        os << doc_id_map << std::endl;
+    }
+    return os;
+}
+
 std::ostream &operator<<(std::ostream &os, const ti::doc_id_set_t &doc_id_set)
 {
     for (const auto &doc_id : doc_id_set)

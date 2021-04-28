@@ -7,30 +7,32 @@
 #include <sstream>
 #include <chrono>
 
-/*
 void test_save_and_load_inverted_index(const ti::path_t &file_path, const ti::path_t &index_path)
 {
     {
         ti::index_manager manager;
-        manager.push_file(file_path);
+        manager.push_col_file(file_path);
         std::cout << "before save:" << std::endl;
-        std::cout << "print collection:" << std::endl;
-        manager.print_collection();
+        std::cout << "print col:" << std::endl;
+        manager.print_col();
         std::cout << "print inverted index:" << std::endl;
         manager.print_inverted_index();
-        manager.save_inverted_index(index_path);
+        //manager.save_inverted_index(index_path);
     }
+    /*
     {
         ti::index_manager manager;
         manager.load_inverted_index(index_path);
         std::cout << "after load:" << std::endl;
-        std::cout << "print collection:" << std::endl;
-        manager.print_collection();
+        std::cout << "print col:" << std::endl;
+        manager.print_col();
         std::cout << "print inverted index:" << std::endl;
         manager.print_inverted_index();
     }
+    */
 }
 
+/*
 void create_and_save_inverted_index(const ti::path_t &file_path, const ti::path_t &index_path)
 {
     ti::index_manager manager;
@@ -71,11 +73,6 @@ void test_query(const ti::index_manager &manager, const ti::query_vec_t &query_v
                 os << intersection_set << std::endl;
             }
         }
-        /*
-        if (is_out)
-        {
-        }
-        */
         auto end_time = std::chrono::high_resolution_clock::now();
         auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time);
         auto program_times = elapsed_time.count();
