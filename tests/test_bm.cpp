@@ -10,5 +10,11 @@ int main()
     std::cout << token << std::endl;
     auto result = bm::BM(doc.c_str(), token.c_str());
     std::cout << "ok" << std::endl;
+    doc = "the  fox is great";
+    token = "the fox";
+    std::cout << doc << std::endl;
+    std::cout << token << std::endl;
+    result = bm::BM(doc.c_str(), token.c_str());
+    std::cout << "ok" << std::endl;
     return 0;
 }

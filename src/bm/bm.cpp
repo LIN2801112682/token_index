@@ -45,7 +45,7 @@ namespace bm
             {
                 i = i + 1;
                 result.push_back(i);
-                i += 2 * m - 2;
+                i += 2 * m - 1;
                 j = m - 1;
             }
         }

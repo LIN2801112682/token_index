@@ -26,10 +26,7 @@ namespace ti
         std::ifstream ifs{col_file_path, std::ifstream::in};
         line_t doc_line;
         while (getline(ifs, doc_line))
-        {
-            std::cout << doc_line << std::endl;
             push_doc_line(doc_line);
-        }
         ifs.close();
     }
 
@@ -42,7 +39,6 @@ namespace ti
         position_t position{0};
         for (const auto &token : doc)
         {
-            std::cout << token << std::endl;
             doc_map_t doc_map{};
             auto inverted_index_iter = _inverted_index.find(token);
             if (std::end(_inverted_index) != inverted_index_iter)
@@ -54,9 +50,7 @@ namespace ti
                 position_map = doc_map_iter->second;
 
             offset_t offset{};
-            std::cout << "after" << std::endl;
             auto result = bm::BM(doc_line.c_str(), token.c_str());
-            std::cout << "before" << std::endl;
             offset.begin = result[position_map.size()];
             offset.end = offset.begin + token.size() - 1;
 
