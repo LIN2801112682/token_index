@@ -145,7 +145,7 @@ void test_bm(const ti::path_t &doc_path, const ti::path_t &index_path, const ti:
         {
             const auto &doc_id = doc_map_pair.first;
             ti::line_t document_line = documents[doc_id];
-            const auto &result = bm::BM(document_line.c_str(), query_line.c_str());
+            const auto &result = bm::BoyerMoore(document_line.c_str(), document_line.size(), query_line.c_str(), query_line.size());
             std::cout << "  query:" << query_line << "," << std::endl;
             std::cout << "  document:" << document_line << "," << std::endl;
             for (const auto &position_map_pair : doc_map_pair.second)
@@ -176,7 +176,7 @@ static const ti::path_t intersection_result_path{"../resource/intersection_resul
 int main()
 {
     //test_save_and_load_inverted_index(small_doc_path, index_path);
-    //test_query_group(small_doc_path, index_path, small_query_path, union_result_path, intersection_result_path);
+    test_query_group(small_doc_path, index_path, small_query_path, union_result_path, intersection_result_path);
     //test_query_group(pattern_doc_path, index_path, query_path, union_result_path, intersection_result_path);
     //test_query_group(depattern_doc_path, index_path, query_path, union_result_path, intersection_result_path);
     test_bm(small_doc_path, index_path, small_query_path);

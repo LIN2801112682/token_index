@@ -4,6 +4,8 @@
 
 namespace bm
 {
-    std::vector<int> BM(const char *s, const char *t);
-    int Dist(const char *t, char ch);
+    int calcBC(const char *subdir, int bc[]);
+    int calcSuffix(const char *subdir, int suffix[]);
+    int calcGS(const char *subdir, int gs[]);
+    std::vector<int> BoyerMoore(const char *szText, int nTextLen, const char *szSubstr, int nStrLen);
 }

@@ -50,7 +50,7 @@ namespace ti
                 position_map = doc_map_iter->second;
 
             offset_t offset{};
-            auto result = bm::BM(doc_line.c_str(), token.c_str());
+            auto result = bm::BoyerMoore(doc_line.c_str(), doc_line.size(), token.c_str(), token.size());
             offset.begin = result[position_map.size()];
             offset.end = offset.begin + token.size() - 1;
 
