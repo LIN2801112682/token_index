@@ -1,3 +1,0 @@
-[submodule "ext/jsonxx"]
-	path = ext/jsonxx
-	url = https://github.com/Nomango/jsonxx.git
