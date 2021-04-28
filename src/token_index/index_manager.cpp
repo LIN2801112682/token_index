@@ -26,7 +26,9 @@ namespace ti
         std::ifstream ifs{col_file_path, std::ifstream::in};
         line_t doc_line;
         while (getline(ifs, doc_line))
+        {
             push_doc_line(doc_line);
+        }
         ifs.close();
     }
 
