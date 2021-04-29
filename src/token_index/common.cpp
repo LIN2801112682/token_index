@@ -12,8 +12,7 @@ namespace ti
         token_t token;
         std::istringstream iss{line};
         while (iss >> token)
-            if (token != " ")
-                token_vec.push_back(token);
+            token_vec.push_back(token);
         return token_vec;
     }
     
@@ -24,7 +23,10 @@ namespace ti
         std::ifstream ifs{path, std::ifstream::in};
         line_t line;
         while (getline(ifs, line))
+        {
+            std::transform(std::begin(line), std::end(line), std::begin(line), tolower);
             query_vec.push_back(line_to_token_vec(line));
+        }
         ifs.close();
         return query_vec;
     }
