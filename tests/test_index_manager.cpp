@@ -1,5 +1,6 @@
 #include "token_index/types.h"
 #include "token_index/index_manager_v1.h"
+#include "token_index/index_manager_v2.h"
 #include "token_index/common.h"
 #include "bm/bm.h"
 #include <iostream>
@@ -7,10 +8,12 @@
 #include <sstream>
 #include <chrono>
 
+using index_manager = ti::index_manager_v1;
+
 void test_save_and_load_inverted_index(const ti::path_t &file_path, const ti::path_t &index_path)
 {
     {
-        ti::index_manager_v1 manager;
+        index_manager manager;
         manager.push_col_file(file_path);
         std::cout << "before save:" << std::endl;
         std::cout << "print col:" << std::endl;
@@ -21,7 +24,7 @@ void test_save_and_load_inverted_index(const ti::path_t &file_path, const ti::pa
     }
     /*
     {
-        ti::index_manager_v1 manager;
+        index_manager manager;
         manager.load_inverted_index(index_path);
         std::cout << "after load:" << std::endl;
         std::cout << "print col:" << std::endl;
@@ -35,13 +38,13 @@ void test_save_and_load_inverted_index(const ti::path_t &file_path, const ti::pa
 /*
 void create_and_save_inverted_index(const ti::path_t &file_path, const ti::path_t &index_path)
 {
-    ti::index_manager_v1 manager;
+    index_manager manager;
     manager.push_file(file_path);
     manager.save_inverted_index(index_path);
 }
 */
 
-void test_query(const ti::index_manager_v1 &manager, const std::vector<ti::query_t> &query_vec,
+void test_query(const index_manager &manager, const std::vector<ti::query_t> &query_vec,
                      const bool &is_union, const bool &is_out, std::ostream &os = std::cout)
 {
     auto begin_time = std::chrono::high_resolution_clock::now();
@@ -84,7 +87,7 @@ void test_query(const ti::index_manager_v1 &manager, const std::vector<ti::query
 void test_query_group(const ti::path_t &doc_path, const ti::path_t &index_path, const ti::path_t &query_path,
                 const ti::path_t &union_result_path, const ti::path_t &intersection_result_path)
 {
-    ti::index_manager_v1 manager{};
+    index_manager manager{};
     manager.push_col_file(doc_path);
     auto query_vec = ti::load_query_vec(query_path);
     std::ofstream ofs;
@@ -108,7 +111,7 @@ void test_query_group(const ti::path_t &doc_path, const ti::path_t &index_path, 
 
 void test_bm(const ti::path_t &doc_path, const ti::path_t &index_path, const ti::path_t &query_path)
 {
-    ti::index_manager_v1 manager{};
+    index_manager manager{};
     manager.push_col_file(doc_path);
 
     std::ifstream ifs;
@@ -165,7 +168,7 @@ int main()
     test_query_group(small_doc_path, index_path, small_query_path, union_result_path, intersection_result_path);
     //test_query_group(pattern_doc_path, index_path, query_path, union_result_path, intersection_result_path);
     //test_query_group(depattern_doc_path, index_path, query_path, union_result_path, intersection_result_path);
-    //test_bm(small_doc_path, index_path, small_query_path);
+    test_bm(small_doc_path, index_path, small_query_path);
     //test_bm(depattern_doc_path, index_path, query_path);
     return 0;
 }

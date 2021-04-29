@@ -14,7 +14,6 @@ set(TOKEN_INDEX
 )
 set(BM src/bm/bm.cpp)
 
-add_executable (test_index_manager_v1 tests/test_index_manager_v1.cpp ${TOKEN_INDEX} ${BM})
-add_executable (test_index_manager_v2 tests/test_index_manager_v2.cpp ${TOKEN_INDEX} ${BM})
+add_executable (test_index_manager tests/test_index_manager.cpp ${TOKEN_INDEX} ${BM})
 add_executable (filter tests/filter.cpp)
 add_executable (test_bm tests/test_bm.cpp ${BM})
