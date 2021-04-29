@@ -50,10 +50,10 @@ namespace ti
         for (const auto &token_position_pair : token_position_map)
         {
             const auto &token = token_position_pair.first;
-            doc_id_position_offset_vec_t index_info_vec{};
+            doc_id_position_offset_vec_t doc_id_position_offset_vec{};
             auto inverted_index_iter = _inverted_index.find(token);
             if (std::end(_inverted_index) != inverted_index_iter)
-                index_info_vec = inverted_index_iter->second;
+                doc_id_position_offset_vec = inverted_index_iter->second;
 
             const auto &position_vec = token_position_pair.second;
             const auto &offset_begin_vec = bm::BoyerMoore(doc_line.c_str(), doc_line.size(), token.c_str(), token.size());
@@ -62,10 +62,10 @@ namespace ti
                 const auto &position{position_vec[i]};
                 const line_t::size_type &offset_begin = offset_begin_vec[i];
                 const offset_t offset{offset_begin, offset_begin + token.size() - 1};
-                doc_id_position_offset_t index_info{doc_id, position, offset};
-                index_info_vec.push_back(index_info);
+                doc_id_position_offset_t doc_id_position_offset{doc_id, position, offset};
+                doc_id_position_offset_vec.push_back(doc_id_position_offset);
             }
-            _inverted_index[token] = index_info_vec;
+            _inverted_index[token] = doc_id_position_offset_vec;
         }
     }
 
@@ -184,70 +184,66 @@ namespace ti
     frequency_t
     index_manager_v2::calc_frequency(const token_t &token) const
     {
-        const auto &index_info_vec = retrieve(token);
-        return index_info_vec.size();
-    }
-
-    const doc_id_position_offset_vec_t
-    index_manager_v2::retrieve(const token_t &token) const
-    {
-        doc_id_position_offset_vec_t index_info_vec{};
         auto inverted_index_iter = _inverted_index.find(token);
-        if (std::end(_inverted_index) != inverted_index_iter)
-            index_info_vec = inverted_index_iter->second;
-        return index_info_vec;
+        if (std::end(_inverted_index) == inverted_index_iter)
+           return 0;
+
+        return inverted_index_iter->second.size();
     }
 
-    const doc_id_set_t
+    const result_union_set_t
     index_manager_v2::retrieve_union(const query_t &query) const
     {
-        doc_id_set_t union_set{};
+        result_union_set_t union_set{};
         for (const auto &token : query)
         {
-            const auto &index_info_vec = retrieve(token);
-            for (const auto &index_info : index_info_vec)
-            {
-                const auto &doc_id = index_info.doc_id;
-                union_set.insert(doc_id);
-            }
+            auto inverted_index_iter = _inverted_index.find(token);
+            if (std::end(_inverted_index) == inverted_index_iter)
+                continue;
+
+            for (const auto &doc_id_position_offset : inverted_index_iter->second)
+                union_set.insert(doc_id_position_offset.doc_id);
         }
         return union_set;
     }
 
-    const doc_id_position_offset_vec_t
+    const result_intersection_set_t
     index_manager_v2::retrieve_intersection(const query_t &query) const
     {
         const auto &first_token = query[0];
-        const auto &first_index_info_vec = retrieve(first_token);
-        if (first_index_info_vec.empty())
+        auto intersection_inverted_index_iter = _inverted_index.find(first_token);
+        if (std::end(_inverted_index) == intersection_inverted_index_iter)
             return {};
-        auto intersection_set{first_index_info_vec};
+        auto intersection_doc_id_position_offset_vec{intersection_inverted_index_iter->second};
+
         for (query_t::size_type i{1}; i < query.size(); ++i)
         {
             const auto &token = query[i];
-            const auto &index_info_vec = retrieve(token);
-            if (index_info_vec.empty())
+            auto inverted_index_iter = _inverted_index.find(token);
+            if (std::end(_inverted_index) == inverted_index_iter)
                 return {};
-            doc_id_position_offset_vec_t temp_index_info_vec{};
-            for (const auto &intersection_index_info : intersection_set)
+            auto doc_id_position_offset_vec{inverted_index_iter->second};
+
+            doc_id_position_offset_vec_t temp_doc_id_position_offset_vec{};
+            for (const auto &intersection_doc_id_position_offset : intersection_doc_id_position_offset_vec)
             {
-                const auto &doc_id = intersection_index_info.doc_id;
-                const auto &position = intersection_index_info.position;
-                for (const auto &index_info : index_info_vec)
+                const auto &doc_id = intersection_doc_id_position_offset.doc_id;
+                const auto &position = intersection_doc_id_position_offset.position;
+                for (const auto &doc_id_position_offset : doc_id_position_offset_vec)
                 {
-                    if (doc_id != index_info.doc_id)
+                    if (doc_id != doc_id_position_offset.doc_id)
                         continue;
-                    if (position + i != index_info.position)
+                    if (position + i != doc_id_position_offset.position)
                         continue;
-                    offset_t temp_offset{intersection_index_info.offset.begin, index_info.offset.end};
+                    offset_t temp_offset{intersection_doc_id_position_offset.offset.begin, doc_id_position_offset.offset.end};
                     doc_id_position_offset_t temp_index_info{doc_id, position, temp_offset};
-                    temp_index_info_vec.push_back(temp_index_info);
+                    temp_doc_id_position_offset_vec.push_back(temp_index_info);
                 }
             }
-            if (temp_index_info_vec.empty())
+            if (temp_doc_id_position_offset_vec.empty())
                 return {};
-            intersection_set = temp_index_info_vec;
+            intersection_doc_id_position_offset_vec = temp_doc_id_position_offset_vec;
         }
-        return intersection_set;
+        return intersection_doc_id_position_offset_vec;
     }
 }

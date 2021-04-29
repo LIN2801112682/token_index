@@ -186,63 +186,57 @@ namespace ti
     frequency_t
     index_manager_v1::calc_frequency(const token_t &token) const
     {
+        auto inverted_index_iter = _inverted_index.find(token);
+        if (std::end(_inverted_index) == inverted_index_iter)
+            return 0;
+
         frequency_t frequency{0};
-        const auto &doc_id_map = retrieve(token);
-        for (const auto &doc_id_map_pair : doc_id_map)
-        {
-            const auto &position_offset_vec = doc_id_map_pair.second;
-            frequency += position_offset_vec.size();
-        }
+        for (const auto &doc_id_map_pair : inverted_index_iter->second)
+            frequency += doc_id_map_pair.second.size();
         return frequency;
     }
 
-    const doc_id_map_t
-    index_manager_v1::retrieve(const token_t &token) const
-    {
-        doc_id_map_t doc_id_map{};
-        auto inverted_index_iter = _inverted_index.find(token);
-        if (std::end(_inverted_index) != inverted_index_iter)
-            doc_id_map = inverted_index_iter->second;
-        return doc_id_map;
-    }
-
-    const doc_id_set_t
+    const result_union_set_t
     index_manager_v1::retrieve_union(const query_t &query) const
     {
-        doc_id_set_t union_set{};
+        result_union_set_t union_set{};
         for (const auto &token : query)
         {
-            const auto &doc_id_map = retrieve(token);
-            for (const auto &doc_id_map_pair : doc_id_map)
-            {
-                const auto &doc_id = doc_id_map_pair.first;
-                union_set.insert(doc_id);
-            }
+            auto inverted_index_iter = _inverted_index.find(token);
+            if (std::end(_inverted_index) == inverted_index_iter)
+                continue;
+
+            for (const auto &doc_id_map_pair : inverted_index_iter->second)
+                union_set.insert(doc_id_map_pair.first);
         }
         return union_set;
     }
 
-    const doc_id_map_t
+    const result_intersection_set_t
     index_manager_v1::retrieve_intersection(const query_t &query) const
     {
         const auto &first_token = query[0];
-        const auto &first_doc_id_map = retrieve(first_token);
-        if (first_doc_id_map.empty())
+        auto intersection_inverted_index_iter = _inverted_index.find(first_token);
+        if (std::end(_inverted_index) == intersection_inverted_index_iter)
             return {};
-        auto intersection_set{first_doc_id_map};
+        auto intersection_doc_id_map{intersection_inverted_index_iter->second};
+
         for (query_t::size_type i{1}; i < query.size(); ++i)
         {
             const auto &token = query[i];
-            const auto &doc_id_map = retrieve(token);
-            if (doc_id_map.empty())
-                return {};
-            doc_id_map_t temp_doc_id_map{};
-            for (const auto &intersection_doc_id_map_pair : intersection_set)
+            auto inverted_index_iter= _inverted_index.find(token);
+            if (std::end(_inverted_index) == intersection_inverted_index_iter)
+                return {};     
+            auto doc_id_map{inverted_index_iter->second};
+
+            decltype(doc_id_map) temp_doc_id_map{};
+            for (const auto &intersection_doc_id_map_pair : intersection_doc_id_map)
             {
                 const auto &doc_id = intersection_doc_id_map_pair.first;
                 const auto &doc_id_map_iter = doc_id_map.find(doc_id);
                 if (std::end(doc_id_map) == doc_id_map_iter)
                     continue;
+
                 const auto &intersection_position_offset_vec = intersection_doc_id_map_pair.second;
                 const auto &position_offset_vec = doc_id_map_iter->second;
                 position_offset_vec_t temp_position_offset_vec{};
@@ -265,8 +259,8 @@ namespace ti
             }
             if (temp_doc_id_map.empty())
                 return {};
-            intersection_set = temp_doc_id_map;
+            intersection_doc_id_map = temp_doc_id_map;
         }
-        return intersection_set;
+        return to_result_intersection_set_t(intersection_doc_id_map);
     }
 }

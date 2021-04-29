@@ -1,9 +1,31 @@
 #include "token_index/types.h"
 
-std::ostream &operator<<(std::ostream &os, const ti::doc_id_set_t &s)
+namespace ti
+{
+    result_intersection_set_t to_result_intersection_set_t(doc_id_map_t &doc_id_map)
+    {
+        result_intersection_set_t result_intersection_set{};
+        for (auto &doc_id_map_pair : doc_id_map)
+        {
+            auto &doc_id = doc_id_map_pair.first;
+            auto &position_offset_vec = doc_id_map_pair.second;
+            for (auto &position_offset : position_offset_vec)
+            {
+                doc_id_position_offset_t doc_id_position_offset{
+                    doc_id_map_pair.first,
+                    position_offset.position,
+                    position_offset.offset};
+                result_intersection_set.push_back(doc_id_position_offset);
+            }
+        }
+        return result_intersection_set;
+    }
+}
+
+std::ostream &operator<<(std::ostream &os, const ti::result_union_set_t &us)
 {
     os << "[";
-    for (const auto &e : s)
+    for (const auto &e : us)
         os << e << ", ";
     os << "]";
     return os;

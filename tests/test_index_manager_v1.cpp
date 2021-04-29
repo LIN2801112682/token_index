@@ -132,10 +132,10 @@ void test_bm(const ti::path_t &doc_path, const ti::path_t &index_path, const ti:
     {
         const auto &query = query_vec[i];
         const auto &query_line = querys[i];
-        const auto &doc_id_map = manager.retrieve_intersection(query);
-        for (const auto &doc_id_map_pair : doc_id_map)
+        const auto &intersection_set = manager.retrieve_intersection(query);
+        for (const auto &doc_id_position_offset : intersection_set)
         {
-            const auto &doc_id = doc_id_map_pair.first;
+            const auto &doc_id = doc_id_position_offset.doc_id;
             const auto &doc_line = docs[doc_id];
             const auto &offset_begin_vec = bm::BoyerMoore(doc_line.c_str(), doc_line.size(), query_line.c_str(), query_line.size());
             std::cout << "  doc_line: " << doc_line << ", " << std::endl;
@@ -144,7 +144,7 @@ void test_bm(const ti::path_t &doc_path, const ti::path_t &index_path, const ti:
             for (const auto &offset_begin : offset_begin_vec)
                 std::cout << offset_begin << ", ";
             std::cout << std::endl;
-            std::cout << doc_id_map << std::endl;;
+            std::cout << "  intersection_set: " << intersection_set << std::endl;;
         }
         std::cout << "----" << std::endl;
     }
