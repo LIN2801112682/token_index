@@ -50,7 +50,7 @@ namespace ti
         for (const auto &token_position_pair : token_position_map)
         {
             const auto &token = token_position_pair.first;
-            index_info_vec_t index_info_vec{};
+            doc_id_position_offset_vec_t index_info_vec{};
             auto inverted_index_iter = _inverted_index.find(token);
             if (std::end(_inverted_index) != inverted_index_iter)
                 index_info_vec = inverted_index_iter->second;
@@ -62,7 +62,7 @@ namespace ti
                 const auto &position{position_vec[i]};
                 const line_t::size_type &offset_begin = offset_begin_vec[i];
                 const offset_t offset{offset_begin, offset_begin + token.size() - 1};
-                index_info_t index_info{doc_id, position, offset};
+                doc_id_position_offset_t index_info{doc_id, position, offset};
                 index_info_vec.push_back(index_info);
             }
             _inverted_index[token] = index_info_vec;
@@ -188,10 +188,10 @@ namespace ti
         return index_info_vec.size();
     }
 
-    const index_info_vec_t
+    const doc_id_position_offset_vec_t
     index_manager_v2::retrieve(const token_t &token) const
     {
-        index_info_vec_t index_info_vec{};
+        doc_id_position_offset_vec_t index_info_vec{};
         auto inverted_index_iter = _inverted_index.find(token);
         if (std::end(_inverted_index) != inverted_index_iter)
             index_info_vec = inverted_index_iter->second;
@@ -214,7 +214,7 @@ namespace ti
         return union_set;
     }
 
-    const index_info_vec_t
+    const doc_id_position_offset_vec_t
     index_manager_v2::retrieve_intersection(const query_t &query) const
     {
         const auto &first_token = query[0];
@@ -228,7 +228,7 @@ namespace ti
             const auto &index_info_vec = retrieve(token);
             if (index_info_vec.empty())
                 return {};
-            index_info_vec_t temp_index_info_vec{};
+            doc_id_position_offset_vec_t temp_index_info_vec{};
             for (const auto &intersection_index_info : intersection_set)
             {
                 const auto &doc_id = intersection_index_info.doc_id;
@@ -240,7 +240,7 @@ namespace ti
                     if (position + i != index_info.position)
                         continue;
                     offset_t temp_offset{intersection_index_info.offset.begin, index_info.offset.end};
-                    index_info_t temp_index_info{doc_id, position, temp_offset};
+                    doc_id_position_offset_t temp_index_info{doc_id, position, temp_offset};
                     temp_index_info_vec.push_back(temp_index_info);
                 }
             }

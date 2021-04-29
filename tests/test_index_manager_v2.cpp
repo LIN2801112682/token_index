@@ -41,7 +41,7 @@ void create_and_save_inverted_index(const ti::path_t &file_path, const ti::path_
 }
 */
 
-void test_query(const ti::index_manager_v2 &manager, const ti::query_vec_t &query_vec,
+void test_query(const ti::index_manager_v2 &manager, const std::vector<ti::query_t> &query_vec,
                      const bool &is_union, const bool &is_out, std::ostream &os = std::cout)
 {
     auto begin_time = std::chrono::high_resolution_clock::now();
@@ -124,7 +124,7 @@ void test_bm(const ti::path_t &doc_path, const ti::path_t &index_path, const ti:
     std::ifstream ifs;
     ti::line_t line;
 
-    ti::line_vec_t docs{};
+    std::vector<ti::line_t> docs{};
     ifs.open(doc_path, std::ifstream::in);
     while (getline(ifs, line))
         docs.push_back(line);
@@ -132,7 +132,7 @@ void test_bm(const ti::path_t &doc_path, const ti::path_t &index_path, const ti:
 
     auto query_vec = ti::load_query_vec(query_path);
     
-    ti::line_vec_t querys{};
+    std::vector<ti::line_t> querys{};
     ifs.open(query_path, std::ifstream::in);
     while (getline(ifs, line))
         querys.push_back(line);

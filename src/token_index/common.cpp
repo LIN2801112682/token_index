@@ -16,10 +16,10 @@ namespace ti
         return token_vec;
     }
     
-    query_vec_t
+    std::vector<query_t>
     load_query_vec(const path_t &path)
     {
-        query_vec_t query_vec;
+        std::vector<query_t> query_vec;
         std::ifstream ifs{path, std::ifstream::in};
         line_t line;
         while (getline(ifs, line))
@@ -30,83 +30,4 @@ namespace ti
         ifs.close();
         return query_vec;
     }
-}
-
-std::ostream &operator<<(std::ostream &os, const ti::col_t &col)
-{
-    for (ti::doc_id_t doc_id{0}; doc_id < col.size(); ++doc_id)
-    {
-        os << doc_id << ": ";
-        for (const auto &token : col[doc_id])
-            os << token << ", ";
-        os << std::endl;
-    }
-    return os;
-}
-
-std::ostream &operator<<(std::ostream &os, const ti::inverted_index_v1_t &inverted_index)
-{
-    for (const auto &inverted_index_pair : inverted_index)
-    {
-        const auto &token = inverted_index_pair.first;
-        os << token << ": ";
-        const auto &doc_id_map = inverted_index_pair.second;
-        os << doc_id_map << std::endl;
-    }
-    return os;
-}
-
-std::ostream &operator<<(std::ostream &os, const ti::doc_id_set_t &doc_id_set)
-{
-    for (const auto &doc_id : doc_id_set)
-        os << doc_id << ", ";
-    return os;
-}
-
-std::ostream &operator<<(std::ostream &os, const ti::doc_id_map_t &doc_id_map)
-{
-    for (const auto &doc_id_map_pair : doc_id_map)
-    {
-        const auto &doc_id = doc_id_map_pair.first;
-        os << doc_id << "= ";
-        const auto &position_offset_vec = doc_id_map_pair.second;
-        for (const auto &position_offset : position_offset_vec)
-        {
-            const auto &position = position_offset.position;
-            const auto &offset = position_offset.offset;
-            os << position << "- " << offset.begin << " ~ " << offset.end << ", ";
-        }
-        os << "; ";
-    }
-    return os;
-}
-
-std::ostream &operator<<(std::ostream &os, const ti::offset_t &offset)
-{
-    os << "{ begin = " << offset.begin << ", end = " << offset.end << " }";
-    return os;
-}
-
-std::ostream &operator<<(std::ostream &os, const ti::index_info_t &index_info)
-{
-    os << "{ doc_id = " << index_info.doc_id << ", position = " << index_info.position << ", offset = " << index_info.offset << " }";
-    return os;
-}
-
-std::ostream &operator<<(std::ostream &os, const ti::index_info_vec_t &index_info_vec)
-{
-    os << "{ ";
-    for (ti::index_info_vec_t::size_type i{0}; i < index_info_vec.size(); ++i)
-        os << "[" << i << "] = " << index_info_vec[i] << ", ";
-    os << "}";
-    return os;
-}
-
-std::ostream &operator<<(std::ostream &os, const ti::inverted_index_v2_t &inverted_index)
-{
-    os << "{ ";
-    for (const auto &pair : inverted_index)
-        os << pair.first << " : " << pair.second << ", ";
-    os << "}";
-    return os;
 }

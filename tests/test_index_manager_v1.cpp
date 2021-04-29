@@ -41,7 +41,7 @@ void create_and_save_inverted_index(const ti::path_t &file_path, const ti::path_
 }
 */
 
-void test_query(const ti::index_manager_v1 &manager, const ti::query_vec_t &query_vec,
+void test_query(const ti::index_manager_v1 &manager, const std::vector<ti::query_t> &query_vec,
                      const bool &is_union, const bool &is_out, std::ostream &os = std::cout)
 {
     auto begin_time = std::chrono::high_resolution_clock::now();
@@ -54,24 +54,14 @@ void test_query(const ti::index_manager_v1 &manager, const ti::query_vec_t &quer
             const auto &union_set = manager.retrieve_union(query);
             set_size = union_set.size();
             if (is_out)
-            {
-                for (const auto &token : query)
-                    os << token << ',';
-                os << ':';
-                os << union_set << std::endl;
-            }
+                os << query << " : " << union_set << std::endl;
         }
         else
         {
             const auto &intersection_set = manager.retrieve_intersection(query);
             set_size = intersection_set.size();
             if (is_out)
-            {
-                for (const auto &token : query)
-                    os << token << ',';
-                os << ':';
-                os << intersection_set << std::endl;
-            }
+                os << query << " : " << intersection_set << std::endl;
         }
         auto end_time = std::chrono::high_resolution_clock::now();
         auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time);
@@ -124,7 +114,7 @@ void test_bm(const ti::path_t &doc_path, const ti::path_t &index_path, const ti:
     std::ifstream ifs;
     ti::line_t line;
 
-    ti::line_vec_t docs{};
+    std::vector<ti::line_t> docs{};
     ifs.open(doc_path, std::ifstream::in);
     while (getline(ifs, line))
         docs.push_back(line);
@@ -132,7 +122,7 @@ void test_bm(const ti::path_t &doc_path, const ti::path_t &index_path, const ti:
 
     auto query_vec = ti::load_query_vec(query_path);
     
-    ti::line_vec_t querys{};
+    std::vector<ti::line_t> querys{};
     ifs.open(query_path, std::ifstream::in);
     while (getline(ifs, line))
         querys.push_back(line);
@@ -148,8 +138,8 @@ void test_bm(const ti::path_t &doc_path, const ti::path_t &index_path, const ti:
             const auto &doc_id = doc_id_map_pair.first;
             const auto &doc_line = docs[doc_id];
             const auto &offset_begin_vec = bm::BoyerMoore(doc_line.c_str(), doc_line.size(), query_line.c_str(), query_line.size());
-            std::cout << "  doc: " << doc_line << ", " << std::endl;
-            std::cout << "  query: " << query_line << ", " << std::endl;
+            std::cout << "  doc_line: " << doc_line << ", " << std::endl;
+            std::cout << "  query_line: " << query_line << ", " << std::endl;
             std::cout << "  BM: ";
             for (const auto &offset_begin : offset_begin_vec)
                 std::cout << offset_begin << ", ";
