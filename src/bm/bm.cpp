@@ -2,6 +2,7 @@
 #include <cstring>
 #include <algorithm>
 #include <vector>
+#include <string>
 
 #define MAX_CHAR_LEN 256
 
@@ -95,9 +96,14 @@ namespace bm
         return 0;
     }
 
-    std::vector<int> BoyerMoore(const char *szText, int nTextLen, const char *szSubstr, int nStrLen)
+    std::vector<std::string::size_type> BoyerMoore(const std::string &doc_line, const std::string &query_line)
     {
-        std::vector<int> result{};
+        const char *szText = doc_line.c_str();
+        const char *szSubstr = query_line.c_str();
+        int nTextLen = doc_line.size();
+        int nStrLen = query_line.size();
+
+        std::vector<std::string::size_type> result{};
 
         int i = 0;
         int j = 0;

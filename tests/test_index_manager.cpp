@@ -140,7 +140,7 @@ void test_bm(const ti::path_t &doc_path, const ti::path_t &index_path, const ti:
         {
             const auto &doc_id = doc_id_position_offset.doc_id;
             const auto &doc_line = docs[doc_id];
-            const auto &offset_begin_vec = bm::BoyerMoore(doc_line.c_str(), doc_line.size(), query_line.c_str(), query_line.size());
+            const auto &offset_begin_vec = bm::BoyerMoore(doc_line, query_line);
             std::cout << "  doc_line: " << doc_line << ", " << std::endl;
             std::cout << "  query_line: " << query_line << ", " << std::endl;
             std::cout << "  BM: ";

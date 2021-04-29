@@ -53,7 +53,7 @@ namespace ti
                 doc_id_position_offset_vec = inverted_index_iter->second;
 
             const auto &position_vec = token_position_pair.second;
-            const auto &offset_begin_vec = bm::BoyerMoore(new_doc_line.c_str(), new_doc_line.size(), token.c_str(), token.size());
+            const auto &offset_begin_vec = bm::BoyerMoore(new_doc_line, token);
             for (std::size_t i{0}; i < position_vec.size(); ++i)
             {
                 const auto &position{position_vec[i]};

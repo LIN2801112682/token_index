@@ -8,7 +8,7 @@ int main()
     std::string token = "=";
     std::cout << doc << std::endl;
     std::cout << token << std::endl;
-    auto result = bm::BoyerMoore(doc.c_str(), doc.size(), token.c_str(), token.size());
+    auto result = bm::BoyerMoore(doc, token);
     for (auto offset : result)
         std::cout << offset << ',' << std::endl;
     std::cout << "ok" << std::endl;
@@ -16,7 +16,7 @@ int main()
     token = "the fox";
     std::cout << doc << std::endl;
     std::cout << token << std::endl;
-    result = bm::BoyerMoore(doc.c_str(), doc.size(), token.c_str(), token.size());
+    result = bm::BoyerMoore(doc, token);
     for (auto offset : result)
         std::cout << offset << ',' << std::endl;
     std::cout << "ok" << std::endl;
