@@ -2,6 +2,7 @@
 #include "token_index/types.h"
 #include <sstream>
 #include <fstream>
+#include <tuple>
 
 namespace ti
 {
@@ -14,6 +15,24 @@ namespace ti
         while (iss >> token)
             token_vec.push_back(token);
         return token_vec;
+    }
+
+    std::tuple<doc_id_t, doc_t, line_t>
+    line_to_doc_id_and_doc(const line_t &line)
+    {
+        token_t token;
+        std::istringstream iss{line};
+
+        iss >> token;
+        line_t new_line{line.substr(token.size() + 1)};
+        doc_id_t doc_id{stoul(token)};
+
+        doc_t doc{};
+        while (iss >> token)
+            doc.push_back(token);
+
+
+        return {doc_id, doc, new_line}; 
     }
     
     std::vector<query_t>

@@ -12,6 +12,7 @@ using index_manager = ti::index_manager_v1;
 
 void test_save_and_load_inverted_index(const ti::path_t &file_path, const ti::path_t &index_path)
 {
+    /*
     {
         index_manager manager;
         manager.push_col_file(file_path);
@@ -22,7 +23,6 @@ void test_save_and_load_inverted_index(const ti::path_t &file_path, const ti::pa
         manager.print_inverted_index();
         //manager.save_inverted_index(index_path);
     }
-    /*
     {
         index_manager manager;
         manager.load_inverted_index(index_path);
@@ -164,11 +164,14 @@ static const ti::path_t intersection_result_path{"../resource/intersection_resul
 
 int main()
 {
+    index_manager manager{};
+    manager.push_col_file("../resource/field_dir/db.txt");
+    manager.print_inverted_index();
     //test_save_and_load_inverted_index(small_doc_path, index_path);
-    test_query_group(small_doc_path, index_path, small_query_path, union_result_path, intersection_result_path);
+    //test_query_group(small_doc_path, index_path, small_query_path, union_result_path, intersection_result_path);
     //test_query_group(pattern_doc_path, index_path, query_path, union_result_path, intersection_result_path);
     //test_query_group(depattern_doc_path, index_path, query_path, union_result_path, intersection_result_path);
-    test_bm(small_doc_path, index_path, small_query_path);
+    //test_bm(small_doc_path, index_path, small_query_path);
     //test_bm(depattern_doc_path, index_path, query_path);
     return 0;
 }

@@ -6,12 +6,12 @@
 #include <fstream>
 #include <sstream>
 #include <cstdlib>
+#include <tuple>
 
 namespace ti
 {
     index_manager_v1::index_manager_v1()
-        : _col{},
-          _inverted_index{} {}
+        : _inverted_index{} {}
 
     void
     index_manager_v1::push_col_file(const path_t &col_file_path)
@@ -29,9 +29,7 @@ namespace ti
     void
     index_manager_v1::push_doc_line(const line_t &doc_line)
     {
-        doc_t doc{line_to_token_vec(doc_line)};
-        _col.push_back(doc);
-        doc_id_t doc_id{_col.size() - 1};
+        auto [doc_id, doc, new_doc_line] = line_to_doc_id_and_doc(doc_line);
 
         std::map<token_t, std::vector<position_t>> token_position_map{};
         for (position_t position{0}; position < doc.size(); ++position)
@@ -56,7 +54,7 @@ namespace ti
                 doc_id_map = inverted_index_iter->second;
 
             const auto &position_vec = token_position_pair.second;
-            const auto &offset_begin_vec = bm::BoyerMoore(doc_line.c_str(), doc_line.size(), token.c_str(), token.size());
+            const auto &offset_begin_vec = bm::BoyerMoore(new_doc_line.c_str(), new_doc_line.size(), token.c_str(), token.size());
             position_offset_vec_t position_offset_vec{};
             for (std::size_t i{0}; i < position_vec.size(); ++i)
             {
@@ -69,12 +67,6 @@ namespace ti
             doc_id_map[doc_id] = position_offset_vec;
             _inverted_index[token] = doc_id_map;
         }
-    }
-
-    void
-    index_manager_v1::print_col() const
-    {
-        std::cout << _col;
     }
 
     void

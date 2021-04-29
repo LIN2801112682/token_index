@@ -10,7 +10,6 @@ namespace ti
         index_manager_v2();
         void push_col_file(const path_t &col_file_path);
         void push_doc_line(const line_t &doc_line);
-        void print_col() const;
         void print_inverted_index() const;
         //void print_token_frequency();
         //void save_inverted_index(const path_t &path);
@@ -24,7 +23,6 @@ namespace ti
         index_manager_v2(index_manager_v2 &&other) = delete;
         index_manager_v2 operator=(const index_manager_v2 &other) = delete;
         index_manager_v2 operator=(index_manager_v2 &&other) = delete;
-        col_t _col;
         inverted_index_v2_t _inverted_index;
     };
 }
