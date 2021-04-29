@@ -31,6 +31,7 @@ namespace ti
         line_t::size_type begin;
         line_t::size_type end;
     };
+
     struct position_offset_t
     {
         position_t position;
@@ -38,9 +39,18 @@ namespace ti
     };
     using position_offset_vec_t = std::vector<position_offset_t>;
     using doc_id_map_t = std::map<doc_id_t, position_offset_vec_t>;
-    using inverted_index_t = std::unordered_map<token_t, doc_id_map_t>;
+    using inverted_index_v1_t = std::unordered_map<token_t, doc_id_map_t>;
 
-    using frequency_t = position_offset_vec_t::size_type;
+    struct index_info_t
+    {
+        doc_id_t doc_id;
+        position_t position;
+        offset_t offset;
+    };
+    using index_info_vec_t = std::vector<index_info_t>;
+    using inverted_index_v2_t = std::unordered_map<token_t, index_info_vec_t>;
+
+    using frequency_t = std::vector<token_t>::size_type;
 
     using query_t = std::vector<token_t>;
     using query_vec_t = std::vector<query_t>;

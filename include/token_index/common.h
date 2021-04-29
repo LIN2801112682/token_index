@@ -12,6 +12,8 @@ namespace ti
 }
 
 std::ostream &operator<<(std::ostream &os, const ti::col_t &col);
-std::ostream &operator<<(std::ostream &os, const ti::inverted_index_t &inverted_index);
+std::ostream &operator<<(std::ostream &os, const ti::inverted_index_v1_t &inverted_index);
+std::ostream &operator<<(std::ostream &os, const ti::inverted_index_v2_t &inverted_index);
 std::ostream &operator<<(std::ostream &os, const ti::doc_id_set_t &doc_id_set);
 std::ostream &operator<<(std::ostream &os, const ti::doc_id_map_t &doc_id_map);
+std::ostream &operator<<(std::ostream &os, const ti::index_info_vec_t &index_info_vec_t);

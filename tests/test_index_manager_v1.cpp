@@ -1,5 +1,5 @@
 #include "token_index/types.h"
-#include "token_index/index_manager.h"
+#include "token_index/index_manager_v1.h"
 #include "token_index/common.h"
 #include "bm/bm.h"
 #include <iostream>
@@ -10,7 +10,7 @@
 void test_save_and_load_inverted_index(const ti::path_t &file_path, const ti::path_t &index_path)
 {
     {
-        ti::index_manager manager;
+        ti::index_manager_v1 manager;
         manager.push_col_file(file_path);
         std::cout << "before save:" << std::endl;
         std::cout << "print col:" << std::endl;
@@ -21,7 +21,7 @@ void test_save_and_load_inverted_index(const ti::path_t &file_path, const ti::pa
     }
     /*
     {
-        ti::index_manager manager;
+        ti::index_manager_v1 manager;
         manager.load_inverted_index(index_path);
         std::cout << "after load:" << std::endl;
         std::cout << "print col:" << std::endl;
@@ -35,13 +35,13 @@ void test_save_and_load_inverted_index(const ti::path_t &file_path, const ti::pa
 /*
 void create_and_save_inverted_index(const ti::path_t &file_path, const ti::path_t &index_path)
 {
-    ti::index_manager manager;
+    ti::index_manager_v1 manager;
     manager.push_file(file_path);
     manager.save_inverted_index(index_path);
 }
 */
 
-void test_query(const ti::index_manager &manager, const ti::query_vec_t &query_vec,
+void test_query(const ti::index_manager_v1 &manager, const ti::query_vec_t &query_vec,
                      const bool &is_union, const bool &is_out, std::ostream &os = std::cout)
 {
     auto begin_time = std::chrono::high_resolution_clock::now();
@@ -94,7 +94,7 @@ void test_query(const ti::index_manager &manager, const ti::query_vec_t &query_v
 void test_query_group(const ti::path_t &doc_path, const ti::path_t &index_path, const ti::path_t &query_path,
                 const ti::path_t &union_result_path, const ti::path_t &intersection_result_path)
 {
-    ti::index_manager manager{};
+    ti::index_manager_v1 manager{};
     manager.push_col_file(doc_path);
     auto query_vec = ti::load_query_vec(query_path);
     std::ofstream ofs;
@@ -118,7 +118,7 @@ void test_query_group(const ti::path_t &doc_path, const ti::path_t &index_path, 
 
 void test_bm(const ti::path_t &doc_path, const ti::path_t &index_path, const ti::path_t &query_path)
 {
-    ti::index_manager manager{};
+    ti::index_manager_v1 manager{};
     manager.push_col_file(doc_path);
 
     std::ifstream ifs;
@@ -148,20 +148,15 @@ void test_bm(const ti::path_t &doc_path, const ti::path_t &index_path, const ti:
             const auto &doc_id = doc_id_map_pair.first;
             const auto &doc_line = docs[doc_id];
             const auto &offset_begin_vec = bm::BoyerMoore(doc_line.c_str(), doc_line.size(), query_line.c_str(), query_line.size());
-            std::cout << "  query: " << query_line << ", " << std::endl;
             std::cout << "  doc: " << doc_line << ", " << std::endl;
-            for (const auto &position_offset : doc_id_map_pair.second)
-            {
-                const auto &position = position_offset.position;
-                std::cout << "      position: " << position << std::endl;
-                const auto &offset = position_offset.offset;
-                std::cout << "      offset: " << offset.begin << " ~ " << offset.end << std::endl;
-            }
+            std::cout << "  query: " << query_line << ", " << std::endl;
             std::cout << "  BM: ";
             for (const auto &offset_begin : offset_begin_vec)
                 std::cout << offset_begin << ", ";
             std::cout << std::endl;
+            std::cout << doc_id_map << std::endl;;
         }
+        std::cout << "----" << std::endl;
     }
 }
 

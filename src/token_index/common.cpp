@@ -42,7 +42,7 @@ std::ostream &operator<<(std::ostream &os, const ti::col_t &col)
     return os;
 }
 
-std::ostream &operator<<(std::ostream &os, const ti::inverted_index_t &inverted_index)
+std::ostream &operator<<(std::ostream &os, const ti::inverted_index_v1_t &inverted_index)
 {
     for (const auto &inverted_index_pair : inverted_index)
     {
@@ -76,5 +76,35 @@ std::ostream &operator<<(std::ostream &os, const ti::doc_id_map_t &doc_id_map)
         }
         os << "; ";
     }
+    return os;
+}
+
+std::ostream &operator<<(std::ostream &os, const ti::offset_t &offset)
+{
+    os << "{ begin = " << offset.begin << ", end = " << offset.end << " }";
+    return os;
+}
+
+std::ostream &operator<<(std::ostream &os, const ti::index_info_t &index_info)
+{
+    os << "{ doc_id = " << index_info.doc_id << ", position = " << index_info.position << ", offset = " << index_info.offset << " }";
+    return os;
+}
+
+std::ostream &operator<<(std::ostream &os, const ti::index_info_vec_t &index_info_vec)
+{
+    os << "{ ";
+    for (ti::index_info_vec_t::size_type i{0}; i < index_info_vec.size(); ++i)
+        os << "[" << i << "] = " << index_info_vec[i] << ", ";
+    os << "}";
+    return os;
+}
+
+std::ostream &operator<<(std::ostream &os, const ti::inverted_index_v2_t &inverted_index)
+{
+    os << "{ ";
+    for (const auto &pair : inverted_index)
+        os << pair.first << " : " << pair.second << ", ";
+    os << "}";
     return os;
 }
