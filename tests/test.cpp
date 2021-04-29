@@ -157,7 +157,6 @@ void test_bm(const ti::path_t &doc_path, const ti::path_t &index_path, const ti:
                 const auto &offset = position_offset.offset;
                 std::cout << "      offset: " << offset.begin << " ~ " << offset.end << std::endl;
             }
-            std::cout << std::endl;
             std::cout << "  BM: ";
             for (const auto &offset_begin : offset_begin_vec)
                 std::cout << offset_begin << ", ";
