@@ -217,7 +217,7 @@ namespace ti
         {
             const auto &token = query[i];
             auto inverted_index_iter= _inverted_index.find(token);
-            if (std::end(_inverted_index) == intersection_inverted_index_iter)
+            if (std::end(_inverted_index) == inverted_index_iter)
                 return {};     
             auto doc_id_map{inverted_index_iter->second};
 
