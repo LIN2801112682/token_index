@@ -2,6 +2,7 @@
 #include "token_index/common.h"
 #include "token_index/index_manager_v1.h"
 #include "token_index/index_manager_v2.h"
+#include "token_index/index_manager_v3.h"
 #include "token_index/field_manager.h"
 #include "bm/bm.h"
 #include <iostream>

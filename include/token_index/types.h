@@ -41,12 +41,17 @@ namespace ti
     using doc_id_position_offset_vec_t = std::vector<doc_id_position_offset_t>;
     using inverted_index_v2_t = std::unordered_map<token_t, doc_id_position_offset_vec_t>;
 
+    using position_uset_t = std::unordered_set<position_t>;
+    using doc_id_umap_t = std::unordered_map<doc_id_t, position_uset_t>;
+    using inverted_index_v3_t = std::unordered_map<token_t, doc_id_umap_t>;
+
     using frequency_t = doc_t::size_type;
     using query_t = std::vector<token_t>;
     using result_union_set_t = std::unordered_set<doc_id_t>;
     using result_intersection_set_t = std::vector<doc_id_position_offset_t>;
 
     result_intersection_set_t to_result_intersection_set_t(doc_id_map_t &);
+    result_intersection_set_t to_result_intersection_set_t(doc_id_umap_t &);
 }
 
 std::ostream &operator<<(std::ostream &os, const ti::result_union_set_t &);
@@ -64,3 +69,6 @@ std::ostream &operator<<(std::ostream &os, const ti::inverted_index_v1_t &);
 std::ostream &operator<<(std::ostream &os, const ti::doc_id_position_offset_t &);
 std::ostream &operator<<(std::ostream &os, const ti::doc_id_position_offset_vec_t &);
 std::ostream &operator<<(std::ostream &os, const ti::inverted_index_v2_t &);
+
+std::ostream &operator<<(std::ostream &os, const ti::doc_id_umap_t &);
+std::ostream &operator<<(std::ostream &os, const ti::inverted_index_v3_t &);

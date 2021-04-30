@@ -20,6 +20,24 @@ namespace ti
         }
         return result_intersection_set;
     }
+
+    result_intersection_set_t to_result_intersection_set_t(doc_id_umap_t &doc_id_umap)
+    {
+        result_intersection_set_t result_intersection_set{};
+        for (auto &doc_id_umap_pair : doc_id_umap)
+        {
+            auto &position_set = doc_id_umap_pair.second;
+            for (auto &position : position_set)
+            {
+                doc_id_position_offset_t doc_id_position_offset{
+                    doc_id_umap_pair.first,
+                    position,
+                    offset_t{0, 0}};
+                result_intersection_set.push_back(doc_id_position_offset);
+            }
+        }
+        return result_intersection_set;
+    }
 }
 
 std::ostream &operator<<(std::ostream &os, const ti::result_union_set_t &us)
@@ -111,6 +129,24 @@ std::ostream &operator<<(std::ostream &os, const ti::doc_id_position_offset_vec_
 }
 
 std::ostream &operator<<(std::ostream &os, const ti::inverted_index_v2_t &um)
+{
+    os << "[" << std::endl;
+    for (const auto &p : um)
+        os << " {" << p.first << " : " << p.second << "}," << std::endl;
+    os << "]";
+    return os;
+}
+
+std::ostream &operator<<(std::ostream &os, const ti::doc_id_umap_t &um)
+{
+    os << "[";
+    for (const auto &p : um)
+        os << " {" << p.first << " : " << p.second << "}, ";
+    os << "]";
+    return os;
+}
+
+std::ostream &operator<<(std::ostream &os, const ti::inverted_index_v3_t &um)
 {
     os << "[" << std::endl;
     for (const auto &p : um)

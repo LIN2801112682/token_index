@@ -16,12 +16,10 @@ namespace ti
               while ((p_dirent = readdir(p_dir)) != nullptr)
               {
                     path_t col_file_name = p_dirent->d_name;
-                    std::cout << col_file_name << std::endl;
                     if (col_file_name == "." || col_file_name == "..")
                         continue;
-                    std::cout << col_file_name << std::endl;
                     path_t col_file_path = field_dir_path + "/" + col_file_name;
-                    index_manager_v1* p_index_manager = new index_manager_v1();
+                    index_manager_v3* p_index_manager = new index_manager_v3();
                     p_index_manager->push_col_file(col_file_path);
                     _field_map[col_file_name] = p_index_manager;
               }

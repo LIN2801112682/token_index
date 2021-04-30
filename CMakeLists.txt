@@ -11,6 +11,7 @@ set(TOKEN_INDEX
     src/token_index/common.cpp
     src/token_index/index_manager_v1.cpp
     src/token_index/index_manager_v2.cpp
+    src/token_index/index_manager_v3.cpp
     src/token_index/field_manager.cpp
 )
 set(BM src/bm/bm.cpp)

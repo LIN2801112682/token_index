@@ -3,6 +3,7 @@
 #include "token_index/types.h"
 #include "token_index/index_manager_v1.h"
 #include "token_index/index_manager_v2.h"
+#include "token_index/index_manager_v3.h"
 
 namespace ti
 {
@@ -18,6 +19,6 @@ namespace ti
         field_manager(field_manager &&other) = delete;
         field_manager operator=(const field_manager &other) = delete;
         field_manager operator=(field_manager &&other) = delete;
-        std::unordered_map<path_t, index_manager_v1 *> _field_map;
+        std::unordered_map<path_t, index_manager_v3 *> _field_map;
     };
 }
