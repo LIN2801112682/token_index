@@ -10,6 +10,8 @@ namespace ti
     class field_manager
     {
     public:
+        using index_manager = index_manager_v1;
+
         field_manager();
         void push_field_dir(const path_t &field_dir_path);
         const result_union_set_t retrieve_field_union(const std::string &field, const query_t &query) const;
@@ -19,6 +21,6 @@ namespace ti
         field_manager(field_manager &&other) = delete;
         field_manager operator=(const field_manager &other) = delete;
         field_manager operator=(field_manager &&other) = delete;
-        std::unordered_map<path_t, index_manager_v1 *> _field_map;
+        std::unordered_map<path_t, index_manager *> _field_map;
     };
 }
