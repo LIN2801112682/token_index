@@ -1,50 +1,15 @@
 #include "token_index/types.h"
+#include "token_index/common.h"
 #include "token_index/index_manager_v1.h"
 #include "token_index/index_manager_v2.h"
-#include "token_index/common.h"
+#include "token_index/field_manager.h"
 #include "bm/bm.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <chrono>
 
-using index_manager = ti::index_manager_v1;
-
-void test_save_and_load_inverted_index(const ti::path_t &file_path, const ti::path_t &index_path)
-{
-    /*
-    {
-        index_manager manager;
-        manager.push_col_file(file_path);
-        std::cout << "before save:" << std::endl;
-        std::cout << "print col:" << std::endl;
-        manager.print_col();
-        std::cout << "print inverted index:" << std::endl;
-        manager.print_inverted_index();
-        //manager.save_inverted_index(index_path);
-    }
-    {
-        index_manager manager;
-        manager.load_inverted_index(index_path);
-        std::cout << "after load:" << std::endl;
-        std::cout << "print col:" << std::endl;
-        manager.print_col();
-        std::cout << "print inverted index:" << std::endl;
-        manager.print_inverted_index();
-    }
-    */
-}
-
-/*
-void create_and_save_inverted_index(const ti::path_t &file_path, const ti::path_t &index_path)
-{
-    index_manager manager;
-    manager.push_file(file_path);
-    manager.save_inverted_index(index_path);
-}
-*/
-
-void test_query(const index_manager &manager, const std::vector<ti::query_t> &query_vec,
+void test_query(const ti::field_manager &manager, const std::string &field, const std::vector<ti::query_t> &query_vec,
                      const bool &is_union, const bool &is_out, std::ostream &os = std::cout)
 {
     auto begin_time = std::chrono::high_resolution_clock::now();
@@ -54,14 +19,14 @@ void test_query(const index_manager &manager, const std::vector<ti::query_t> &qu
         std::size_t set_size{0};
         if (is_union)
         {
-            const auto &union_set = manager.retrieve_union(query);
+            const auto &union_set = manager.retrieve_field_union(field, query);
             set_size = union_set.size();
             if (is_out)
                 os << query << " : " << union_set << std::endl;
         }
         else
         {
-            const auto &intersection_set = manager.retrieve_intersection(query);
+            const auto &intersection_set = manager.retrieve_field_intersection(field, query);
             set_size = intersection_set.size();
             if (is_out)
                 os << query << " : " << intersection_set << std::endl;
@@ -84,41 +49,41 @@ void test_query(const index_manager &manager, const std::vector<ti::query_t> &qu
     std::cout << "Average location time: " << avg_time << std::endl;
 }
 
-void test_query_group(const ti::path_t &doc_path, const ti::path_t &index_path, const ti::path_t &query_path,
+void test_query_group(const ti::path_t &field_dir, const std::string &field, const ti::path_t &query_path,
                 const ti::path_t &union_result_path, const ti::path_t &intersection_result_path)
 {
-    index_manager manager{};
-    manager.push_col_file(doc_path);
+    ti::field_manager manager{};
+    manager.push_field_dir(field_dir);
     auto query_vec = ti::load_query_vec(query_path);
     std::ofstream ofs;
 
-    std::cout << "doc_path: " << doc_path << ", union, cout ----------" << std::endl;
-    test_query(manager, query_vec, true, false);
+    std::cout << "field: " << field << ", union, cout ----------" << std::endl;
+    test_query(manager, field, query_vec, true, false);
 
-    std::cout << "doc_path: " << doc_path << ", intersection, cout ----------" << std::endl;
-    test_query(manager, query_vec, false, false);
+    std::cout << "field: " << field << ", intersection, cout ----------" << std::endl;
+    test_query(manager, field, query_vec, false, false);
 
-    std::cout << "doc_path: " << doc_path << ", union, ofs ----------" << std::endl;
+    std::cout << "field: " << field << ", union, ofs ----------" << std::endl;
     ofs.open(union_result_path, std::ofstream::out);
-    test_query(manager, query_vec, true, true, ofs);
+    test_query(manager, field, query_vec, true, true, ofs);
     ofs.close();
 
-    std::cout << "doc_path: " << doc_path << ", intersection, ofs ----------" << std::endl;
+    std::cout << "field: " << field << ", intersection, ofs ----------" << std::endl;
     ofs.open(intersection_result_path, std::ofstream::out);
-    test_query(manager, query_vec, false, true, ofs);
+    test_query(manager, field, query_vec, false, true, ofs);
     ofs.close();
 }
 
-void test_bm(const ti::path_t &doc_path, const ti::path_t &index_path, const ti::path_t &query_path)
+void test_bm(const ti::path_t &field_dir, const std::string &field, const ti::path_t &query_path)
 {
-    index_manager manager{};
-    manager.push_col_file(doc_path);
+    ti::field_manager manager{};
+    manager.push_field_dir(field_dir);
 
     std::ifstream ifs;
     ti::line_t line;
 
     std::vector<ti::line_t> docs{};
-    ifs.open(doc_path, std::ifstream::in);
+    ifs.open(field_dir, std::ifstream::in);
     while (getline(ifs, line))
         docs.push_back(line);
     ifs.close();
@@ -135,7 +100,7 @@ void test_bm(const ti::path_t &doc_path, const ti::path_t &index_path, const ti:
     {
         const auto &query = query_vec[i];
         const auto &query_line = querys[i];
-        const auto &intersection_set = manager.retrieve_intersection(query);
+        const auto &intersection_set = manager.retrieve_field_intersection(field, query);
         for (const auto &doc_id_position_offset : intersection_set)
         {
             const auto &doc_id = doc_id_position_offset.doc_id;
@@ -153,25 +118,15 @@ void test_bm(const ti::path_t &doc_path, const ti::path_t &index_path, const ti:
     }
 }
 
-static const ti::path_t small_doc_path{"../resource/small_doc.txt"};
-static const ti::path_t small_query_path{"../resource/small_query.txt"};
-static const ti::path_t pattern_doc_path{"../resource/doc.txt"};
-static const ti::path_t depattern_doc_path{"../resource/depattern_doc.txt"};
+static const ti::path_t field_dir{"../resource/field_dir"};
 static const ti::path_t query_path{"../resource/query.txt"};
-static const ti::path_t index_path{"../resource/index.txt"};
 static const ti::path_t union_result_path{"../resource/union_result.txt"};
 static const ti::path_t intersection_result_path{"../resource/intersection_result.txt"};
 
 int main()
 {
-    index_manager manager{};
-    manager.push_col_file("../resource/field_dir/db.txt");
-    manager.print_inverted_index();
-    //test_save_and_load_inverted_index(small_doc_path, index_path);
-    //test_query_group(small_doc_path, index_path, small_query_path, union_result_path, intersection_result_path);
-    //test_query_group(pattern_doc_path, index_path, query_path, union_result_path, intersection_result_path);
-    //test_query_group(depattern_doc_path, index_path, query_path, union_result_path, intersection_result_path);
-    //test_bm(small_doc_path, index_path, small_query_path);
-    //test_bm(depattern_doc_path, index_path, query_path);
+    std::string field{"db.txt"};
+    test_query_group(field_dir, field, query_path, union_result_path, intersection_result_path);
+    //test_bm(field_dir, field, query_path);
     return 0;
 }
