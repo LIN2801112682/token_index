@@ -42,12 +42,13 @@ namespace ti
         for (const auto &token_position_vec_pair : token_position_vec_map)
         {
             const auto &token = token_position_vec_pair.first;
+            if (_inverted_index.count(token) == 0)
+                _inverted_index.emplace(token, doc_id_position_offset_vec_t{});
+
             const auto &offset_begin_vec = bm::BoyerMoore(new_doc_line, token);
             const auto &token_size = token.size();
             for (std::size_t i{0}; i < token_position_vec_pair.second.size(); ++i)
             {
-                if (_inverted_index.count(token) == 0)
-                    _inverted_index.emplace(token, doc_id_position_offset_vec_t{});
                 _inverted_index[token].emplace_back(
                     doc_id_position_offset_t{
                         doc_id,

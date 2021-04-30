@@ -31,41 +31,35 @@ namespace ti
     {
         auto [doc_id, doc, new_doc_line] = line_to_doc_id_and_doc(doc_line);
 
-        std::map<token_t, std::vector<position_t>> token_position_map{};
+        std::map<token_t, std::vector<position_t>> token_position_vec_map{};
         for (position_t position{0}; position < doc.size(); ++position)
         {
             const auto &token = doc[position];
-            auto token_position_iter = token_position_map.find(token);
-            if (std::end(token_position_map) != token_position_iter)
-                token_position_iter->second.push_back(position);
-            else
-            {
-                std::vector<position_t> position_vec{position};
-                token_position_map[token] = position_vec;
-            }
+            if (token_position_vec_map.count(token) == 0)
+                token_position_vec_map.emplace(token, std::vector<position_t>{});
+            token_position_vec_map[token].emplace_back(position);
         }
 
-        for (const auto &token_position_pair : token_position_map)
+        for (const auto &token_position_vec_pair : token_position_vec_map)
         {
-            const auto &token = token_position_pair.first;
-            doc_id_map_t doc_id_map{};
-            auto inverted_index_iter = _inverted_index.find(token);
-            if (std::end(_inverted_index) != inverted_index_iter)
-                doc_id_map = inverted_index_iter->second;
+            const auto &token = token_position_vec_pair.first;
+            if (_inverted_index.count(token) == 0)
+                _inverted_index.emplace(token, doc_id_map_t{});
+            if (_inverted_index[token].count(doc_id) == 0)
+                _inverted_index[token].emplace(doc_id, position_offset_vec_t{});
 
-            const auto &position_vec = token_position_pair.second;
             const auto &offset_begin_vec = bm::BoyerMoore(new_doc_line, token);
-            position_offset_vec_t position_offset_vec{};
-            for (std::size_t i{0}; i < position_vec.size(); ++i)
+            const auto &token_size = token.size();
+            for (std::size_t i{0}; i < token_position_vec_pair.second.size(); ++i)
             {
-                const auto &position = position_vec[i];
-                const line_t::size_type &offset_begin = offset_begin_vec[i];
-                position_offset_t position_offset{position, offset_t{offset_begin, offset_begin + token.size() - 1}};
-                position_offset_vec.push_back(position_offset);
+                _inverted_index[token][doc_id].emplace_back(
+                    position_offset_t{
+                        token_position_vec_pair.second[i],
+                        offset_t{
+                            offset_begin_vec[i],
+                            offset_begin_vec[i] + token_size,
+                        }});
             }
-
-            doc_id_map[doc_id] = position_offset_vec;
-            _inverted_index[token] = doc_id_map;
         }
     }
 
@@ -175,7 +169,7 @@ namespace ti
     }
     */
 
-    frequency_t
+    const frequency_t
     index_manager_v1::calc_frequency(const token_t &token) const
     {
         auto inverted_index_iter = _inverted_index.find(token);
@@ -219,35 +213,36 @@ namespace ti
             auto inverted_index_iter= _inverted_index.find(token);
             if (std::end(_inverted_index) == inverted_index_iter)
                 return {};     
-            auto doc_id_map{inverted_index_iter->second};
 
-            decltype(doc_id_map) temp_doc_id_map{};
+            doc_id_map_t temp_doc_id_map{};
             for (const auto &intersection_doc_id_map_pair : intersection_doc_id_map)
             {
                 const auto &doc_id = intersection_doc_id_map_pair.first;
-                const auto &doc_id_map_iter = doc_id_map.find(doc_id);
-                if (std::end(doc_id_map) == doc_id_map_iter)
+                const auto &doc_id_map_iter = inverted_index_iter->second.find(doc_id);
+                if (std::end(inverted_index_iter->second) == doc_id_map_iter)
                     continue;
 
-                const auto &intersection_position_offset_vec = intersection_doc_id_map_pair.second;
-                const auto &position_offset_vec = doc_id_map_iter->second;
                 position_offset_vec_t temp_position_offset_vec{};
-                for (const auto &intersection_position_offset : intersection_position_offset_vec)
+                for (const auto &intersection_position_offset : intersection_doc_id_map_pair.second)
                 {
                     const auto &begin_position = intersection_position_offset.position;
                     const auto &end_position = begin_position + i;
-                    for (const auto &position_offset : position_offset_vec)
+                    for (const auto &position_offset : doc_id_map_iter->second)
                     {
-                        if (position_offset.position != end_position)
-                            continue;
-                        const auto &offset_begin = intersection_position_offset.offset.begin;
-                        const auto &offset_end = position_offset.offset.end;
-                        position_offset_t temp_position_offset{begin_position, offset_t{offset_begin, offset_end}};
-                        temp_position_offset_vec.push_back(temp_position_offset);
+                        if (position_offset.position == end_position)
+                        {
+                            if (temp_doc_id_map.count(doc_id) == 0)
+                                temp_doc_id_map.emplace(doc_id, position_offset_vec_t{});
+                            temp_doc_id_map[doc_id].emplace_back(
+                                position_offset_t{
+                                    begin_position,
+                                    offset_t{
+                                        intersection_position_offset.offset.begin,
+                                        position_offset.offset.end,
+                                    }});
+                        }
                     }
                 }
-                if (!temp_position_offset_vec.empty())
-                    temp_doc_id_map[doc_id] = temp_position_offset_vec;
             }
             if (temp_doc_id_map.empty())
                 return {};

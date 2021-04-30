@@ -150,7 +150,7 @@ namespace ti
     }
     */
 
-    frequency_t
+    const frequency_t
     index_manager_v3::calc_frequency(const token_t &token) const
     {
         auto inverted_index_iter = _inverted_index.find(token);
