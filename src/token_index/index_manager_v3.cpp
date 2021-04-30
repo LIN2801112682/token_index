@@ -34,19 +34,13 @@ namespace ti
         {
             auto token = doc[position];
 
-            doc_id_umap_t doc_id_umap;
-            auto inverted_index_iter = _inverted_index.find(token);
-            if (std::end(_inverted_index) != inverted_index_iter)
-                doc_id_umap = inverted_index_iter->second;
+            if (_inverted_index.count(token) == 0)
+                _inverted_index.emplace(token, doc_id_umap_t{});
 
-            position_uset_t position_uset;
-            auto doc_id_umap_iter = doc_id_umap.find(doc_id);
-            if (std::end(doc_id_umap) != doc_id_umap_iter)
-                position_uset = doc_id_umap_iter->second;
-
-            position_uset.insert(position);
-            doc_id_umap[doc_id] = position_uset;
-            _inverted_index[token] = doc_id_umap;
+            if (_inverted_index[token].count(doc_id) == 0)
+                _inverted_index[token].emplace(doc_id, position_uset_t{});
+            
+            _inverted_index[token][doc_id].emplace(position);
         }
     }
 
