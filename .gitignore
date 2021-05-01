@@ -3,3 +3,4 @@
 /build
 /resource/field_dir/*.txt
 /resource/*.txt
+!/resource
