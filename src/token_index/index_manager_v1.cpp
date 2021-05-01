@@ -43,16 +43,20 @@ namespace ti
         for (const auto &token_position_vec_pair : token_position_vec_map)
         {
             const auto &token = token_position_vec_pair.first;
-            if (_inverted_index.count(token) == 0)
-                _inverted_index.emplace(token, doc_id_map_t{});
-            if (_inverted_index[token].count(doc_id) == 0)
-                _inverted_index[token].emplace(doc_id, position_offset_vec_t{});
-
             const auto &offset_begin_vec = bm::BoyerMoore(new_doc_line, token);
             const auto &token_size = token.size();
+
+            if (_inverted_index.count(token) == 0)
+                _inverted_index.emplace(token, doc_id_map_t{});
+            auto &doc_id_map = _inverted_index[token];
+
+            if (doc_id_map.count(doc_id) == 0)
+                doc_id_map.emplace(doc_id, position_offset_vec_t{});
+            auto &position_offset_vec = doc_id_map[doc_id];
+
             for (std::size_t i{0}; i < token_position_vec_pair.second.size(); ++i)
             {
-                _inverted_index[token][doc_id].emplace_back(
+                position_offset_vec.emplace_back(
                     position_offset_t{
                         token_position_vec_pair.second[i],
                         offset_t{
@@ -102,7 +106,7 @@ namespace ti
     index_manager_v1::retrieve_intersection(const query_t &query) const
     {
         const auto &first_token = query[0];
-        auto intersection_inverted_index_iter = _inverted_index.find(first_token);
+        const auto &intersection_inverted_index_iter = _inverted_index.find(first_token);
         if (std::end(_inverted_index) == intersection_inverted_index_iter)
             return {};
         auto intersection_doc_id_map{intersection_inverted_index_iter->second};
@@ -110,11 +114,11 @@ namespace ti
         for (query_t::size_type i{1}; i < query.size(); ++i)
         {
             const auto &token = query[i];
-            auto inverted_index_iter= _inverted_index.find(token);
+            const auto &inverted_index_iter= _inverted_index.find(token);
             if (std::end(_inverted_index) == inverted_index_iter)
                 return {};     
-
             doc_id_map_t temp_doc_id_map{};
+
             for (const auto &intersection_doc_id_map_pair : intersection_doc_id_map)
             {
                 const auto &doc_id = intersection_doc_id_map_pair.first;

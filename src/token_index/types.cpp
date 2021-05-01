@@ -2,40 +2,29 @@
 
 namespace ti
 {
-    result_intersection_set_t to_result_intersection_set_t(doc_id_map_t &doc_id_map)
+    result_intersection_set_t to_result_intersection_set_t(const doc_id_map_t &doc_id_map)
     {
         result_intersection_set_t result_intersection_set{};
-        for (auto &doc_id_map_pair : doc_id_map)
-        {
-            auto &doc_id = doc_id_map_pair.first;
-            auto &position_offset_vec = doc_id_map_pair.second;
-            for (auto &position_offset : position_offset_vec)
-            {
-                doc_id_position_offset_t doc_id_position_offset{
-                    doc_id_map_pair.first,
-                    position_offset.position,
-                    position_offset.offset};
-                result_intersection_set.push_back(doc_id_position_offset);
-            }
-        }
+        for (const auto &doc_id_map_pair : doc_id_map)
+            for (const auto &position_offset : doc_id_map_pair.second)
+                result_intersection_set.emplace_back(
+                    doc_id_position_offset_t{
+                        doc_id_map_pair.first,
+                        position_offset.position,
+                        position_offset.offset});
         return result_intersection_set;
     }
 
-    result_intersection_set_t to_result_intersection_set_t(doc_id_umap_t &doc_id_umap)
+    result_intersection_set_t to_result_intersection_set_t(const doc_id_umap_t &doc_id_umap)
     {
         result_intersection_set_t result_intersection_set{};
-        for (auto &doc_id_umap_pair : doc_id_umap)
-        {
-            auto &position_set = doc_id_umap_pair.second;
-            for (auto &position : position_set)
-            {
-                doc_id_position_offset_t doc_id_position_offset{
-                    doc_id_umap_pair.first,
-                    position,
-                    offset_t{0, 0}};
-                result_intersection_set.push_back(doc_id_position_offset);
-            }
-        }
+        for (const auto &doc_id_umap_pair : doc_id_umap)
+            for (const auto &position : doc_id_umap_pair.second)
+                result_intersection_set.emplace_back(
+                    doc_id_position_offset_t{
+                        doc_id_umap_pair.first,
+                        position,
+                        offset_t{0, 0}});
         return result_intersection_set;
     }
 }
