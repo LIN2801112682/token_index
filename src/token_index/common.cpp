@@ -6,19 +6,8 @@
 
 namespace ti
 {
-    std::vector<str_t>
-    line_to_token_vec(const str_t &line)
-    {
-        std::vector<str_t> token_vec{};
-        str_t token;
-        std::istringstream iss{line};
-        while (iss >> token)
-            token_vec.push_back(token);
-        return token_vec;
-    }
-
     std::tuple<doc_id_t, doc_t, str_t>
-    line_to_doc_id_and_doc(const str_t &line)
+    line_to_doc(const str_t &line)
     {
         str_t token;
         std::istringstream iss{line};
@@ -31,10 +20,20 @@ namespace ti
         while (iss >> token)
             doc.push_back(token);
 
-
         return {doc_id, doc, new_line}; 
     }
-    
+
+    query_t
+    line_to_query(const str_t &line)
+    {
+        query_t query{};
+        str_t token;
+        std::istringstream iss{line};
+        while (iss >> token)
+            query.push_back(token);
+        return query;
+    }
+
     std::vector<query_t>
     load_query_vec(const path_t &path)
     {
@@ -44,7 +43,7 @@ namespace ti
         while (getline(ifs, line))
         {
             std::transform(std::begin(line), std::end(line), std::begin(line), tolower);
-            query_vec.push_back(line_to_token_vec(line));
+            query_vec.push_back(line_to_query(line));
         }
         ifs.close();
         return query_vec;

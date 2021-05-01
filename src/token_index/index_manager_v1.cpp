@@ -29,7 +29,7 @@ namespace ti
     void
     index_manager_v1::push_doc_line(const str_t &doc_line)
     {
-        auto [doc_id, doc, new_doc_line] = line_to_doc_id_and_doc(doc_line);
+        auto [doc_id, doc, new_doc_line] = line_to_doc(doc_line);
 
         std::map<str_t, std::vector<position_t>> token_position_vec_map{};
         for (position_t position{0}; position < doc.size(); ++position)
