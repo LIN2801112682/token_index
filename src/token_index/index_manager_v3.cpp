@@ -106,7 +106,6 @@ namespace ti
 
                 const auto &intersection_position_uset = intersection_doc_id_umap_pair.second;
                 const auto &position_uset = doc_id_umap_iter->second;
-                position_uset_t temp_position_uset;
                 for (const auto &position : intersection_position_uset)
                 {
                     if (position_uset.find(position + i) == std::end(position_uset))

@@ -49,7 +49,7 @@ namespace ti
                 _inverted_index.emplace(token, doc_id_position_offset_vec_t{});
             auto &doc_id_position_offset_vec = _inverted_index[token];
 
-            for (doc_id_position_offset_vec_t::size_type i{0}; i < token_position_vec_pair.second.size(); ++i)
+            for (std::size_t i{0}; i < token_position_vec_pair.second.size(); ++i)
             {
                 doc_id_position_offset_vec.emplace_back(
                     doc_id_position_offset_t{
