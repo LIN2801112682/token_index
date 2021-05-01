@@ -1,10 +1,6 @@
 #include "token_index/types.h"
 #include "token_index/common.h"
-#include "token_index/index_manager_v1.h"
-#include "token_index/index_manager_v2.h"
-#include "token_index/index_manager_v3.h"
 #include "token_index/field_manager.h"
-#include "bm/bm.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -75,50 +71,6 @@ void test_query_group(const ti::path_t &field_dir, const std::string &field, con
     ofs.close();
 }
 
-void test_bm(const ti::path_t &field_dir, const std::string &field, const ti::path_t &query_path)
-{
-    ti::field_manager manager{};
-    manager.push_field_dir(field_dir);
-
-    std::ifstream ifs;
-    ti::str_t line;
-
-    std::vector<ti::str_t> docs{};
-    ifs.open(field_dir, std::ifstream::in);
-    while (getline(ifs, line))
-        docs.push_back(line);
-    ifs.close();
-
-    auto query_vec = ti::load_query_vec(query_path);
-    
-    std::vector<ti::str_t> querys{};
-    ifs.open(query_path, std::ifstream::in);
-    while (getline(ifs, line))
-        querys.push_back(line);
-    ifs.close();
-
-    for (std::size_t i = 0; i < query_vec.size(); ++i)
-    {
-        const auto &query = query_vec[i];
-        const auto &query_line = querys[i];
-        const auto &intersection_set = manager.retrieve_field_intersection(field, query);
-        for (const auto &doc_id_position_offset : intersection_set)
-        {
-            const auto &doc_id = doc_id_position_offset.doc_id;
-            const auto &doc_line = docs[doc_id];
-            const auto &offset_begin_vec = bm::BoyerMoore(doc_line, query_line);
-            std::cout << "  doc_line: " << doc_line << ", " << std::endl;
-            std::cout << "  query_line: " << query_line << ", " << std::endl;
-            std::cout << "  BM: ";
-            for (const auto &offset_begin : offset_begin_vec)
-                std::cout << offset_begin << ", ";
-            std::cout << std::endl;
-            std::cout << "  intersection_set: " << intersection_set << std::endl;;
-        }
-        std::cout << "----" << std::endl;
-    }
-}
-
 static const ti::path_t field_dir{"../resource/field_dir"};
 static const ti::path_t query_path{"../resource/query.txt"};
 static const ti::path_t union_result_path{"../resource/union_result.txt"};
@@ -128,6 +80,5 @@ int main()
 {
     std::string field{"caller.txt"};
     test_query_group(field_dir, field, query_path, union_result_path, intersection_result_path);
-    //test_bm(field_dir, field, query_path);
     return 0;
 }

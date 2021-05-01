@@ -96,14 +96,14 @@ namespace bm
         return 0;
     }
 
-    std::vector<std::string::size_type> BoyerMoore(const std::string &doc_line, const std::string &query_line)
+    std::vector<std::size_t> BoyerMoore(const std::string &doc_line, const std::string &query_line)
     {
         const char *szText = doc_line.c_str();
         const char *szSubstr = query_line.c_str();
         int nTextLen = doc_line.size();
         int nStrLen = query_line.size();
 
-        std::vector<std::string::size_type> result{};
+        std::vector<std::size_t> result{};
 
         int i = 0;
         int j = 0;
@@ -121,7 +121,7 @@ namespace bm
 
             if (i < 0)
             {
-                result.push_back(j);
+                result.push_back(static_cast<size_t>(j));
                 j += gs[0];
             }
             else
