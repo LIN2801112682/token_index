@@ -6,6 +6,12 @@ namespace ti
     field_manager::field_manager()
         : _field_map{} {}
 
+    field_manager::~field_manager()
+    {
+        for (auto pair : _field_map)
+            delete pair.second;
+    }
+
     void
     field_manager::push_field_dir(const path_t &field_dir_path)
     {

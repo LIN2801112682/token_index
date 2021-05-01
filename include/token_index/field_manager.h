@@ -13,6 +13,7 @@ namespace ti
         using index_manager = index_manager_v3;
 
         field_manager();
+        ~field_manager();
         void push_field_dir(const path_t &field_dir_path);
         const result_union_set_t retrieve_field_union(const std::string &field, const query_t &query) const;
         const result_intersection_set_t retrieve_field_intersection(const std::string &field, const query_t &query) const;
