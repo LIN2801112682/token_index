@@ -1,5 +1,5 @@
 /.vscode
 .DS_Store
 /build
-/resource/field/*.txt
+/resource/field_dir/*.txt
 /resource/*.txt
