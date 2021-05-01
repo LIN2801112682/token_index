@@ -32,15 +32,15 @@ namespace ti
 
         for (position_t position{0}; position < doc.size(); ++position)
         {
-            auto token = doc[position];
+            const auto &token = doc[position];
 
             if (_inverted_index.count(token) == 0)
                 _inverted_index.emplace(token, doc_id_umap_t{});
+            auto &doc_id_map = _inverted_index[token];
 
-            if (_inverted_index[token].count(doc_id) == 0)
-                _inverted_index[token].emplace(doc_id, position_uset_t{});
-            
-            _inverted_index[token][doc_id].emplace(position);
+            if (doc_id_map.count(doc_id) == 0)
+                doc_id_map.emplace(doc_id, position_uset_t{});
+            doc_id_map[doc_id].emplace(position);
         }
     }
 
@@ -83,20 +83,20 @@ namespace ti
     index_manager_v3::retrieve_intersection(const query_t &query) const
     {
         const auto &first_token = query[0];
-        auto intersection_inverted_index_iter = _inverted_index.find(first_token);
+        const auto &intersection_inverted_index_iter = _inverted_index.find(first_token);
         if (std::end(_inverted_index) == intersection_inverted_index_iter)
             return {};
-        
         auto intersection_doc_id_umap{intersection_inverted_index_iter->second};
+
         for (query_t::size_type i{1}; i < query.size(); ++i)
         {
             const auto &token = query[i];
-            auto inverted_index_iter = _inverted_index.find(token);
+            const auto &inverted_index_iter = _inverted_index.find(token);
             if (std::end(_inverted_index) == inverted_index_iter)
                 return {};
-            auto doc_id_umap{inverted_index_iter->second};
+            const auto &doc_id_umap{inverted_index_iter->second};
+            decltype(intersection_doc_id_umap) temp_doc_id_umap{};
 
-            doc_id_umap_t temp_doc_id_umap{};
             for (const auto &intersection_doc_id_umap_pair : intersection_doc_id_umap)
             {
                 const auto &doc_id = intersection_doc_id_umap_pair.first;
@@ -109,11 +109,12 @@ namespace ti
                 position_uset_t temp_position_uset;
                 for (const auto &position : intersection_position_uset)
                 {
-                    if (position_uset.find(position + i) != std::end(position_uset))
-                        temp_position_uset.insert(position);
+                    if (position_uset.find(position + i) == std::end(position_uset))
+                        continue;
+                    if (temp_doc_id_umap.count(doc_id) == 0)
+                        temp_doc_id_umap.emplace(doc_id, position_uset_t{});
+                    temp_doc_id_umap[doc_id].emplace(position);
                 }
-                if (!temp_position_uset.empty())
-                    temp_doc_id_umap[doc_id] = temp_position_uset;
             }
             if (temp_doc_id_umap.empty())
                 return {};

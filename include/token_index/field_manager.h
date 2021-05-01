@@ -10,7 +10,7 @@ namespace ti
     class field_manager
     {
     public:
-        using index_manager = index_manager_v3;
+        using index_manager = index_manager_v1;
 
         field_manager();
         ~field_manager();

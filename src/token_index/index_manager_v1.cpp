@@ -116,35 +116,34 @@ namespace ti
             const auto &token = query[i];
             const auto &inverted_index_iter= _inverted_index.find(token);
             if (std::end(_inverted_index) == inverted_index_iter)
-                return {};     
-            doc_id_map_t temp_doc_id_map{};
+                return {}; 
+            const auto &doc_id_map{inverted_index_iter->second};
+            decltype(intersection_doc_id_map) temp_doc_id_map{};
 
             for (const auto &intersection_doc_id_map_pair : intersection_doc_id_map)
             {
                 const auto &doc_id = intersection_doc_id_map_pair.first;
-                const auto &doc_id_map_iter = inverted_index_iter->second.find(doc_id);
-                if (std::end(inverted_index_iter->second) == doc_id_map_iter)
+                const auto &doc_id_map_iter = doc_id_map.find(doc_id);
+                if (std::end(doc_id_map) == doc_id_map_iter)
                     continue;
+                const auto &position_offset_vec{doc_id_map_iter->second};
 
-                position_offset_vec_t temp_position_offset_vec{};
                 for (const auto &intersection_position_offset : intersection_doc_id_map_pair.second)
                 {
-                    const auto &begin_position = intersection_position_offset.position;
-                    const auto &end_position = begin_position + i;
-                    for (const auto &position_offset : doc_id_map_iter->second)
+                    const auto &position = intersection_position_offset.position;
+                    for (const auto &position_offset : position_offset_vec)
                     {
-                        if (position_offset.position == end_position)
-                        {
-                            if (temp_doc_id_map.count(doc_id) == 0)
-                                temp_doc_id_map.emplace(doc_id, position_offset_vec_t{});
-                            temp_doc_id_map[doc_id].emplace_back(
-                                position_offset_t{
-                                    begin_position,
-                                    offset_t{
-                                        intersection_position_offset.offset.begin,
-                                        position_offset.offset.end,
-                                    }});
-                        }
+                        if (position + i != position_offset.position)
+                            continue;
+                        if (temp_doc_id_map.count(doc_id) == 0)
+                            temp_doc_id_map.emplace(doc_id, position_offset_vec_t{});
+                        temp_doc_id_map[doc_id].emplace_back(
+                            position_offset_t{
+                                position,
+                                offset_t{
+                                    intersection_position_offset.offset.begin,
+                                    position_offset.offset.end,
+                                }});
                     }
                 }
             }
