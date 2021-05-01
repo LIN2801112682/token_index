@@ -10,7 +10,7 @@ namespace ti
     class field_manager
     {
     public:
-        using index_manager = index_manager_v1;
+        using index_manager_t = index_manager_v1;
 
         field_manager();
         ~field_manager();
@@ -22,6 +22,6 @@ namespace ti
         field_manager(field_manager &&other) = delete;
         field_manager operator=(const field_manager &other) = delete;
         field_manager operator=(field_manager &&other) = delete;
-        std::unordered_map<path_t, index_manager *> _field_map;
+        std::unordered_map<path_t, index_manager_t *> _field_map;
     };
 }

@@ -25,7 +25,7 @@ namespace ti
                     if (col_file_name == "." || col_file_name == "..")
                         continue;
                     path_t col_file_path = field_dir_path + "/" + col_file_name;
-                    index_manager* p_index_manager = new index_manager();
+                    auto p_index_manager = new index_manager_t();
                     p_index_manager->push_col_file(col_file_path);
                     _field_map[col_file_name] = p_index_manager;
               }
