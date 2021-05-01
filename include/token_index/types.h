@@ -2,8 +2,9 @@
 
 #include <string>
 #include <vector>
-#include <unordered_map>
 #include <unordered_set>
+#include <set>
+#include <unordered_map>
 #include <map>
 #include <iostream>
 
@@ -54,21 +55,21 @@ namespace ti
     result_intersection_set_t to_result_intersection_set_t(doc_id_umap_t &);
 }
 
-std::ostream &operator<<(std::ostream &os, const ti::result_union_set_t &);
-
-std::ostream &operator<<(std::ostream &os, const ti::doc_t& );
-std::ostream &operator<<(std::ostream &os, const ti::col_t &);
-
 std::ostream &operator<<(std::ostream &os, const ti::offset_t &);
-
 std::ostream &operator<<(std::ostream &os, const ti::position_offset_t &);
-std::ostream &operator<<(std::ostream &os, const ti::position_offset_vec_t &);
-std::ostream &operator<<(std::ostream &os, const ti::doc_id_map_t &);
-std::ostream &operator<<(std::ostream &os, const ti::inverted_index_v1_t &);
-
 std::ostream &operator<<(std::ostream &os, const ti::doc_id_position_offset_t &);
-std::ostream &operator<<(std::ostream &os, const ti::doc_id_position_offset_vec_t &);
-std::ostream &operator<<(std::ostream &os, const ti::inverted_index_v2_t &);
 
-std::ostream &operator<<(std::ostream &os, const ti::doc_id_umap_t &);
-std::ostream &operator<<(std::ostream &os, const ti::inverted_index_v3_t &);
+template <typename T>
+std::ostream &operator<<(std::ostream &os, const std::vector<T> &);
+
+template <typename T>
+std::ostream &operator<<(std::ostream &os, const std::set<T> &);
+
+template <typename T>
+std::ostream &operator<<(std::ostream &os, const std::unordered_set<T> &);
+
+template <typename K, typename V>
+std::ostream &operator<<(std::ostream &os, const std::map<K, V> &);
+
+template <typename K, typename V>
+std::ostream &operator<<(std::ostream &os, const std::unordered_map<K, V> &);

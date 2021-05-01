@@ -40,33 +40,7 @@ namespace ti
     }
 }
 
-std::ostream &operator<<(std::ostream &os, const ti::result_union_set_t &us)
-{
-    os << "[";
-    for (const auto &e : us)
-        os << e << ", ";
-    os << "]";
-    return os;
-}
-
-std::ostream &operator<<(std::ostream &os, const ti::doc_t &v)
-{
-    os << "[";
-    for (const auto &e : v)
-        os << e << ", ";
-    os << "]";
-    return os;
-}
-
-std::ostream &operator<<(std::ostream &os, const ti::col_t &v)
-{
-    os << "[" << std::endl;
-    for (const auto &e : v)
-        os << " " << e << "," << std::endl;
-    os << "]";
-    return os;
-}
-
+// ---- struct begin ---- 
 std::ostream &operator<<(std::ostream &os, const ti::offset_t &s)
 {
     os << "{begin = " << s.begin
@@ -83,33 +57,6 @@ std::ostream &operator<<(std::ostream &os, const ti::position_offset_t &s)
     return os;
 }
 
-std::ostream &operator<<(std::ostream &os, const ti::position_offset_vec_t &v)
-{
-    os << "[";
-    for (const auto &e : v)
-        os << e << ", ";
-    os << "]";
-    return os;
-}
-
-std::ostream &operator<<(std::ostream &os, const ti::doc_id_map_t &m)
-{
-    os << "[";
-    for (const auto &p : m)
-        os << "{" << p.first << " : " << p.second << "}, ";
-    os << "]";
-    return os;
-}
-
-std::ostream &operator<<(std::ostream &os, const ti::inverted_index_v1_t &um)
-{
-    os << "[" << std::endl;
-    for (const auto &p : um)
-        os << " {" << p.first << " : " << p.second << "}," << std::endl;
-    os << "]";
-    return os;
-}
-
 std::ostream &operator<<(std::ostream &os, const ti::doc_id_position_offset_t &s)
 {
     os << "{doc_id = " << s.doc_id
@@ -118,8 +65,11 @@ std::ostream &operator<<(std::ostream &os, const ti::doc_id_position_offset_t &s
        << ", }";
     return os;
 }
+// ---- struct end ---- 
 
-std::ostream &operator<<(std::ostream &os, const ti::doc_id_position_offset_vec_t &v)
+// ---- vector begin ---- 
+template <>
+std::ostream &operator<<(std::ostream &os, const std::vector<ti::str_t> &v)
 {
     os << "[";
     for (const auto &e : v)
@@ -128,16 +78,67 @@ std::ostream &operator<<(std::ostream &os, const ti::doc_id_position_offset_vec_
     return os;
 }
 
-std::ostream &operator<<(std::ostream &os, const ti::inverted_index_v2_t &um)
+template <>
+std::ostream &operator<<(std::ostream &os, const std::vector<ti::doc_id_t> &v)
 {
     os << "[" << std::endl;
-    for (const auto &p : um)
-        os << " {" << p.first << " : " << p.second << "}," << std::endl;
+    for (const auto &e : v)
+        os << " " << e << "," << std::endl;
     os << "]";
     return os;
 }
 
-std::ostream &operator<<(std::ostream &os, const ti::doc_id_umap_t &um)
+template <>
+std::ostream &operator<<(std::ostream &os, const std::vector<ti::position_offset_t> &v)
+{
+    os << "[";
+    for (const auto &e : v)
+        os << e << ", ";
+    os << "]";
+    return os;
+}
+
+template <>
+std::ostream &operator<<(std::ostream &os, const std::vector<ti::doc_id_position_offset_t> &v)
+{
+    os << "[";
+    for (const auto &e : v)
+        os << e << ", ";
+    os << "]";
+    return os;
+}
+// ---- vector end ---- 
+
+// ---- set begin ----
+// ---- set end ----
+
+// ---- unordered_set begin ----
+template <>
+std::ostream &operator<<(std::ostream &os, const std::unordered_set<ti::doc_id_t> &us)
+{
+    os << "[";
+    for (const auto &e : us)
+        os << e << ", ";
+    os << "]";
+    return os;
+}
+// ---- unordered_set end ----
+
+// ---- map begin ----
+template <>
+std::ostream &operator<<(std::ostream &os, const std::map<ti::doc_id_t, ti::position_offset_vec_t> &m)
+{
+    os << "[";
+    for (const auto &p : m)
+        os << "{" << p.first << " : " << p.second << "}, ";
+    os << "]";
+    return os;
+}
+// ---- map end ----
+
+// ---- unordered_map begin ----
+template <>
+std::ostream &operator<<(std::ostream &os, const std::unordered_map<ti::doc_id_t, ti::position_uset_t> &um)
 {
     os << "[";
     for (const auto &p : um)
@@ -146,7 +147,8 @@ std::ostream &operator<<(std::ostream &os, const ti::doc_id_umap_t &um)
     return os;
 }
 
-std::ostream &operator<<(std::ostream &os, const ti::inverted_index_v3_t &um)
+template <>
+std::ostream &operator<<(std::ostream &os, const std::unordered_map<ti::str_t, ti::doc_id_map_t> &um)
 {
     os << "[" << std::endl;
     for (const auto &p : um)
@@ -154,3 +156,24 @@ std::ostream &operator<<(std::ostream &os, const ti::inverted_index_v3_t &um)
     os << "]";
     return os;
 }
+
+template <>
+std::ostream &operator<<(std::ostream &os, const std::unordered_map<ti::str_t, ti::doc_id_position_offset_vec_t> &um)
+{
+    os << "[" << std::endl;
+    for (const auto &p : um)
+        os << " {" << p.first << " : " << p.second << "}," << std::endl;
+    os << "]";
+    return os;
+}
+
+template <>
+std::ostream &operator<<(std::ostream &os, const std::unordered_map<ti::str_t, ti::doc_id_umap_t> &um)
+{
+    os << "[" << std::endl;
+    for (const auto &p : um)
+        os << " {" << p.first << " : " << p.second << "}," << std::endl;
+    os << "]";
+    return os;
+}
+// ---- unordered_map begin ----
