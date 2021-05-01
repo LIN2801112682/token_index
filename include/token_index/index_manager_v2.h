@@ -9,13 +9,9 @@ namespace ti
     public:
         index_manager_v2();
         void push_col_file(const path_t &col_file_path);
-        void push_doc_line(const line_t &doc_line);
+        void push_doc_line(const str_t &doc_line);
         void print_inverted_index() const;
-        //void print_token_frequency();
-        //void save_inverted_index(const path_t &path);
-        //void load_inverted_index(const path_t &path);
-        //void inverted_index_build_collection(); 
-        const frequency_t calc_frequency(const token_t &token) const;
+        const frequency_t calc_frequency(const str_t &token) const;
         const result_union_set_t retrieve_union(const query_t &query) const;
         const result_intersection_set_t retrieve_intersection(const query_t &query) const;
     private:

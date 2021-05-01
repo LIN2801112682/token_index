@@ -10,17 +10,17 @@
 namespace ti
 {
     using path_t = std::string;
-    using line_t = std::string;
-    using token_t = std::string;
-    using doc_t = std::vector<token_t>; //doc = document
+    using str_t = std::string; //str = string
+    using doc_t = std::vector<str_t>; //doc = document
     using col_t = std::vector<doc_t>; // col = collection
 
     using doc_id_t = col_t::size_type;
     using position_t = doc_t::size_type;
+    using str_idx_t = str_t::size_type; 
     struct offset_t
     {
-        line_t::size_type begin;
-        line_t::size_type end;
+        str_idx_t begin;
+        str_idx_t end;
     };
 
     struct position_offset_t
@@ -30,7 +30,7 @@ namespace ti
     };
     using position_offset_vec_t = std::vector<position_offset_t>;
     using doc_id_map_t = std::map<doc_id_t, position_offset_vec_t>;
-    using inverted_index_v1_t = std::unordered_map<token_t, doc_id_map_t>;
+    using inverted_index_v1_t = std::unordered_map<str_t, doc_id_map_t>;
 
     struct doc_id_position_offset_t
     {
@@ -39,14 +39,14 @@ namespace ti
         offset_t offset;
     };
     using doc_id_position_offset_vec_t = std::vector<doc_id_position_offset_t>;
-    using inverted_index_v2_t = std::unordered_map<token_t, doc_id_position_offset_vec_t>;
+    using inverted_index_v2_t = std::unordered_map<str_t, doc_id_position_offset_vec_t>;
 
     using position_uset_t = std::unordered_set<position_t>;
     using doc_id_umap_t = std::unordered_map<doc_id_t, position_uset_t>;
-    using inverted_index_v3_t = std::unordered_map<token_t, doc_id_umap_t>;
+    using inverted_index_v3_t = std::unordered_map<str_t, doc_id_umap_t>;
 
     using frequency_t = doc_t::size_type;
-    using query_t = std::vector<token_t>;
+    using query_t = std::vector<str_t>;
     using result_union_set_t = std::unordered_set<doc_id_t>;
     using result_intersection_set_t = std::vector<doc_id_position_offset_t>;
 

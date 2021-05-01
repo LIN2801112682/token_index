@@ -81,9 +81,9 @@ void test_bm(const ti::path_t &field_dir, const std::string &field, const ti::pa
     manager.push_field_dir(field_dir);
 
     std::ifstream ifs;
-    ti::line_t line;
+    ti::str_t line;
 
-    std::vector<ti::line_t> docs{};
+    std::vector<ti::str_t> docs{};
     ifs.open(field_dir, std::ifstream::in);
     while (getline(ifs, line))
         docs.push_back(line);
@@ -91,7 +91,7 @@ void test_bm(const ti::path_t &field_dir, const std::string &field, const ti::pa
 
     auto query_vec = ti::load_query_vec(query_path);
     
-    std::vector<ti::line_t> querys{};
+    std::vector<ti::str_t> querys{};
     ifs.open(query_path, std::ifstream::in);
     while (getline(ifs, line))
         querys.push_back(line);

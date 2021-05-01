@@ -17,7 +17,7 @@ namespace ti
     index_manager_v1::push_col_file(const path_t &col_file_path)
     {
         std::ifstream ifs{col_file_path, std::ifstream::in};
-        line_t doc_line;
+        str_t doc_line;
         while (getline(ifs, doc_line))
         {
             std::transform(std::begin(doc_line), std::end(doc_line), std::begin(doc_line), tolower);
@@ -27,11 +27,11 @@ namespace ti
     }
 
     void
-    index_manager_v1::push_doc_line(const line_t &doc_line)
+    index_manager_v1::push_doc_line(const str_t &doc_line)
     {
         auto [doc_id, doc, new_doc_line] = line_to_doc_id_and_doc(doc_line);
 
-        std::map<token_t, std::vector<position_t>> token_position_vec_map{};
+        std::map<str_t, std::vector<position_t>> token_position_vec_map{};
         for (position_t position{0}; position < doc.size(); ++position)
         {
             const auto &token = doc[position];
@@ -69,108 +69,8 @@ namespace ti
         std::cout << _inverted_index;
     }
 
-    /*
-    void
-    index_manager_v1::print_token_frequency()
-    {
-        for (const auto &pair1 : _inverted_index)
-        {
-            const auto &token = pair1.first;
-            //std::cout << token << KEY_VALUE_DLM1;
-            std::cout << token.size() << SET_DLM1;
-            position_map_t::size_type sum = 0;
-            const auto &index_map = pair1.second;
-            for (const auto &pair2 : index_map)
-            {
-                const auto &offset_set = pair2.second;
-                sum += offset_set.size();
-            }
-            std::cout << sum << std::endl;
-        }
-    }
-
-    void
-    index_manager_v1::save_inverted_index(const path_t &path)
-    {
-        std::ofstream ofs{path, std::ofstream::out};
-        for (const auto &pair1 : _inverted_index)
-        {
-            const auto &token = pair1.first;
-            ofs << token << KEY_VALUE_DLM1;
-            const auto &index_map = pair1.second;
-            for (const auto &pair2 : index_map)
-            {
-                const auto &index = pair2.first;
-                ofs << index << KEY_VALUE_DLM2;
-                const auto &offset_set = pair2.second;
-                for (const auto &offset : offset_set)
-                    ofs << offset << SET_DLM2;
-                ofs << SET_DLM1;
-            }
-            ofs << std::endl;
-        }
-        ofs.close();
-    }
-
-    void
-    index_manager_v1::load_inverted_index(const path_t &path)
-    {
-        _inverted_index.clear();
-        std::ifstream ifs{path, std::ifstream::in};
-        line_t line;
-        while (getline(ifs, line))
-        {
-            doc_map_t index_map;
-            std::smatch result;
-            std::regex_search(line, result, KEY_VALUE_REGEX1);
-            token_t token{result.str(1)};
-            std::istringstream iss{result.str(2)};
-            line_t index_map_str;
-            while (getline(iss, index_map_str, SET_DLM1))
-            {
-                std::smatch result2;
-                std::regex_search(index_map_str, result2, KEY_VALUE_REGEX2);
-                doc_id_t index{static_cast<doc_id_t>(stoi(result2.str(1)))};
-                std::istringstream iss2{result2.str(2)};
-                position_map_t offset_set;
-                line_t offset_str;
-                while (getline(iss2, offset_str, SET_DLM2))
-                    offset_set.insert(stoi(offset_str));
-                index_map[index] = offset_set;
-            }
-            _inverted_index[token] = index_map;
-        }
-        inverted_index_build_collection();
-    }
-
-    void
-    index_manager_v1::inverted_index_build_collection()
-    {
-        _collection.clear();
-        for (const auto &pair1 : _inverted_index)
-        {
-            const auto &token = pair1.first;
-            const auto &index_map = pair1.second;
-            for (const auto &pair2 : index_map)
-            {
-                const auto &index = pair2.first;
-                const auto &offset_set = pair2.second;
-                if (index + 1 > _collection.size())
-                    _collection.resize(index + 1);
-                auto &document = _collection[index];
-                for (const auto &offset : offset_set)
-                {
-                    if (offset + 1 > document.size())
-                        document.resize(offset + 1);
-                    document[offset] = token;
-                }
-            }
-        }
-    }
-    */
-
     const frequency_t
-    index_manager_v1::calc_frequency(const token_t &token) const
+    index_manager_v1::calc_frequency(const str_t &token) const
     {
         auto inverted_index_iter = _inverted_index.find(token);
         if (std::end(_inverted_index) == inverted_index_iter)
