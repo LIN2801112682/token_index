@@ -78,7 +78,7 @@ static const ti::path_t intersection_result_path{"../resource/intersection_resul
 
 int main()
 {
-    std::string field{"caller.txt"};
+    std::string field{"query.txt"};
     test_query_group(field_dir, field, query_path, union_result_path, intersection_result_path);
     return 0;
 }

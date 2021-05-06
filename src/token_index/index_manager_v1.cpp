@@ -7,6 +7,7 @@
 #include <sstream>
 #include <cstdlib>
 #include <tuple>
+#include <algorithm>
 
 namespace ti
 {
