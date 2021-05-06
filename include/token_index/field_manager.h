@@ -4,13 +4,14 @@
 #include "token_index/index_manager_v1.h"
 #include "token_index/index_manager_v2.h"
 #include "token_index/index_manager_v3.h"
+#include "token_index/index_manager_v3_1.h"
 
 namespace ti
 {
     class field_manager
     {
     public:
-        using index_manager_t = index_manager_v2;
+        using index_manager_t = index_manager_v3_1;
 
         field_manager();
         ~field_manager();

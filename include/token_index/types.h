@@ -50,6 +50,12 @@ namespace ti
     using query_t = std::vector<str_t>;
     using result_union_set_t = std::unordered_set<doc_id_t>;
     using result_intersection_set_t = std::vector<doc_id_position_offset_t>;
+    struct token_relative_position_frequency_t
+    {
+        str_t token;
+        position_t relative_position;
+        frequency_t frequency;
+    };
 
     result_intersection_set_t to_result_intersection_set_t(const doc_id_map_t &);
     result_intersection_set_t to_result_intersection_set_t(const doc_id_umap_t &);
