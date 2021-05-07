@@ -135,7 +135,7 @@ namespace ti
                         temp_doc_id_position_offset.doc_id = doc_id;
                         temp_doc_id_position_offset.position = position;
                         temp_doc_id_position_offset.offset.begin = intersection_doc_id_position_offset.offset.begin;
-                        temp_doc_id_position_offset.offset.end = doc_id_position_offset.offset.begin;
+                        temp_doc_id_position_offset.offset.end = doc_id_position_offset.offset.end;
                         ++slow;
                         break;
                     }
