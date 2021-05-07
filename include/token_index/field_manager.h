@@ -11,7 +11,7 @@ namespace ti
     class field_manager
     {
     public:
-        using index_manager_t = index_manager_v3;
+        using index_manager_t = index_manager_v2;
 
         field_manager();
         ~field_manager();

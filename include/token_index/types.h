@@ -12,6 +12,7 @@ namespace ti
 {
     using path_t = std::string;
     using str_t = std::string; //str = string
+    using ch_t = str_t::value_type; // ch = char
     using doc_t = std::vector<str_t>; //doc = document
     using col_t = std::vector<doc_t>; // col = collection
 

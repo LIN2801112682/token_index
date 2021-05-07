@@ -29,37 +29,46 @@ namespace ti
     void
     index_manager_v2::push_doc_line(const str_t &doc_line)
     {
-        auto [doc_id, doc, new_doc_line] = line_to_doc(doc_line);
+        str_t token;
+        std::istringstream iss{doc_line};
+        iss >> token;
+        doc_id_t doc_id{stoul(token)};
+        str_t new_line{doc_line.substr(token.size() + 1)};
 
-        std::map<str_t, std::vector<position_t>> token_position_vec_map{};
-        for (position_t position{0}; position < doc.size(); ++position)
+        position_t position{0};
+        str_idx_t begin, end;
+        bool is_find_begin{false};
+        for (str_idx_t i{0}; i < new_line.size(); ++i)
         {
-            const auto &token = doc[position];
-            if (token_position_vec_map.count(token) == 0)
-                token_position_vec_map.emplace(token, std::vector<position_t>{});
-            token_position_vec_map[token].emplace_back(position);
-        }
-
-        for (const auto &token_position_vec_pair : token_position_vec_map)
-        {
-            const auto &token = token_position_vec_pair.first;
-            const auto &offset_begin_vec = bm::BoyerMoore(new_doc_line, token);
-            const auto &token_size = token.size();
-
-            if (_inverted_index.count(token) == 0)
-                _inverted_index.emplace(token, doc_id_position_offset_vec_t{});
-            auto &doc_id_position_offset_vec = _inverted_index[token];
-
-            for (std::size_t i{0}; i < token_position_vec_pair.second.size(); ++i)
+            const ch_t &ch = new_line[i];
+            if (ch != ' ')
             {
-                doc_id_position_offset_vec.emplace_back(
-                    doc_id_position_offset_t{
-                        doc_id,
-                        token_position_vec_pair.second[i],
-                        offset_t{
-                            offset_begin_vec[i],
-                            offset_begin_vec[i] + token_size,
-                        }});
+                if (!is_find_begin)
+                {
+                    is_find_begin = true;
+                    begin = i;
+                }
+                end = i;
+            }
+            else
+            {
+                if (is_find_begin)
+                {
+                    is_find_begin = false;
+                    token = new_line.substr(begin, end - begin + 1);
+
+                    if (_inverted_index.count(token) == 0)
+                        _inverted_index.emplace(token, doc_id_position_offset_vec_t{});
+                    auto &doc_id_position_offset_vec = _inverted_index[token];
+
+                    doc_id_position_offset_vec.emplace_back(
+                        doc_id_position_offset_t{
+                            doc_id,
+                            position++,
+                            offset_t{
+                                begin,
+                                end}});
+                }
             }
         }
     }
