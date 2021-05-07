@@ -120,31 +120,31 @@ namespace ti
             if (std::end(_inverted_index) == inverted_index_iter)
                 return {};
             const auto &doc_id_position_offset_vec{inverted_index_iter->second};
-            decltype(intersection_doc_id_position_offset_vec) temp_doc_id_position_offset_vec{};
 
-            for (const auto &intersection_doc_id_position_offset : intersection_doc_id_position_offset_vec)
+            std::size_t quick{0}, slow{0};
+            for (; quick < intersection_doc_id_position_offset_vec.size(); ++quick)
             {
+                const auto &intersection_doc_id_position_offset = intersection_doc_id_position_offset_vec[quick];
                 const auto &doc_id = intersection_doc_id_position_offset.doc_id;
                 const auto &position = intersection_doc_id_position_offset.position;
                 for (const auto &doc_id_position_offset : doc_id_position_offset_vec)
                 {
-                    if (doc_id != doc_id_position_offset.doc_id)
-                        continue;
-                    if (position + i != doc_id_position_offset.position)
-                        continue;
-                    temp_doc_id_position_offset_vec.emplace_back(
-                        doc_id_position_offset_t{
-                            doc_id,
-                            position,
-                            offset_t{
-                                intersection_doc_id_position_offset.offset.begin,
-                                doc_id_position_offset.offset.end,
-                            }});
+                    if (doc_id == doc_id_position_offset.doc_id && position + i == doc_id_position_offset.position)
+                    {
+                        auto &temp_doc_id_position_offset = intersection_doc_id_position_offset_vec[slow];
+                        temp_doc_id_position_offset.doc_id = doc_id;
+                        temp_doc_id_position_offset.position = position;
+                        temp_doc_id_position_offset.offset.begin = intersection_doc_id_position_offset.offset.begin;
+                        temp_doc_id_position_offset.offset.end = doc_id_position_offset.offset.begin;
+                        ++slow;
+                        break;
+                    }
                 }
             }
-            if (temp_doc_id_position_offset_vec.empty())
+            if (slow == 0)
                 return {};
-            intersection_doc_id_position_offset_vec = temp_doc_id_position_offset_vec;
+            else
+                intersection_doc_id_position_offset_vec.resize(slow);
         }
         return intersection_doc_id_position_offset_vec;
     }
