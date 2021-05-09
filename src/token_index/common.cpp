@@ -5,8 +5,6 @@
 #include <tuple>
 #include <algorithm>
 
-#include "algorithm"
-
 namespace ti
 {
     std::tuple<doc_id_t, doc_t, str_t>
@@ -23,7 +21,7 @@ namespace ti
         while (iss >> token)
             doc.push_back(token);
 
-        return {doc_id, doc, new_line}; 
+        return {doc_id, doc, new_line};
     }
 
     query_t

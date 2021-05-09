@@ -56,10 +56,10 @@ namespace ti
     {
         auto inverted_index_iter = _inverted_index.find(token);
         if (std::end(_inverted_index) == inverted_index_iter)
-           return 0;
+            return 0;
 
         frequency_t frequency{0};
-        for (const auto & doc_id_umap_pair : inverted_index_iter->second)
+        for (const auto &doc_id_umap_pair : inverted_index_iter->second)
             frequency += doc_id_umap_pair.second.size();
         return frequency;
     }
@@ -93,14 +93,14 @@ namespace ti
                     token, relative_position, frequency});
         }
         std::sort(std::begin(token_relative_position_frequency_vec),
-             std::end(token_relative_position_frequency_vec),
-             [](const auto &lhs, const auto &rhs) {
-                if (lhs.frequency < rhs.frequency)
-                    return true;
-                if (lhs.relative_position < rhs.relative_position)
-                    return true;
-                return false;
-             });
+                  std::end(token_relative_position_frequency_vec),
+                  [](const auto &lhs, const auto &rhs) {
+                      if (lhs.frequency < rhs.frequency)
+                          return true;
+                      if (lhs.relative_position < rhs.relative_position)
+                          return true;
+                      return false;
+                  });
 
         const auto &first_token_relative_position_frequency = token_relative_position_frequency_vec[0];
         const auto &first_token = first_token_relative_position_frequency.token;
@@ -119,26 +119,6 @@ namespace ti
             if (std::end(_inverted_index) == inverted_index_iter)
                 return {};
             const auto &doc_id_umap{inverted_index_iter->second};
-            //decltype(intersection_doc_id_umap) temp_doc_id_umap{};
-
-            /*for (const auto &intersection_doc_id_umap_pair : intersection_doc_id_umap)
-            {
-                const auto &doc_id = intersection_doc_id_umap_pair.first;
-                const auto &doc_id_umap_iter = doc_id_umap.find(doc_id);
-                if (std::end(doc_id_umap) == doc_id_umap_iter)
-                    continue;
-
-                const auto &intersection_position_uset = intersection_doc_id_umap_pair.second;
-                const auto &position_uset = doc_id_umap_iter->second;
-                for (const auto &position : intersection_position_uset)
-                {
-                    if (position_uset.find(position - first_relative_position + relative_position) == std::end(position_uset))
-                        continue;
-                    if (temp_doc_id_umap.count(doc_id) == 0)
-                        temp_doc_id_umap.emplace(doc_id, position_uset_t{});
-                    temp_doc_id_umap[doc_id].emplace(position);
-                }
-            }*/
 
             for (auto intersection_doc_id_umap_iter = std::begin(intersection_doc_id_umap);
                  intersection_doc_id_umap_iter != std::end(intersection_doc_id_umap);)
@@ -157,8 +137,7 @@ namespace ti
                      intersection_position_uset_iter != std::end(intersection_position_uset);)
                 {
                     const auto &position = *intersection_position_uset_iter;
-                    if (position_uset.find(position - first_relative_position + relative_position)
-                        == std::end(position_uset))
+                    if (std::end(position_uset) == position_uset.find(position - first_relative_position + relative_position))
                     {
                         intersection_position_uset_iter = intersection_position_uset.erase(intersection_position_uset_iter);
                         continue;
@@ -167,8 +146,6 @@ namespace ti
                 }
                 ++intersection_doc_id_umap_iter;
             }
-
-
             if (intersection_doc_id_umap.empty())
                 return {};
         }

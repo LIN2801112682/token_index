@@ -51,7 +51,7 @@ void test_query_group(const ti::path_t &field_dir, const std::string &field, con
 {
     ti::field_manager manager{};
     manager.push_field_dir(field_dir);
-    auto query_vec = ti::load_query_vec(query_path);//20tiao
+    auto query_vec = ti::load_query_vec(query_path);
     std::ofstream ofs;
 
     std::cout << "field: " << field << ", union, cout ----------" << std::endl;

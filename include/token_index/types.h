@@ -25,7 +25,6 @@ namespace ti
         str_idx_t end;
     };
 
-    //4index : v1
     struct position_offset_t
     {
         position_t position;
@@ -35,7 +34,6 @@ namespace ti
     using doc_id_map_t = std::map<doc_id_t, position_offset_vec_t>;
     using inverted_index_v1_t = std::unordered_map<str_t, doc_id_map_t>;
 
-    //4index : v2
     struct doc_id_position_offset_t
     {
         doc_id_t doc_id;
@@ -45,11 +43,9 @@ namespace ti
     using doc_id_position_offset_vec_t = std::vector<doc_id_position_offset_t>;
     using inverted_index_v2_t = std::unordered_map<str_t, doc_id_position_offset_vec_t>;
 
-    //3index : v3
     using position_uset_t = std::unordered_set<position_t>;
     using doc_id_umap_t = std::unordered_map<doc_id_t, position_uset_t>;
     using inverted_index_v3_t = std::unordered_map<str_t, doc_id_umap_t>;
-
 
     using frequency_t = doc_t::size_type;
     using query_t = std::vector<str_t>;
