@@ -1,12 +1,10 @@
 #include "token_index/index_manager_v1.h"
 #include "token_index/types.h"
 #include "token_index/common.h"
-#include "bm/bm.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <cstdlib>
-#include <tuple>
 #include <algorithm>
 
 namespace ti

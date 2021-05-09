@@ -1,7 +1,6 @@
 #include "token_index/index_manager_v2.h"
 #include "token_index/types.h"
 #include "token_index/common.h"
-#include "bm/bm.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>

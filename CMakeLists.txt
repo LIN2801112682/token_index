@@ -17,6 +17,6 @@ set(TOKEN_INDEX
 )
 set(BM src/bm/bm.cpp)
 
-add_executable (test_field_manager tests/test_field_manager.cpp ${TOKEN_INDEX} ${BM})
+add_executable (test_field_manager tests/test_field_manager.cpp ${TOKEN_INDEX})
 add_executable (filter tests/filter.cpp)
 add_executable (test_bm tests/test_bm.cpp ${BM})
