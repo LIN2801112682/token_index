@@ -1,5 +1,0 @@
-D:/project/token_index/cmake-build-debug/CMakeFiles/test_field_manager.dir
-D:/project/token_index/cmake-build-debug/CMakeFiles/filter.dir
-D:/project/token_index/cmake-build-debug/CMakeFiles/test_bm.dir
-D:/project/token_index/cmake-build-debug/CMakeFiles/edit_cache.dir
-D:/project/token_index/cmake-build-debug/CMakeFiles/rebuild_cache.dir
