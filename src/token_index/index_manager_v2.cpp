@@ -146,6 +146,6 @@ namespace ti
             else
                 intersection_doc_id_position_offset_vec.resize(slow);
         }
-        return intersection_doc_id_position_offset_vec;
+        return to_result_intersection_set_t(intersection_doc_id_position_offset_vec);
     }
 }
