@@ -3,6 +3,10 @@
 .DS_Store
 /build
 /cmake-build-debug
+/cmake-build-default
+/cmake-build-minsizerel
+/cmake-build-release
+/cmake-build-relwithdebinfo
 /resource/field_dir/*.txt
 /resource/*.txt
 !/resource
