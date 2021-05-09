@@ -3,6 +3,7 @@
 #include <sstream>
 #include <fstream>
 #include <tuple>
+#include <algorithm>
 
 namespace ti
 {
