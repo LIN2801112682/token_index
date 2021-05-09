@@ -1,6 +1,7 @@
 /.vscode
 .DS_Store
 /build
+/cmake-build-debug
 /resource/field_dir/*.txt
 /resource/*.txt
 !/resource
