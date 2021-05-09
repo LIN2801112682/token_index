@@ -8,12 +8,10 @@
 
 namespace bm
 {
-
     int calcBC(const char *subdir, int bc[])
     {
         int i = 0;
         int len = strlen(subdir);
-
         for (i = 0; i < MAX_CHAR_LEN; i++)
         {
             bc[i] = len;
@@ -22,7 +20,6 @@ namespace bm
         {
             bc[subdir[i]] = len - 1 - i;
         }
-
         return 0;
     }
 
@@ -33,7 +30,6 @@ namespace bm
         int k = 0;
         int count = 0;
         int len = strlen(subdir);
-
         suffix[len - 1] = len;
         for (i = len - 2; i >= 0; i--)
         {
@@ -46,7 +42,6 @@ namespace bm
             }
             suffix[i] = count;
         }
-
         return 0;
     }
 

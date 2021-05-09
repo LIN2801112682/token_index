@@ -120,6 +120,7 @@ namespace ti
             if (std::end(_inverted_index) == inverted_index_iter)
                 return {};
             const auto &doc_id_position_offset_vec{inverted_index_iter->second};
+            decltype(intersection_doc_id_position_offset_vec) temp_doc_id_position_offset_vec{};
 
             std::size_t quick{0}, slow{0};
             for (; quick < intersection_doc_id_position_offset_vec.size(); ++quick)

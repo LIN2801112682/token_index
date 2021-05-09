@@ -65,10 +65,10 @@ namespace ti
     }
 
     const result_union_set_t
-    index_manager_v3::retrieve_union(const query_t &query) const
+    index_manager_v3::retrieve_union(const query_t &query) const //yitiao query
     {
         result_union_set_t union_set{};
-        for (const auto &token : query)
+        for (const auto &token : query)// yitiao query zhongde every token
         {
             auto inverted_index_iter = _inverted_index.find(token);
             if (std::end(_inverted_index) == inverted_index_iter)
@@ -81,10 +81,11 @@ namespace ti
     }
 
     const result_intersection_set_t
-    index_manager_v3::retrieve_intersection(const query_t &query) const
+    index_manager_v3::retrieve_intersection(const query_t &query) const //yitiao query:the fox did
     {
         const auto &first_token = query[0];
         const auto &intersection_inverted_index_iter = _inverted_index.find(first_token);
+        const auto &intersection_inverted_index_iter_2 = intersection_inverted_index_iter->second;//
         if (std::end(_inverted_index) == intersection_inverted_index_iter)
             return {};
         auto intersection_doc_id_umap{intersection_inverted_index_iter->second};
@@ -96,9 +97,9 @@ namespace ti
             if (std::end(_inverted_index) == inverted_index_iter)
                 return {};
             const auto &doc_id_umap{inverted_index_iter->second};
-            decltype(intersection_doc_id_umap) temp_doc_id_umap{};
+            //decltype(intersection_doc_id_umap) temp_doc_id_umap{};//copy
 
-            for (const auto &intersection_doc_id_umap_pair : intersection_doc_id_umap)
+            /*for (const auto &intersection_doc_id_umap_pair : intersection_doc_id_umap)
             {
                 const auto &doc_id = intersection_doc_id_umap_pair.first;
                 const auto &doc_id_umap_iter = doc_id_umap.find(doc_id);
@@ -111,14 +112,45 @@ namespace ti
                 {
                     if (position_uset.find(position + i) == std::end(position_uset))
                         continue;
+
                     if (temp_doc_id_umap.count(doc_id) == 0)
                         temp_doc_id_umap.emplace(doc_id, position_uset_t{});
                     temp_doc_id_umap[doc_id].emplace(position);
                 }
             }
             if (temp_doc_id_umap.empty())
+                return {};*/
+            for (auto intersection_doc_id_umap_iter = std::begin(intersection_doc_id_umap);
+                 intersection_doc_id_umap_iter != std::end(intersection_doc_id_umap);)
+            {
+                const auto &doc_id = intersection_doc_id_umap_iter->first;
+                const auto &doc_id_umap_iter = doc_id_umap.find(doc_id);
+                if (std::end(doc_id_umap) == doc_id_umap_iter)
+                {
+                    intersection_doc_id_umap_iter = intersection_doc_id_umap.erase(intersection_doc_id_umap_iter);
+                    continue;
+                }
+
+                auto &intersection_position_uset = intersection_doc_id_umap_iter->second;
+                const auto &position_uset = doc_id_umap_iter->second;
+                for (auto intersection_position_uset_iter = std::begin(intersection_position_uset);
+                     intersection_position_uset_iter != std::end(intersection_position_uset);)
+                {
+                    const auto &position = *intersection_position_uset_iter;
+                    if (position_uset.find(position + i)
+                        == std::end(position_uset))
+                    {
+                        intersection_position_uset_iter = intersection_position_uset.erase(intersection_position_uset_iter);
+                        continue;
+                    }
+                    ++intersection_position_uset_iter;
+                }
+                ++intersection_doc_id_umap_iter;//
+            }
+
+
+            if (intersection_doc_id_umap.empty())
                 return {};
-            intersection_doc_id_umap = temp_doc_id_umap;
         }
         return to_result_intersection_set_t(intersection_doc_id_umap);
     }

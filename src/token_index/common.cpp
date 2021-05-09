@@ -5,6 +5,8 @@
 #include <tuple>
 #include <algorithm>
 
+#include "algorithm"
+
 namespace ti
 {
     std::tuple<doc_id_t, doc_t, str_t>

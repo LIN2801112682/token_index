@@ -26,7 +26,7 @@ namespace ti
                         continue;
                     path_t col_file_path = field_dir_path + "/" + col_file_name;
                     auto p_index_manager = new index_manager_t{};
-                    p_index_manager->push_col_file(col_file_path);
+                    p_index_manager->push_col_file(col_file_path);// create index and set data to index
                     _field_map[col_file_name] = p_index_manager;
               }
        }

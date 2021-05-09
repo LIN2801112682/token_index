@@ -119,9 +119,29 @@ namespace ti
             if (std::end(_inverted_index) == inverted_index_iter)
                 return {};
             const auto &doc_id_umap{inverted_index_iter->second};
+            //decltype(intersection_doc_id_umap) temp_doc_id_umap{};
+
+            /*for (const auto &intersection_doc_id_umap_pair : intersection_doc_id_umap)
+            {
+                const auto &doc_id = intersection_doc_id_umap_pair.first;
+                const auto &doc_id_umap_iter = doc_id_umap.find(doc_id);
+                if (std::end(doc_id_umap) == doc_id_umap_iter)
+                    continue;
+
+                const auto &intersection_position_uset = intersection_doc_id_umap_pair.second;
+                const auto &position_uset = doc_id_umap_iter->second;
+                for (const auto &position : intersection_position_uset)
+                {
+                    if (position_uset.find(position - first_relative_position + relative_position) == std::end(position_uset))
+                        continue;
+                    if (temp_doc_id_umap.count(doc_id) == 0)
+                        temp_doc_id_umap.emplace(doc_id, position_uset_t{});
+                    temp_doc_id_umap[doc_id].emplace(position);
+                }
+            }*/
 
             for (auto intersection_doc_id_umap_iter = std::begin(intersection_doc_id_umap);
-                intersection_doc_id_umap_iter != std::end(intersection_doc_id_umap);)
+                 intersection_doc_id_umap_iter != std::end(intersection_doc_id_umap);)
             {
                 const auto &doc_id = intersection_doc_id_umap_iter->first;
                 const auto &doc_id_umap_iter = doc_id_umap.find(doc_id);
@@ -134,7 +154,7 @@ namespace ti
                 auto &intersection_position_uset = intersection_doc_id_umap_iter->second;
                 const auto &position_uset = doc_id_umap_iter->second;
                 for (auto intersection_position_uset_iter = std::begin(intersection_position_uset);
-                    intersection_position_uset_iter != std::end(intersection_position_uset);)
+                     intersection_position_uset_iter != std::end(intersection_position_uset);)
                 {
                     const auto &position = *intersection_position_uset_iter;
                     if (position_uset.find(position - first_relative_position + relative_position)
@@ -147,6 +167,8 @@ namespace ti
                 }
                 ++intersection_doc_id_umap_iter;
             }
+
+
             if (intersection_doc_id_umap.empty())
                 return {};
         }
