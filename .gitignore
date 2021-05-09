@@ -3,6 +3,7 @@
 .DS_Store
 /build
 /cmake-build-debug
+/cmake-build-release
 /resource/field_dir/*.txt
 /resource/*.txt
 !/resource
