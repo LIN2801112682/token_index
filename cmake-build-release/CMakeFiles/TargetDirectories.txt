@@ -1,0 +1,5 @@
+D:/project/token_index/cmake-build-release/CMakeFiles/test_field_manager.dir
+D:/project/token_index/cmake-build-release/CMakeFiles/filter.dir
+D:/project/token_index/cmake-build-release/CMakeFiles/test_bm.dir
+D:/project/token_index/cmake-build-release/CMakeFiles/edit_cache.dir
+D:/project/token_index/cmake-build-release/CMakeFiles/rebuild_cache.dir
