@@ -127,38 +127,50 @@ namespace ti
             if (std::end(_inverted_index) == inverted_index_iter)
                 return {}; 
             const auto &doc_id_map{inverted_index_iter->second};
-            decltype(intersection_doc_id_map) temp_doc_id_map{};
 
-            for (const auto &intersection_doc_id_map_pair : intersection_doc_id_map)
+            for (auto intersection_doc_id_map_iter = std::begin(intersection_doc_id_map);
+                 intersection_doc_id_map_iter != std::end(intersection_doc_id_map);)
             {
-                const auto &doc_id = intersection_doc_id_map_pair.first;
+                const auto &doc_id = intersection_doc_id_map_iter->first;
                 const auto &doc_id_map_iter = doc_id_map.find(doc_id);
                 if (std::end(doc_id_map) == doc_id_map_iter)
-                    continue;
-                const auto &position_offset_vec{doc_id_map_iter->second};
-
-                for (const auto &intersection_position_offset : intersection_doc_id_map_pair.second)
                 {
+                    intersection_doc_id_map_iter = intersection_doc_id_map.erase(intersection_doc_id_map_iter);
+                    continue;
+                }
+                const auto &position_offset_vec{doc_id_map_iter->second};
+                auto &intersection_position_offset_vec{intersection_doc_id_map_iter->second};
+
+                std::size_t quick{0}, slow{0};
+                for (; quick < intersection_position_offset_vec.size(); ++quick)
+                {
+                    const auto &intersection_position_offset = intersection_position_offset_vec[quick];
                     const auto &position = intersection_position_offset.position;
                     for (const auto &position_offset : position_offset_vec)
                     {
-                        if (position + i != position_offset.position)
-                            continue;
-                        if (temp_doc_id_map.count(doc_id) == 0)
-                            temp_doc_id_map.emplace(doc_id, position_offset_vec_t{});
-                        temp_doc_id_map[doc_id].emplace_back(
-                            position_offset_t{
-                                position,
-                                offset_t{
-                                    intersection_position_offset.offset.begin,
-                                    position_offset.offset.end,
-                                }});
+                        if (position + i == position_offset.position)
+                        {
+                            auto &temp_position_offset = intersection_position_offset_vec[slow];
+                            temp_position_offset.position = position;
+                            temp_position_offset.offset.begin = intersection_position_offset.offset.begin;
+                            temp_position_offset.offset.end = position_offset.offset.end;
+                            ++slow;
+                            break;
+                        }
                     }
                 }
+                if (slow == 0)
+                {
+                    intersection_doc_id_map_iter = intersection_doc_id_map.erase(intersection_doc_id_map_iter);
+                    continue;
+                }
+                else
+                    intersection_position_offset_vec.resize(slow);
+
+                ++intersection_doc_id_map_iter;
             }
-            if (temp_doc_id_map.empty())
+            if (intersection_doc_id_map.empty())
                 return {};
-            intersection_doc_id_map = temp_doc_id_map;
         }
         return to_result_intersection_set_t(intersection_doc_id_map);
     }
