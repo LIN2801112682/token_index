@@ -107,9 +107,9 @@ namespace ti
                     intersection_doc_id_umap_iter = intersection_doc_id_umap.erase(intersection_doc_id_umap_iter);
                     continue;
                 }
+                auto &intersection_position_uset{intersection_doc_id_umap_iter->second};
+                const auto &position_uset{doc_id_umap_iter->second};
 
-                auto &intersection_position_uset = intersection_doc_id_umap_iter->second;
-                const auto &position_uset = doc_id_umap_iter->second;
                 for (auto intersection_position_uset_iter = std::begin(intersection_position_uset);
                      intersection_position_uset_iter != std::end(intersection_position_uset);)
                 {

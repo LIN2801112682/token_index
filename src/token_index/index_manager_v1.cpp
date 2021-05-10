@@ -138,8 +138,8 @@ namespace ti
                     intersection_doc_id_map_iter = intersection_doc_id_map.erase(intersection_doc_id_map_iter);
                     continue;
                 }
-                const auto &position_offset_vec{doc_id_map_iter->second};
                 auto &intersection_position_offset_vec{intersection_doc_id_map_iter->second};
+                const auto &position_offset_vec{doc_id_map_iter->second};
 
                 std::size_t quick{0}, slow{0};
                 for (; quick < intersection_position_offset_vec.size(); ++quick)
