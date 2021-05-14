@@ -11,7 +11,7 @@ namespace ti
     class field_manager
     {
     public:
-        using index_manager_t = index_manager_v2;
+        using index_manager_t = index_manager_v1;
         field_manager();
         ~field_manager();
         void push_field_dir(const path_t &field_dir_path);

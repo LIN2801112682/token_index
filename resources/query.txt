@@ -1,0 +1,20 @@
+select 
+select last sl_1_tag108 as sl_1_tag108 
+and 
+show tag values on 
+fill none 
+szsslkjyxgs_1ou7 autogen 
+where gatewayid 2c938083783650af01786535768406ac 
+and time 2021 03 29t08 36 32z and time 2021 03 30t08 36 32z 
+select last sl_1_tag118 as sl_1_tag118 from szsslkjyxgs_1ou7 autogen 
+show tag values on _internal with key hostname where _name database and _tagkey hostname 
+where gatewayid 2c938083783650af01786535768406ac 
+last sl_1_tag18 
+difference pointswrittenok 60 
+gatewayid 2c938083783650af01786535768406ac and time 2021 03 29t08 37 13z and time 2021 03 30t08 37 13z 
+count c1_b1_g1_tag3 
+046ed1449dec435d83f99f524b0b6b5f 
+hostname 
+autogen 
+select difference pointswrittenok 60 from httpd where time now 120s and bind 192.168.1.198 8635,172.16.11.6 8635 
+time 2021 03 30t08 38 48z

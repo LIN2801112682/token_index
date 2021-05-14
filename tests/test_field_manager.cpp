@@ -71,10 +71,10 @@ void test_query_group(const ti::path_t &field_dir, const std::string &field, con
     ofs.close();
 }
 
-static const ti::path_t field_dir{"../resource/field_dir"};
-static const ti::path_t query_path{"../resource/query.txt"};
-static const ti::path_t union_result_path{"../resource/union_result.txt"};
-static const ti::path_t intersection_result_path{"../resource/intersection_result.txt"};
+static const ti::path_t field_dir{"../resources/field_dir"};
+static const ti::path_t query_path{"../resources/query.txt"};
+static const ti::path_t union_result_path{"../resources/union_result.txt"};
+static const ti::path_t intersection_result_path{"../resources/intersection_result.txt"};
 
 int main()
 {
