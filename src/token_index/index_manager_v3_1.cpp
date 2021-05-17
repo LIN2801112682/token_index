@@ -50,7 +50,7 @@ namespace ti
         std::cout << _inverted_index;
     }
 
-    const frequency_t
+    frequency_t
     index_manager_v3_1::calc_frequency(const str_t &token) const
     {
         auto inverted_index_iter = _inverted_index.find(token);
@@ -63,7 +63,7 @@ namespace ti
         return frequency;
     }
 
-    const result_union_set_t
+    result_union_set_t
     index_manager_v3_1::retrieve_union(const query_t &query) const
     {
         result_union_set_t union_set{};
@@ -79,7 +79,7 @@ namespace ti
         return union_set;
     }
 
-    const result_intersection_set_t
+    result_intersection_set_t
     index_manager_v3_1::retrieve_intersection(const query_t &query) const
     {
         std::vector<token_relative_position_frequency_t> token_relative_position_frequency_vec;

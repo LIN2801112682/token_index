@@ -82,7 +82,7 @@ namespace ti
         std::cout << _inverted_index;
     }
 
-    const frequency_t
+    frequency_t
     index_manager_v4_0_1::calc_frequency(const str_t &token) const
     {
         auto inverted_index_iter = _inverted_index.find(token);
@@ -95,7 +95,7 @@ namespace ti
         return frequency;
     }
 
-    const result_union_set_t
+    result_union_set_t
     index_manager_v4_0_1::retrieve_union(const query_t &query) const
     {
         result_union_set_t union_set{};
@@ -111,9 +111,8 @@ namespace ti
         return union_set;
     }
 
-
-    const result_intersection_set_t
-    index_manager_v4_0_1::retrieve_intersection(const query_t &query) const
+    std::vector<token_relative_position_frequency_t>
+    index_manager_v4_0_1::gen_token_relative_position_frequency_vec(const query_t &query) const
     {
         std::vector<token_relative_position_frequency_t> token_relative_position_frequency_vec;
         for (position_t relative_position{0}; relative_position < query.size(); ++relative_position)
@@ -133,7 +132,13 @@ namespace ti
                           return true;
                       return false;
                   });
+        return token_relative_position_frequency_vec;
+    }
 
+    result_intersection_set_t
+    index_manager_v4_0_1::not_low_frequency_retrieve_intersection(
+        std::vector<token_relative_position_frequency_t> &&token_relative_position_frequency_vec) const
+    {
         const auto &first_token_relative_position_frequency = token_relative_position_frequency_vec[0];
         const auto &first_token = first_token_relative_position_frequency.token;
         const auto &first_relative_position = first_token_relative_position_frequency.relative_position;
@@ -216,5 +221,14 @@ namespace ti
         intersection_doc_id_map = temp_doc_id_map;
 
         return to_result_intersection_set_t(intersection_doc_id_map);
+    }
+
+    result_intersection_set_t
+    index_manager_v4_0_1::retrieve_intersection(const query_t &query) const
+    {
+        std::vector<token_relative_position_frequency_t> token_relative_position_frequency_vec{
+            gen_token_relative_position_frequency_vec(query)
+        };
+        return not_low_frequency_retrieve_intersection(std::move(token_relative_position_frequency_vec));
     }
 }
