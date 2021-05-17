@@ -177,8 +177,10 @@ namespace ti
                         {
                             auto &temp_position_offset = intersection_position_offset_vec[slow];
                             temp_position_offset.position = position;
-                            temp_position_offset.offset.begin = intersection_position_offset.offset.begin;
-                            temp_position_offset.offset.end = position_offset.offset.end;
+                            if (intersection_position_offset.offset.begin < temp_position_offset.offset.begin)
+                                temp_position_offset.offset.begin = intersection_position_offset.offset.begin;
+                            if (intersection_position_offset.offset.end > temp_position_offset.offset.end)
+                                temp_position_offset.offset.end = position_offset.offset.end;
                             ++slow;
                             break;
                         }
