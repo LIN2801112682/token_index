@@ -1,13 +1,14 @@
 #pragma once
 
 #include "token_index/types.h"
+//#include "index_manager_v4_0_1.h"
 
 namespace ti
 {
-    class index_manager_v2
+    class index_manager_v4_0_1
     {
     public:
-        index_manager_v2();
+        index_manager_v4_0_1();
         void push_col_file(const path_t &col_file_path);
         void push_doc_line(const str_t &doc_line);
         void print_inverted_index() const;
@@ -15,10 +16,10 @@ namespace ti
         const result_union_set_t retrieve_union(const query_t &query) const;
         const result_intersection_set_t retrieve_intersection(const query_t &query) const;
     private:
-        index_manager_v2(const index_manager_v2 &other) = delete;
-        index_manager_v2(index_manager_v2 &&other) = delete;
-        index_manager_v2 operator=(const index_manager_v2 &other) = delete;
-        index_manager_v2 operator=(index_manager_v2 &&other) = delete;
-        inverted_index_v2_t _inverted_index;
+        index_manager_v4_0_1(const index_manager_v4_0_1 &other) = delete;
+        index_manager_v4_0_1(index_manager_v4_0_1 &&other) = delete;
+        index_manager_v4_0_1 operator=(const index_manager_v4_0_1 &other) = delete;
+        index_manager_v4_0_1 operator=(index_manager_v4_0_1 &&other) = delete;
+        inverted_index_v1_t _inverted_index;
     };
 }

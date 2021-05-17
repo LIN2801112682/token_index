@@ -1,9 +1,10 @@
 #pragma once
 
 #include "token_index/types.h"
-#include "token_index/index_manager_v1.h"
-#include "token_index/index_manager_v2.h"
-#include "token_index/index_manager_v3.h"
+#include "token_index/index_manager_v4_0.h"
+#include "token_index/index_manager_v4_0_1.h"
+#include "token_index/index_manager_v4_1.h"
+#include "token_index/index_manager_v3_0.h"
 #include "token_index/index_manager_v3_1.h"
 
 namespace ti
@@ -11,7 +12,7 @@ namespace ti
     class field_manager
     {
     public:
-        using index_manager_t = index_manager_v1;
+        using index_manager_t = index_manager_v4_0;
         field_manager();
         ~field_manager();
         void push_field_dir(const path_t &field_dir_path);

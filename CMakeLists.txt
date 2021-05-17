@@ -9,9 +9,10 @@ include_directories(include)
 set(TOKEN_INDEX
     src/token_index/types.cpp
     src/token_index/common.cpp
-    src/token_index/index_manager_v1.cpp
-    src/token_index/index_manager_v2.cpp
-    src/token_index/index_manager_v3.cpp
+        src/token_index/index_manager_v4_0.cpp
+        src/token_index/index_manager_v4_0_1.cpp
+        src/token_index/index_manager_v4_1.cpp
+        src/token_index/index_manager_v3_0.cpp
     src/token_index/index_manager_v3_1.cpp
     src/token_index/field_manager.cpp
 )
