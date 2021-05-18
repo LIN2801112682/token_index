@@ -25,6 +25,8 @@ namespace ti
         str_idx_t end;
     };
 
+    using doc_line_index_t = std::unordered_map<doc_id_t, str_t>;
+
     struct position_offset_t
     {
         position_t position;

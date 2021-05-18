@@ -33,6 +33,7 @@ namespace ti
         iss >> token;
         doc_id_t doc_id{stoul(token)};
         str_t new_line{doc_line.substr(token.size() + 1)};
+        _doc_line_index.emplace(doc_id, new_line);
 
         position_t position{0};
         str_idx_t begin, end;
@@ -225,7 +226,7 @@ namespace ti
 
     result_intersection_set_t
     index_manager_v4_0_1::low_frequency_retrieve_intersection(
-        std::vector<token_relative_position_frequency_t> &&token_relative_position_frequency_vec) const
+        std::vector<token_relative_position_frequency_t> &&token_relative_position_frequency_vec, const str_t &query_line) const
     {
         return {};
     }
@@ -239,7 +240,7 @@ namespace ti
             gen_token_relative_position_frequency_vec(query)
         };
         if (token_relative_position_frequency_vec[0].frequency <= low_frequency)
-            return low_frequency_retrieve_intersection(std::move(token_relative_position_frequency_vec));
+            return low_frequency_retrieve_intersection(std::move(token_relative_position_frequency_vec), query_line);
         return not_low_frequency_retrieve_intersection(std::move(token_relative_position_frequency_vec));
     }
 }
