@@ -56,13 +56,8 @@ namespace ti
                     is_find_begin = false;
                     token = new_line.substr(begin, end - begin + 1);
 
-                    if (_inverted_index.count(token) == 0)
-                        _inverted_index.emplace(token, doc_id_map_t{});
-                    auto &doc_id_map = _inverted_index[token];
-
-                    if (doc_id_map.count(doc_id) == 0)
-                        doc_id_map.emplace(doc_id, position_offset_vec_t{});
-                    auto &position_offset_vec = doc_id_map[doc_id];
+                    auto &doc_id_map{_inverted_index[token]};
+                    auto &position_offset_vec{doc_id_map[doc_id]};
 
                     position_offset_vec.emplace_back(
                         position_offset_t{
@@ -112,7 +107,7 @@ namespace ti
     }
 
     result_intersection_set_t
-    index_manager_v4_0::retrieve_intersection(const query_t &query, const str_t &_) const
+    index_manager_v4_0::retrieve_intersection(const query_t &query, const str_t &) const
     {
         const auto &first_token = query[0];
         const auto &intersection_inverted_index_iter = _inverted_index.find(first_token);

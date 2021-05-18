@@ -58,13 +58,8 @@ namespace ti
                     is_find_begin = false;
                     token = new_line.substr(begin, end - begin + 1);
 
-                    if (_inverted_index.count(token) == 0)
-                        _inverted_index.emplace(token, doc_id_map_t{});
-                    auto &doc_id_map = _inverted_index[token];
-
-                    if (doc_id_map.count(doc_id) == 0)
-                        doc_id_map.emplace(doc_id, position_offset_vec_t{});
-                    auto &position_offset_vec = doc_id_map[doc_id];
+                    auto &doc_id_map{_inverted_index[token]};
+                    auto &position_offset_vec{doc_id_map[doc_id]};
 
                     position_offset_vec.emplace_back(
                         position_offset_t{
@@ -172,7 +167,6 @@ namespace ti
                 auto &intersection_position_offset_vec{intersection_doc_id_map_iter->second};
                 const auto &position_offset_vec{doc_id_map_iter->second};
 
-
                 std::size_t quick{0}, slow{0};
                 for (; quick < intersection_position_offset_vec.size(); ++quick)
                 {
@@ -210,15 +204,11 @@ namespace ti
         for (const auto &intersection_doc_id_map_pair : intersection_doc_id_map)
         {
             const auto &doc_id = intersection_doc_id_map_pair.first;
-            temp_doc_id_map.emplace(doc_id, position_offset_vec_t{});
-            auto &temp_position_offset_vec = temp_doc_id_map[doc_id];
+            auto &temp_position_offset_vec{temp_doc_id_map[doc_id]};
 
             const auto &intersection_position_offset_vec = intersection_doc_id_map_pair.second;
             for (const auto &position_offset : intersection_position_offset_vec)
-            {
                 temp_position_offset_vec.emplace_back(position_offset_t{position_offset.position - first_relative_position, position_offset.offset});
-            }
-
         }
         intersection_doc_id_map = temp_doc_id_map;
 

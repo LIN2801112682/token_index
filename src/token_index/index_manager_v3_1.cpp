@@ -32,14 +32,8 @@ namespace ti
 
         for (position_t position{0}; position < doc.size(); ++position)
         {
-            const auto &token = doc[position];
-
-            if (_inverted_index.count(token) == 0)
-                _inverted_index.emplace(token, doc_id_umap_t{});
-            auto &doc_id_map = _inverted_index[token];
-
-            if (doc_id_map.count(doc_id) == 0)
-                doc_id_map.emplace(doc_id, position_uset_t{});
+            const auto &token{doc[position]};
+            auto &doc_id_map{_inverted_index[token]};
             doc_id_map[doc_id].emplace(position);
         }
     }
@@ -80,7 +74,7 @@ namespace ti
     }
 
     result_intersection_set_t
-    index_manager_v3_1::retrieve_intersection(const query_t &query, const str_t &_) const
+    index_manager_v3_1::retrieve_intersection(const query_t &query, const str_t &) const
     {
         std::vector<token_relative_position_frequency_t> token_relative_position_frequency_vec;
         for (position_t relative_position{0}; relative_position < query.size(); ++relative_position)
