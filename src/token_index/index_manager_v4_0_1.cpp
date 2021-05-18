@@ -233,7 +233,7 @@ namespace ti
     static constexpr frequency_t low_frequency{10};
 
     result_intersection_set_t
-    index_manager_v4_0_1::retrieve_intersection(const query_t &query) const
+    index_manager_v4_0_1::retrieve_intersection(const query_t &query, const str_t &query_line) const
     {
         std::vector<token_relative_position_frequency_t> token_relative_position_frequency_vec{
             gen_token_relative_position_frequency_vec(query)

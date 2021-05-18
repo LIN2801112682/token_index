@@ -13,7 +13,7 @@ namespace ti
         void print_inverted_index() const;
         frequency_t calc_frequency(const str_t &token) const;
         result_union_set_t retrieve_union(const query_t &query) const;
-        result_intersection_set_t retrieve_intersection(const query_t &query) const;
+        result_intersection_set_t retrieve_intersection(const query_t &query, const str_t &_) const;
     private:
         index_manager_v3_0(const index_manager_v3_0 &other) = delete;
         index_manager_v3_0(index_manager_v3_0 &&other) = delete;

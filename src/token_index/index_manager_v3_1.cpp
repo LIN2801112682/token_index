@@ -80,7 +80,7 @@ namespace ti
     }
 
     result_intersection_set_t
-    index_manager_v3_1::retrieve_intersection(const query_t &query) const
+    index_manager_v3_1::retrieve_intersection(const query_t &query, const str_t &_) const
     {
         std::vector<token_relative_position_frequency_t> token_relative_position_frequency_vec;
         for (position_t relative_position{0}; relative_position < query.size(); ++relative_position)

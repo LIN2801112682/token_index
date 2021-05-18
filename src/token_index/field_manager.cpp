@@ -49,6 +49,6 @@ namespace ti
         if (std::end(_field_map) == iter)
             return {};
         auto p_index_manager = iter->second; 
-        return p_index_manager->retrieve_intersection(query);
+        return p_index_manager->retrieve_intersection(query, query_line);
     }
 }

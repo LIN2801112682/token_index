@@ -112,7 +112,7 @@ namespace ti
     }
 
     result_intersection_set_t
-    index_manager_v4_0::retrieve_intersection(const query_t &query) const
+    index_manager_v4_0::retrieve_intersection(const query_t &query, const str_t &_) const
     {
         const auto &first_token = query[0];
         const auto &intersection_inverted_index_iter = _inverted_index.find(first_token);
