@@ -34,7 +34,7 @@ namespace ti
     };
     using position_offset_vec_t = std::vector<position_offset_t>;
     using doc_id_map_t = std::map<doc_id_t, position_offset_vec_t>;
-    using inverted_index_v1_t = std::unordered_map<str_t, doc_id_map_t>;
+    using inverted_index_v4_0_t = std::unordered_map<str_t, doc_id_map_t>;
 
     struct doc_id_position_offset_t
     {
@@ -43,7 +43,7 @@ namespace ti
         offset_t offset;
     };
     using doc_id_position_offset_vec_t = std::vector<doc_id_position_offset_t>;
-    using inverted_index_v2_t = std::unordered_map<str_t, doc_id_position_offset_vec_t>;
+    using inverted_index_v4_1_t = std::unordered_map<str_t, doc_id_position_offset_vec_t>;
 
     using position_uset_t = std::unordered_set<position_t>;
     using doc_id_umap_t = std::unordered_map<doc_id_t, position_uset_t>;
@@ -69,9 +69,9 @@ namespace ti
         frequency_t frequency;
     };
 
-    result_intersection_set_t to_result_intersection_set_t(const doc_id_map_t &);
-    result_intersection_set_t to_result_intersection_set_t(const doc_id_position_offset_vec_t &);
-    result_intersection_set_t to_result_intersection_set_t(const doc_id_umap_t &);
+    result_intersection_set_t to_result_intersection_set_t(doc_id_map_t &&);
+    result_intersection_set_t to_result_intersection_set_t(doc_id_position_offset_vec_t &&);
+    result_intersection_set_t to_result_intersection_set_t(doc_id_umap_t &&);
 }
 
 std::ostream &operator<<(std::ostream &os, const ti::offset_t &);

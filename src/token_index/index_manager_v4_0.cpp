@@ -167,6 +167,6 @@ namespace ti
             if (intersection_doc_id_map.empty())
                 return {};
         }
-        return to_result_intersection_set_t(intersection_doc_id_map);
+        return to_result_intersection_set_t(std::move(intersection_doc_id_map));
     }
 }

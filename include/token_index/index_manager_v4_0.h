@@ -19,6 +19,6 @@ namespace ti
         index_manager_v4_0(index_manager_v4_0 &&other) = delete;
         index_manager_v4_0 operator=(const index_manager_v4_0 &other) = delete;
         index_manager_v4_0 operator=(index_manager_v4_0 &&other) = delete;
-        inverted_index_v1_t _inverted_index;
+        inverted_index_v4_0_t _inverted_index;
     };
 }

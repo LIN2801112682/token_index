@@ -156,6 +156,6 @@ namespace ti
         }
         intersection_doc_id_umap = temp_doc_id_umap;
 
-        return to_result_intersection_set_t(intersection_doc_id_umap);
+        return to_result_intersection_set_t(std::move(intersection_doc_id_umap));
     }
 }

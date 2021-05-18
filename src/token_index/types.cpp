@@ -2,43 +2,36 @@
 
 namespace ti
 {
-    result_intersection_set_t to_result_intersection_set_t(const doc_id_map_t &doc_id_map)
+    result_intersection_set_t to_result_intersection_set_t(doc_id_map_t &&doc_id_map)
     {
         result_intersection_set_t result_intersection_set{};
-        for (const auto &doc_id_map_pair : doc_id_map)
-            result_intersection_set[doc_id_map_pair.first] = doc_id_map_pair.second;
+        for (auto &&doc_id_map_pair : doc_id_map)
+            result_intersection_set.emplace(doc_id_map_pair.first, std::move(doc_id_map_pair.second));
         return result_intersection_set;
     }
 
-    result_intersection_set_t to_result_intersection_set_t(const doc_id_position_offset_vec_t &doc_id_position_offset_vec)
+    result_intersection_set_t to_result_intersection_set_t(doc_id_position_offset_vec_t &&doc_id_position_offset_vec)
     {
         result_intersection_set_t result_intersection_set{};
-        for (const auto &doc_id_position_offset : doc_id_position_offset_vec)
-        {
-            const auto &doc_id = doc_id_position_offset.doc_id;
-            if (result_intersection_set.count(doc_id) == 0)
-                result_intersection_set.emplace(doc_id, position_offset_vec_t{});
-            result_intersection_set[doc_id].emplace_back(
+        for (auto &&doc_id_position_offset : doc_id_position_offset_vec)
+            result_intersection_set[doc_id_position_offset.doc_id].emplace_back(
                 position_offset_t{
-                    doc_id_position_offset.position,
-                    doc_id_position_offset.offset,
+                    std::move(doc_id_position_offset.position),
+                    std::move(doc_id_position_offset.offset),
                 });
-        }
         return result_intersection_set;
     }
 
-    result_intersection_set_t to_result_intersection_set_t(const doc_id_umap_t &doc_id_umap)
+    result_intersection_set_t to_result_intersection_set_t(doc_id_umap_t &&doc_id_umap)
     {
         result_intersection_set_t result_intersection_set{};
-        for (const auto &doc_id_umap_pair : doc_id_umap)
+        for (auto &&doc_id_umap_pair : doc_id_umap)
         {
-            const auto &doc_id = doc_id_umap_pair.first;
-            result_intersection_set.emplace(doc_id, position_offset_vec_t{});
-            auto &position_offset_vec = result_intersection_set[doc_id];
-            for (const auto &position : doc_id_umap_pair.second)
+            auto &position_offset_vec{result_intersection_set[doc_id_umap_pair.first]};
+            for (auto &&position : doc_id_umap_pair.second)
                 position_offset_vec.emplace_back(
                     position_offset_t{
-                        position,
+                        std::move(position),
                         offset_t{0, 0},
                     });
         }

@@ -212,7 +212,7 @@ namespace ti
         }
         intersection_doc_id_map = temp_doc_id_map;
 
-        return to_result_intersection_set_t(intersection_doc_id_map);
+        return to_result_intersection_set_t(std::move(intersection_doc_id_map));
     }
 
     result_intersection_set_t
