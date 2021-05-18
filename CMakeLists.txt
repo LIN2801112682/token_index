@@ -9,15 +9,15 @@ include_directories(include)
 set(TOKEN_INDEX
     src/token_index/types.cpp
     src/token_index/common.cpp
-        src/token_index/index_manager_v4_0.cpp
-        src/token_index/index_manager_v4_0_1.cpp
-        src/token_index/index_manager_v4_1.cpp
-        src/token_index/index_manager_v3_0.cpp
+    src/token_index/index_manager_v4_0.cpp
+    src/token_index/index_manager_v4_0_1.cpp
+    src/token_index/index_manager_v4_1.cpp
+    src/token_index/index_manager_v3_0.cpp
     src/token_index/index_manager_v3_1.cpp
     src/token_index/field_manager.cpp
 )
 set(BM src/bm/bm.cpp)
 
-add_executable (test_field_manager tests/test_field_manager.cpp ${TOKEN_INDEX})
+add_executable (test_field_manager tests/test_field_manager.cpp ${TOKEN_INDEX} ${BM})
 add_executable (filter tests/filter.cpp)
 add_executable (test_bm tests/test_bm.cpp ${BM})

@@ -1,6 +1,7 @@
 #include "token_index/index_manager_v4_0_1.h"
 #include "token_index/types.h"
 #include "token_index/common.h"
+#include "bm/bm.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -228,7 +229,60 @@ namespace ti
     index_manager_v4_0_1::low_frequency_retrieve_intersection(
         std::vector<token_relative_position_frequency_t> &&token_relative_position_frequency_vec, const str_t &query_line) const
     {
-        return {};
+        const auto &first_token_relative_position_frequency = token_relative_position_frequency_vec[0];
+        const auto &first_token = first_token_relative_position_frequency.token;
+        const auto &first_relative_position = first_token_relative_position_frequency.relative_position;
+        const auto &intersection_inverted_index_iter = _inverted_index.find(first_token);
+        if (std::end(_inverted_index) == intersection_inverted_index_iter)
+            return {};
+        std::unordered_set<doc_id_t> intersection_doc_id_set{};
+        for (const auto &pair : intersection_inverted_index_iter->second)
+            intersection_doc_id_set.emplace(pair.first);
+
+        for (std::size_t i{1}; i < token_relative_position_frequency_vec.size(); ++i)
+        {
+            const auto &token_relative_position_frequency = token_relative_position_frequency_vec[i];
+            const auto &token = token_relative_position_frequency.token;
+            const auto &inverted_index_iter= _inverted_index.find(token);
+            if (std::end(_inverted_index) == inverted_index_iter)
+                return {};
+            const auto &doc_id_map{inverted_index_iter->second};
+
+            for (auto intersection_doc_id_set_iter{std::begin(intersection_doc_id_set)};
+                 intersection_doc_id_set_iter != std::end(intersection_doc_id_set);)
+            {
+                const auto &doc_id{*intersection_doc_id_set_iter};
+                if (doc_id_map.count(doc_id) == 0)
+                {
+                    intersection_doc_id_set_iter = intersection_doc_id_set.erase(intersection_doc_id_set_iter);
+                    continue;
+                }
+                ++intersection_doc_id_set_iter;
+            }
+            if (intersection_doc_id_set.empty())
+                return {};
+        }
+
+        result_intersection_set_t result_intersection_set{};
+        auto query_line_size{query_line.size()};
+        for (const doc_id_t &doc_id : intersection_doc_id_set)
+        {
+            const auto &doc_line{_doc_line_index.find(doc_id)->second};
+            auto offset_begin_vec{bm::BoyerMoore(doc_line, query_line)};
+            if (offset_begin_vec.empty())
+                continue;
+            auto &position_offset_vec{result_intersection_set[doc_id]};
+            for (const auto &offset_begin : offset_begin_vec)
+                position_offset_vec.emplace_back(
+                    position_offset_t{
+                        0,
+                        offset_t{
+                            offset_begin,
+                            offset_begin + query_line_size,
+                        },
+                    });
+        } 
+        return result_intersection_set;
     }
 
     static constexpr frequency_t low_frequency{10};
