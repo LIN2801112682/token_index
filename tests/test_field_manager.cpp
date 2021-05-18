@@ -7,11 +7,13 @@
 #include <chrono>
 
 void test_query(const ti::field_manager &manager, const std::string &field, const std::vector<ti::query_t> &query_vec,
-                     const bool &is_union, const bool &is_out, std::ostream &os = std::cout)
+                const std::vector<ti::str_t> &query_line_vec, const bool &is_union, const bool &is_out, std::ostream &os = std::cout)
 {
     auto begin_time = std::chrono::high_resolution_clock::now();
-    for (const auto &query : query_vec)
+    for (std::size_t i{0}; i < query_vec.size(); ++i)
     {
+        const auto &query{query_vec[i]};
+        const auto &query_line{query_line_vec[i]};
         auto begin_time = std::chrono::high_resolution_clock::now();
         std::size_t set_size{0};
         if (is_union)
@@ -23,7 +25,7 @@ void test_query(const ti::field_manager &manager, const std::string &field, cons
         }
         else
         {
-            const auto &intersection_set = manager.retrieve_field_intersection(field, query);
+            const auto &intersection_set = manager.retrieve_field_intersection(field, query, query_line);
             set_size = intersection_set.size();
             if (is_out)
                 os << query << " : " << intersection_set << std::endl;
@@ -51,23 +53,23 @@ void test_query_group(const ti::path_t &field_dir, const std::string &field, con
 {
     ti::field_manager manager{};
     manager.push_field_dir(field_dir);
-    auto query_vec = ti::load_query_vec(query_path);
+    auto [query_vec, query_line_vec] = ti::load_query_vec(query_path);
     std::ofstream ofs;
 
     std::cout << "field: " << field << ", union, cout ----------" << std::endl;
-    test_query(manager, field, query_vec, true, false);
+    test_query(manager, field, query_vec, query_line_vec, true, false);
 
     std::cout << "field: " << field << ", intersection, cout ----------" << std::endl;
-    test_query(manager, field, query_vec, false, false);
+    test_query(manager, field, query_vec, query_line_vec, false, false);
 
     std::cout << "field: " << field << ", union, ofs ----------" << std::endl;
     ofs.open(union_result_path, std::ofstream::out);
-    test_query(manager, field, query_vec, true, true, ofs);
+    test_query(manager, field, query_vec, query_line_vec, true, true, ofs);
     ofs.close();
 
     std::cout << "field: " << field << ", intersection, ofs ----------" << std::endl;
     ofs.open(intersection_result_path, std::ofstream::out);
-    test_query(manager, field, query_vec, false, true, ofs);
+    test_query(manager, field, query_vec, query_line_vec, false, true, ofs);
     ofs.close();
 }
 

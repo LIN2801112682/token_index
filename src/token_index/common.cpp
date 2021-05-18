@@ -35,18 +35,20 @@ namespace ti
         return query;
     }
 
-    std::vector<query_t>
+    std::tuple<std::vector<query_t>, std::vector<str_t>>
     load_query_vec(const path_t &path)
     {
         std::vector<query_t> query_vec;
+        std::vector<str_t> query_line_vec;
         std::ifstream ifs{path, std::ifstream::in};
         str_t line;
         while (getline(ifs, line))
         {
             std::transform(std::begin(line), std::end(line), std::begin(line), tolower);
             query_vec.push_back(line_to_query(line));
+            query_line_vec.push_back(line);
         }
         ifs.close();
-        return query_vec;
+        return {query_vec, query_line_vec};
     }
 }

@@ -21,6 +21,7 @@ namespace ti
         index_manager_v4_0_1 operator=(index_manager_v4_0_1 &&other) = delete;
         inverted_index_v1_t _inverted_index;
         std::vector<token_relative_position_frequency_t> gen_token_relative_position_frequency_vec(const query_t &query) const;
+        result_intersection_set_t low_frequency_retrieve_intersection(std::vector<token_relative_position_frequency_t> &&token_relative_position_frequency_vec) const;
         result_intersection_set_t not_low_frequency_retrieve_intersection(std::vector<token_relative_position_frequency_t> &&token_relative_position_frequency_vec) const;
     };
 }

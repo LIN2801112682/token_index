@@ -43,7 +43,7 @@ namespace ti
     }
     
     const result_intersection_set_t 
-    field_manager::retrieve_field_intersection(const std::string &field, const query_t &query) const
+    field_manager::retrieve_field_intersection(const std::string &field, const query_t &query, const str_t &query_line) const
     {
         auto iter = _field_map.find(field);
         if (std::end(_field_map) == iter)

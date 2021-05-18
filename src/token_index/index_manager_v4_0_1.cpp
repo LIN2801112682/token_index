@@ -224,11 +224,22 @@ namespace ti
     }
 
     result_intersection_set_t
+    index_manager_v4_0_1::low_frequency_retrieve_intersection(
+        std::vector<token_relative_position_frequency_t> &&token_relative_position_frequency_vec) const
+    {
+        return {};
+    }
+
+    static constexpr frequency_t low_frequency{10};
+
+    result_intersection_set_t
     index_manager_v4_0_1::retrieve_intersection(const query_t &query) const
     {
         std::vector<token_relative_position_frequency_t> token_relative_position_frequency_vec{
             gen_token_relative_position_frequency_vec(query)
         };
+        if (token_relative_position_frequency_vec[0].frequency <= low_frequency)
+            return low_frequency_retrieve_intersection(std::move(token_relative_position_frequency_vec));
         return not_low_frequency_retrieve_intersection(std::move(token_relative_position_frequency_vec));
     }
 }
