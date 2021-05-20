@@ -2,7 +2,7 @@
 
 namespace ti
 {
-    result_intersection_set_t to_result_intersection_set_t(doc_id_map_t &&doc_id_map)
+    result_intersection_set_t to_result_intersection_set_t(doc_id_map_t &&doc_id_map) noexcept
     {
         result_intersection_set_t result_intersection_set{};
         for (auto &&doc_id_map_pair : doc_id_map)
@@ -10,7 +10,7 @@ namespace ti
         return result_intersection_set;
     }
 
-    result_intersection_set_t to_result_intersection_set_t(doc_id_position_offset_vec_t &&doc_id_position_offset_vec)
+    result_intersection_set_t to_result_intersection_set_t(doc_id_position_offset_vec_t &&doc_id_position_offset_vec) noexcept
     {
         result_intersection_set_t result_intersection_set{};
         for (auto &&doc_id_position_offset : doc_id_position_offset_vec)
@@ -22,7 +22,7 @@ namespace ti
         return result_intersection_set;
     }
 
-    result_intersection_set_t to_result_intersection_set_t(doc_id_umap_t &&doc_id_umap)
+    result_intersection_set_t to_result_intersection_set_t(doc_id_umap_t &&doc_id_umap) noexcept
     {
         result_intersection_set_t result_intersection_set{};
         for (auto &&doc_id_umap_pair : doc_id_umap)

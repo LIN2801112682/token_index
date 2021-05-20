@@ -39,13 +39,13 @@ namespace ti
     }
 
     void
-    index_manager_v3_1::print_inverted_index() const
+    index_manager_v3_1::print_inverted_index() const noexcept
     {
         std::cout << _inverted_index;
     }
 
     frequency_t
-    index_manager_v3_1::calc_frequency(const str_t &token) const
+    index_manager_v3_1::calc_frequency(const str_t &token) const noexcept 
     {
         auto inverted_index_iter = _inverted_index.find(token);
         if (std::end(_inverted_index) == inverted_index_iter)
@@ -58,7 +58,7 @@ namespace ti
     }
 
     result_union_set_t
-    index_manager_v3_1::retrieve_union(const query_t &query) const
+    index_manager_v3_1::retrieve_union(const query_t &query) const noexcept
     {
         result_union_set_t union_set{};
         for (const auto &token : query)
@@ -74,7 +74,7 @@ namespace ti
     }
 
     result_intersection_set_t
-    index_manager_v3_1::retrieve_intersection(const query_t &query, const str_t &) const
+    index_manager_v3_1::retrieve_intersection(const query_t &query, const str_t &) const noexcept
     {
         std::vector<token_relative_position_frequency_t> token_relative_position_frequency_vec;
         for (position_t relative_position{0}; relative_position < query.size(); ++relative_position)

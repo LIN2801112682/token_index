@@ -69,9 +69,9 @@ namespace ti
         frequency_t frequency;
     };
 
-    result_intersection_set_t to_result_intersection_set_t(doc_id_map_t &&);
-    result_intersection_set_t to_result_intersection_set_t(doc_id_position_offset_vec_t &&);
-    result_intersection_set_t to_result_intersection_set_t(doc_id_umap_t &&);
+    result_intersection_set_t to_result_intersection_set_t(doc_id_map_t &&) noexcept;
+    result_intersection_set_t to_result_intersection_set_t(doc_id_position_offset_vec_t &&) noexcept;
+    result_intersection_set_t to_result_intersection_set_t(doc_id_umap_t &&) noexcept;
 }
 
 std::ostream &operator<<(std::ostream &os, const ti::offset_t &);
