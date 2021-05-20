@@ -283,8 +283,9 @@ namespace ti
         std::vector<token_relative_position_frequency_t> token_relative_position_frequency_vec{
             gen_token_relative_position_frequency_vec(query)
         };
-        if (token_relative_position_frequency_vec[0].frequency <= low_frequency)
+        if (token_relative_position_frequency_vec[0].frequency <= low_frequency) [[unlikely]]
             return low_frequency_retrieve_intersection(std::move(token_relative_position_frequency_vec), query_line);
-        return not_low_frequency_retrieve_intersection(std::move(token_relative_position_frequency_vec));
+        else [[likely]]
+            return not_low_frequency_retrieve_intersection(std::move(token_relative_position_frequency_vec));
     }
 }
