@@ -10,8 +10,7 @@
 
 namespace ti
 {
-    index_manager_v4_0_2::index_manager_v4_0_2()
-        : _inverted_index{} {}
+    index_manager_v4_0_2::index_manager_v4_0_2() {}
 
     void
     index_manager_v4_0_2::push_col_file(const path_t &col_file_path)

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "token_index/types.h"
-#include "levenshtein_automaton/trie_node.h"
+#include "token_index/ti_trie_tree.h"
 
 namespace ti
 {
@@ -20,7 +20,7 @@ namespace ti
         index_manager_v4_0_2(index_manager_v4_0_2 &&other) = delete;
         index_manager_v4_0_2 operator=(const index_manager_v4_0_2 &other) = delete;
         index_manager_v4_0_2 operator=(index_manager_v4_0_2 &&other) = delete;
-        inverted_index_v4_0_t _inverted_index;
+        // ti_trie_tree _inverted_index;
         doc_line_index_t _doc_line_index;
         std::vector<token_relative_position_frequency_t> gen_token_relative_position_frequency_vec(const query_t &query) const noexcept;
         result_intersection_set_t low_frequency_retrieve_intersection(std::vector<token_relative_position_frequency_t> &&token_relative_position_frequency_vec, const str_t &query_line) const noexcept;
