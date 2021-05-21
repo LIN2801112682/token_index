@@ -1,0 +1,3 @@
+[submodule "ext/LA_CPlusPlus"]
+	path = ext/LA_CPlusPlus
+	url = https://github.com/charleswu52/LA_CPlusPlus.git
