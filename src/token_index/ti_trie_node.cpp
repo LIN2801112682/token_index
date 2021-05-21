@@ -2,4 +2,6 @@
 
 namespace ti
 {
+    ti_trie_node::ti_trie_node(const char &key, std::string &&value)
+        : la::trie_node(key, std::move(value)) {}
 }
