@@ -29,6 +29,7 @@ namespace ti
     void
     index_manager_v4_0_2::push_doc_line(const str_t &doc_line)
     {
+        /*
         str_t token;
         std::istringstream iss{doc_line};
         iss >> token;
@@ -71,17 +72,20 @@ namespace ti
                 }
             }
         }
+        */
     }
 
     void
     index_manager_v4_0_2::print_inverted_index() const noexcept
     {
-        std::cout << _inverted_index;
+        // std::cout << _inverted_index;
     }
 
     frequency_t
     index_manager_v4_0_2::calc_frequency(const str_t &token) const noexcept
     {
+        return 0;
+        /*
         auto inverted_index_iter = _inverted_index.find(token);
         if (std::end(_inverted_index) == inverted_index_iter)
             return 0;
@@ -90,11 +94,14 @@ namespace ti
         for (const auto &doc_id_map_pair : inverted_index_iter->second)
             frequency += doc_id_map_pair.second.size();
         return frequency;
+        */
     }
 
     result_union_set_t
     index_manager_v4_0_2::retrieve_union(const query_t &query) const noexcept
     {
+        return {};
+        /*
         result_union_set_t union_set{};
         for (const auto &token : query)
         {
@@ -106,11 +113,14 @@ namespace ti
                 union_set.insert(doc_id_map_pair.first);
         }
         return union_set;
+        */
     }
 
     std::vector<token_relative_position_frequency_t>
     index_manager_v4_0_2::gen_token_relative_position_frequency_vec(const query_t &query) const noexcept
     {
+        return {};
+        /*
         std::vector<token_relative_position_frequency_t> token_relative_position_frequency_vec;
         for (position_t relative_position{0}; relative_position < query.size(); ++relative_position)
         {
@@ -130,12 +140,15 @@ namespace ti
                       return false;
                   });
         return token_relative_position_frequency_vec;
+        */
     }
 
     result_intersection_set_t
     index_manager_v4_0_2::not_low_frequency_retrieve_intersection(
         std::vector<token_relative_position_frequency_t> &&token_relative_position_frequency_vec) const noexcept
     {
+        return {};
+        /*
         const auto &first_token_relative_position_frequency = token_relative_position_frequency_vec[0];
         const auto &first_token = first_token_relative_position_frequency.token;
         const auto &first_relative_position = first_token_relative_position_frequency.relative_position;
@@ -213,12 +226,15 @@ namespace ti
         intersection_doc_id_map = temp_doc_id_map;
 
         return to_result_intersection_set_t(std::move(intersection_doc_id_map));
+        */
     }
 
     result_intersection_set_t
     index_manager_v4_0_2::low_frequency_retrieve_intersection(
         std::vector<token_relative_position_frequency_t> &&token_relative_position_frequency_vec, const str_t &query_line) const noexcept
     {
+        return {};
+        /*
         const auto &first_token_relative_position_frequency = token_relative_position_frequency_vec[0];
         const auto &first_token = first_token_relative_position_frequency.token;
         const auto &first_relative_position = first_token_relative_position_frequency.relative_position;
@@ -273,6 +289,7 @@ namespace ti
                     });
         } 
         return result_intersection_set;
+        */
     }
 
     static constexpr frequency_t low_frequency{10};
@@ -280,6 +297,8 @@ namespace ti
     result_intersection_set_t
     index_manager_v4_0_2::retrieve_intersection(const query_t &query, const str_t &query_line) const noexcept
     {
+        return {};
+        /*
         std::vector<token_relative_position_frequency_t> token_relative_position_frequency_vec{
             gen_token_relative_position_frequency_vec(query)
         };
@@ -287,5 +306,6 @@ namespace ti
             return low_frequency_retrieve_intersection(std::move(token_relative_position_frequency_vec), query_line);
         else
             return not_low_frequency_retrieve_intersection(std::move(token_relative_position_frequency_vec));
+        */
     }
 }
