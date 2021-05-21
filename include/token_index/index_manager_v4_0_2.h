@@ -1,6 +1,7 @@
 #pragma once
 
 #include "token_index/types.h"
+#include "levenshtein_automaton/trie_node.h"
 
 namespace ti
 {
