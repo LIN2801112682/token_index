@@ -1,4 +1,4 @@
-#include "token_index/index_manager_v4_0_1.h"
+#include "token_index/index_manager_v4_0_2.h"
 #include "token_index/types.h"
 #include "token_index/common.h"
 #include "bm/bm.h"
@@ -10,11 +10,11 @@
 
 namespace ti
 {
-    index_manager_v4_0_1::index_manager_v4_0_1()
+    index_manager_v4_0_2::index_manager_v4_0_2()
         : _inverted_index{} {}
 
     void
-    index_manager_v4_0_1::push_col_file(const path_t &col_file_path)
+    index_manager_v4_0_2::push_col_file(const path_t &col_file_path)
     {
         std::ifstream ifs{col_file_path, std::ifstream::in};
         str_t doc_line;
@@ -27,7 +27,7 @@ namespace ti
     }
 
     void
-    index_manager_v4_0_1::push_doc_line(const str_t &doc_line)
+    index_manager_v4_0_2::push_doc_line(const str_t &doc_line)
     {
         str_t token;
         std::istringstream iss{doc_line};
@@ -74,13 +74,13 @@ namespace ti
     }
 
     void
-    index_manager_v4_0_1::print_inverted_index() const noexcept
+    index_manager_v4_0_2::print_inverted_index() const noexcept
     {
         std::cout << _inverted_index;
     }
 
     frequency_t
-    index_manager_v4_0_1::calc_frequency(const str_t &token) const noexcept
+    index_manager_v4_0_2::calc_frequency(const str_t &token) const noexcept
     {
         auto inverted_index_iter = _inverted_index.find(token);
         if (std::end(_inverted_index) == inverted_index_iter)
@@ -93,7 +93,7 @@ namespace ti
     }
 
     result_union_set_t
-    index_manager_v4_0_1::retrieve_union(const query_t &query) const noexcept
+    index_manager_v4_0_2::retrieve_union(const query_t &query) const noexcept
     {
         result_union_set_t union_set{};
         for (const auto &token : query)
@@ -109,7 +109,7 @@ namespace ti
     }
 
     std::vector<token_relative_position_frequency_t>
-    index_manager_v4_0_1::gen_token_relative_position_frequency_vec(const query_t &query) const noexcept
+    index_manager_v4_0_2::gen_token_relative_position_frequency_vec(const query_t &query) const noexcept
     {
         std::vector<token_relative_position_frequency_t> token_relative_position_frequency_vec;
         for (position_t relative_position{0}; relative_position < query.size(); ++relative_position)
@@ -133,7 +133,7 @@ namespace ti
     }
 
     result_intersection_set_t
-    index_manager_v4_0_1::not_low_frequency_retrieve_intersection(
+    index_manager_v4_0_2::not_low_frequency_retrieve_intersection(
         std::vector<token_relative_position_frequency_t> &&token_relative_position_frequency_vec) const noexcept
     {
         const auto &first_token_relative_position_frequency = token_relative_position_frequency_vec[0];
@@ -216,7 +216,7 @@ namespace ti
     }
 
     result_intersection_set_t
-    index_manager_v4_0_1::low_frequency_retrieve_intersection(
+    index_manager_v4_0_2::low_frequency_retrieve_intersection(
         std::vector<token_relative_position_frequency_t> &&token_relative_position_frequency_vec, const str_t &query_line) const noexcept
     {
         const auto &first_token_relative_position_frequency = token_relative_position_frequency_vec[0];
@@ -278,7 +278,7 @@ namespace ti
     static constexpr frequency_t low_frequency{10};
 
     result_intersection_set_t
-    index_manager_v4_0_1::retrieve_intersection(const query_t &query, const str_t &query_line) const noexcept
+    index_manager_v4_0_2::retrieve_intersection(const query_t &query, const str_t &query_line) const noexcept
     {
         std::vector<token_relative_position_frequency_t> token_relative_position_frequency_vec{
             gen_token_relative_position_frequency_vec(query)

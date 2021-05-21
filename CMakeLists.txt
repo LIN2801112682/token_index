@@ -11,6 +11,7 @@ set(TOKEN_INDEX
     src/token_index/common.cpp
     src/token_index/index_manager_v4_0.cpp
     src/token_index/index_manager_v4_0_1.cpp
+    src/token_index/index_manager_v4_0_2.cpp
     src/token_index/index_manager_v4_1.cpp
     src/token_index/index_manager_v3_0.cpp
     src/token_index/index_manager_v3_1.cpp
