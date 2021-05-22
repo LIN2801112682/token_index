@@ -120,8 +120,6 @@ namespace ti
     std::vector<token_relative_position_frequency_t>
     index_manager_v4_0_2::gen_token_relative_position_frequency_vec(const query_t &query) const noexcept
     {
-        return {};
-        /*
         std::vector<token_relative_position_frequency_t> token_relative_position_frequency_vec;
         for (position_t relative_position{0}; relative_position < query.size(); ++relative_position)
         {
@@ -141,7 +139,6 @@ namespace ti
                       return false;
                   });
         return token_relative_position_frequency_vec;
-        */
     }
 
     result_intersection_set_t
@@ -298,11 +295,11 @@ namespace ti
     result_intersection_set_t
     index_manager_v4_0_2::retrieve_intersection(const query_t &query, const str_t &query_line) const noexcept
     {
-        return {};
-        /*
         std::vector<token_relative_position_frequency_t> token_relative_position_frequency_vec{
             gen_token_relative_position_frequency_vec(query)
         };
+        return {};
+        /*
         if (token_relative_position_frequency_vec[0].frequency <= low_frequency)
             return low_frequency_retrieve_intersection(std::move(token_relative_position_frequency_vec), query_line);
         else
