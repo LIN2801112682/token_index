@@ -81,7 +81,7 @@ namespace ti
         std::cout << _inverted_index << std::endl;
     }
 
-    void
+    doc_id_map_t
     index_manager_v4_0_2::search(const str_t &token) const noexcept
     {
         static constexpr int maxDist = 2;
@@ -94,6 +94,7 @@ namespace ti
         {
             std::cout << s << std::endl;
         }
+        return {};
     }
 
     frequency_t

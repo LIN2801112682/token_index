@@ -22,7 +22,7 @@ namespace ti
         index_manager_v4_0_2 operator=(index_manager_v4_0_2 &&other) = delete;
         la::trie_tree _inverted_index;
         doc_line_index_t _doc_line_index;
-        void search(const str_t &token) const noexcept;
+        doc_id_map_t search(const str_t &token) const noexcept;
         std::vector<token_relative_position_frequency_t> gen_token_relative_position_frequency_vec(const query_t &query) const noexcept;
         result_intersection_set_t low_frequency_retrieve_intersection(std::vector<token_relative_position_frequency_t> &&token_relative_position_frequency_vec, const str_t &query_line) const noexcept;
         result_intersection_set_t not_low_frequency_retrieve_intersection(std::vector<token_relative_position_frequency_t> &&token_relative_position_frequency_vec) const noexcept;
