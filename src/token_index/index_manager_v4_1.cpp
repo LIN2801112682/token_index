@@ -73,7 +73,7 @@ namespace ti
     void
     index_manager_v4_1::print_inverted_index() const noexcept
     {
-        std::cout << _inverted_index;
+        std::cout << _inverted_index << std::endl;
     }
 
     frequency_t
