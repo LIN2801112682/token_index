@@ -1,13 +1,34 @@
 #pragma once
 
-#include "levenshtein_automaton/trie_node.h"
 #include "token_index/types.h"
 
 #include <string>
 #include <array>
+#include <iostream>
 
 namespace la
 {
+    class trie_node
+    {
+    private:
+        trie_node(const trie_node &) = delete;
+        trie_node(trie_node &&) = delete;
+        trie_node &operator=(const trie_node &) = delete;
+        trie_node &operator=(trie_node &&) = delete;
+
+    public:
+        static constexpr int ALPHABET_SIZE{40};
+        trie_node(const char &key, std::string &&value);
+        ~trie_node();
+        static std::size_t convertIndex(const char &c);
+
+        std::array<trie_node *, ALPHABET_SIZE> _children;
+        bool _is_end_word;
+        char _key;
+        std::string _value;
+        ti::doc_id_map_t _doc_id_map;
+    };
+
     class trie_tree
     {
     private:
@@ -23,6 +44,7 @@ namespace la
         void insert(std::string &&key);
         bool search(const std::string &key);
         ti::doc_id_map_t& operator[](const std::string& key);
-        ti::doc_id_map_t& operator[](std::string&& key);
     };
 }
+
+std::ostream &operator<<(std::ostream &os, const la::trie_tree &tn);

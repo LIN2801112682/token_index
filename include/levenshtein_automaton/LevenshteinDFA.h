@@ -1,6 +1,5 @@
 #pragma once
 
-#include "levenshtein_automaton/trie_node.h"
 #include "levenshtein_automaton/trie_tree.h"
 #include "levenshtein_automaton/LevenshteinNFA.h"
 
