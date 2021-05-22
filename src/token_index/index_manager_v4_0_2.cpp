@@ -1,6 +1,8 @@
 #include "token_index/index_manager_v4_0_2.h"
 #include "token_index/types.h"
 #include "token_index/common.h"
+#include "levenshtein_automaton/LevenshteinNFA.h"
+#include "levenshtein_automaton/LevenshteinDFA.h"
 #include "bm/bm.h"
 #include <iostream>
 #include <fstream>
@@ -79,6 +81,20 @@ namespace ti
         std::cout << _inverted_index << std::endl;
     }
 
+    void
+    index_manager_v4_0_2::search(const str_t &token) const noexcept
+    {
+        static constexpr int maxDist = 2;
+        auto nfa{la::LevenshteinNFA::ConstructNFA(token, maxDist)};
+        auto dfa{la::LevenshteinDFA::SubsetConstruct(nfa)};
+        std::list<std::string> output;
+        dfa.Search(_inverted_index, dfa._start, _inverted_index._root_node, output);
+        for (auto & s: output)
+        {
+            std::cout << s << std::endl;
+        }
+    }
+
     frequency_t
     index_manager_v4_0_2::calc_frequency(const str_t &token) const noexcept
     {
@@ -98,6 +114,10 @@ namespace ti
     result_union_set_t
     index_manager_v4_0_2::retrieve_union(const query_t &query) const noexcept
     {
+        for (auto & q : query)
+        {
+            calc_frequency(q);
+        }
         return {};
         /*
         result_union_set_t union_set{};
