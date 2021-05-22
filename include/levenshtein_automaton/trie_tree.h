@@ -47,4 +47,5 @@ namespace la
     };
 }
 
+std::ostream &operator<<(std::ostream &os, const la::trie_node *tn);
 std::ostream &operator<<(std::ostream &os, const la::trie_tree &tn);

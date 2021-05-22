@@ -83,7 +83,18 @@ namespace la
     }
 }
 
+std::ostream &operator<<(std::ostream &os, const la::trie_node *tn)
+{
+    if (tn->_is_end_word)
+        os << tn->_value << std::endl;
+    for (const auto &child : tn->_children)
+        if (child != nullptr)
+            os << child;
+    return os;
+}
+
 std::ostream &operator<<(std::ostream &os, const la::trie_tree &tn)
 {
+    os << tn._root_node;
     return os;
 }
