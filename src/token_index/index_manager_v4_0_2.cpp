@@ -106,22 +106,15 @@ namespace ti
     result_union_set_t
     index_manager_v4_0_2::retrieve_union(const query_t &query) const noexcept
     {
-        for (auto & q : query)
-            std::cout << calc_frequency(q) << std::endl;
-        return {};
-        /*
         result_union_set_t union_set{};
         for (const auto &token : query)
         {
-            auto inverted_index_iter = _inverted_index.find(token);
-            if (std::end(_inverted_index) == inverted_index_iter)
-                continue;
-
-            for (const auto &doc_id_map_pair : inverted_index_iter->second)
-                union_set.insert(doc_id_map_pair.first);
+            auto search_result{search(token)};
+            for (const auto &node : search_result)
+                for (const auto &doc_id_map_pair : node->_doc_id_map)
+                    union_set.insert(doc_id_map_pair.first);
         }
         return union_set;
-        */
     }
 
     std::vector<token_relative_position_frequency_t>
