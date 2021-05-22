@@ -27,7 +27,6 @@ read_all_lines(const std::string &path)
     return result;
 }
 
-int la::START = 0;
 int main(int argc, char *argv[])
 {
     /*Load in all resources*/

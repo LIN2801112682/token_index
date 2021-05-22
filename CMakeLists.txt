@@ -16,7 +16,7 @@ aux_source_directory(src/levenshtein_automaton LEVENSHTEIN_AUTOMATON)
 add_executable (test_field_manager tests/test_field_manager.cpp
     ${TOKEN_INDEX}
     ${BM}
-    # ${LEVENSHTEIN_AUTOMATON}
+    ${LEVENSHTEIN_AUTOMATON}
 )
 # target_link_libraries(test_field_manager levenshtein_automaton)
 
