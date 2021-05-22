@@ -1,5 +1,6 @@
 #pragma once
 
+#include "token_index/types.h"
 #include <string>
 #include <array>
 
@@ -23,5 +24,6 @@ namespace la
         bool _is_end_word;
         char _key;
         std::string _value;
+        ti::doc_id_map_t _doc_id_map;
     };
 }

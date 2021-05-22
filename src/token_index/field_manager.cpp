@@ -32,7 +32,17 @@ namespace ti
         }
     }
 
-    const result_union_set_t 
+    void
+    field_manager::print_field_inverted_index(const std::string &field) const
+    {
+        auto iter = _field_map.find(field);
+        if (std::end(_field_map) == iter)
+            return;
+        auto p_index_manager = iter->second; 
+        p_index_manager->print_inverted_index();
+    }
+
+    result_union_set_t 
     field_manager::retrieve_field_union(const std::string &field, const query_t &query) const
     {
         auto iter = _field_map.find(field);
@@ -42,7 +52,7 @@ namespace ti
         return p_index_manager->retrieve_union(query);
     }
     
-    const result_intersection_set_t 
+    result_intersection_set_t 
     field_manager::retrieve_field_intersection(const std::string &field, const query_t &query, const str_t &query_line) const
     {
         auto iter = _field_map.find(field);

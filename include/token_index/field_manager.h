@@ -17,8 +17,9 @@ namespace ti
         field_manager();
         ~field_manager();
         void push_field_dir(const path_t &field_dir_path);
-        const result_union_set_t retrieve_field_union(const std::string &field, const query_t &query) const;
-        const result_intersection_set_t retrieve_field_intersection(const std::string &field, const query_t &query, const str_t &query_line) const;
+        void print_field_inverted_index(const path_t &field) const;
+        result_union_set_t retrieve_field_union(const path_t &field, const query_t &query) const;
+        result_intersection_set_t retrieve_field_intersection(const path_t &field, const query_t &query, const str_t &query_line) const;
     private:
         field_manager(const field_manager &other) = delete;
         field_manager(field_manager &&other) = delete;

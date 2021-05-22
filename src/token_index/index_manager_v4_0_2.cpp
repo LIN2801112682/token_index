@@ -10,7 +10,8 @@
 
 namespace ti
 {
-    index_manager_v4_0_2::index_manager_v4_0_2() {}
+    index_manager_v4_0_2::index_manager_v4_0_2()
+        : _inverted_index{} {}
 
     void
     index_manager_v4_0_2::push_col_file(const path_t &col_file_path)
@@ -28,7 +29,6 @@ namespace ti
     void
     index_manager_v4_0_2::push_doc_line(const str_t &doc_line)
     {
-        /*
         str_t token;
         std::istringstream iss{doc_line};
         iss >> token;
@@ -71,7 +71,6 @@ namespace ti
                 }
             }
         }
-        */
     }
 
     void
