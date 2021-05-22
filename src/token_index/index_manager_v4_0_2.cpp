@@ -89,6 +89,7 @@ namespace ti
         auto dfa{la::LevenshteinDFA::SubsetConstruct(nfa)};
         std::list<std::string> output;
         dfa.Search(_inverted_index, dfa._start, _inverted_index._root_node, output);
+        std::cout << "token: " << token << std::endl;
         for (auto & s: output)
         {
             std::cout << s << std::endl;
@@ -115,9 +116,7 @@ namespace ti
     index_manager_v4_0_2::retrieve_union(const query_t &query) const noexcept
     {
         for (auto & q : query)
-        {
-            calc_frequency(q);
-        }
+            search(q);
         return {};
         /*
         result_union_set_t union_set{};
