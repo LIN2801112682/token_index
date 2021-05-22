@@ -36,9 +36,11 @@ namespace ti
     field_manager::print_field_inverted_index(const std::string &field) const
     {
         auto iter = _field_map.find(field);
+        std::cout << "222222" << std::endl;
         if (std::end(_field_map) == iter)
             return;
         auto p_index_manager = iter->second; 
+        std::cout << "111111" << std::endl;
         p_index_manager->print_inverted_index();
     }
 
@@ -53,7 +55,7 @@ namespace ti
     }
     
     result_intersection_set_t 
-    field_manager::retrieve_field_intersection(const std::string &field, const query_t &query, const str_t &query_line) const
+    field_manager::retrieve_field_intersection(const path_t &field, const query_t &query, const str_t &query_line) const
     {
         auto iter = _field_map.find(field);
         if (std::end(_field_map) == iter)

@@ -53,6 +53,7 @@ void test_query_group(const ti::path_t &field_dir, const std::string &field, con
 {
     ti::field_manager manager{};
     manager.push_field_dir(field_dir);
+    manager.print_field_inverted_index(field);
     auto [query_vec, query_line_vec] = ti::load_query_vec(query_path);
     std::ofstream ofs;
 
@@ -73,6 +74,7 @@ void test_query_group(const ti::path_t &field_dir, const std::string &field, con
     ofs.close();
 }
 
+static const ti::path_t field{"query.txt"};
 static const ti::path_t field_dir{"../resources/field_dir"};
 static const ti::path_t query_path{"../resources/query.txt"};
 static const ti::path_t union_result_path{"../resources/union_result.txt"};
@@ -80,7 +82,6 @@ static const ti::path_t intersection_result_path{"../resources/intersection_resu
 
 int main()
 {
-    std::string field{"query.txt"};
     test_query_group(field_dir, field, query_path, union_result_path, intersection_result_path);
     return 0;
 }
