@@ -87,7 +87,7 @@ namespace la
 std::ostream &operator<<(std::ostream &os, const la::trie_node *tn)
 {
     if (tn->_is_end_word)
-        os << " {" << tn->_value << " : " << "}," << std::endl;
+        os << " {" << tn->_value << " : " << tn->_doc_id_map << "}," << std::endl;
     for (const auto &child : tn->_children)
         if (child != nullptr)
             os << child;

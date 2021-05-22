@@ -24,4 +24,8 @@ add_executable (filter tests/filter.cpp)
 
 add_executable (test_bm tests/test_bm.cpp ${BM})
 
-add_executable (test_la tests/test_la.cpp ${LEVENSHTEIN_AUTOMATON})
+add_executable (test_la tests/test_la.cpp
+    ${LEVENSHTEIN_AUTOMATON}
+    ${TOKEN_INDEX}
+    ${BM}
+)
