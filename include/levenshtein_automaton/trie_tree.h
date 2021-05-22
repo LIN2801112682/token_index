@@ -7,8 +7,6 @@
 
 namespace la
 {
-    extern int START;
-
     class trie_tree
     {
     private:

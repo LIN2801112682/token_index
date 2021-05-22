@@ -10,6 +10,8 @@
 
 namespace la
 {
+    extern int START;
+
     class LevenshteinDFA
     {
     public:
