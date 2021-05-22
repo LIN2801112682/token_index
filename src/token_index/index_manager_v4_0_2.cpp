@@ -231,32 +231,30 @@ namespace ti
     index_manager_v4_0_2::low_frequency_retrieve_intersection(
         std::vector<token_relative_position_frequency_t> &&token_relative_position_frequency_vec, const str_t &query_line) const noexcept
     {
-        return {};
-        /*
         const auto &first_token_relative_position_frequency = token_relative_position_frequency_vec[0];
         const auto &first_token = first_token_relative_position_frequency.token;
         const auto &first_relative_position = first_token_relative_position_frequency.relative_position;
-        const auto &intersection_inverted_index_iter = _inverted_index.find(first_token);
-        if (std::end(_inverted_index) == intersection_inverted_index_iter)
-            return {};
+        auto first_search_result{search(first_token)};
         std::unordered_set<doc_id_t> intersection_doc_id_set{};
-        for (const auto &pair : intersection_inverted_index_iter->second)
-            intersection_doc_id_set.emplace(pair.first);
+        for (const auto &node : first_search_result)
+            for (const auto &pair : node->_doc_id_map)
+                intersection_doc_id_set.emplace(pair.first);
 
         for (std::size_t i{1}; i < token_relative_position_frequency_vec.size(); ++i)
         {
             const auto &token_relative_position_frequency = token_relative_position_frequency_vec[i];
             const auto &token = token_relative_position_frequency.token;
-            const auto &inverted_index_iter= _inverted_index.find(token);
-            if (std::end(_inverted_index) == inverted_index_iter)
-                return {};
-            const auto &doc_id_map{inverted_index_iter->second};
+            auto search_result{search(token)};
+            decltype(intersection_doc_id_set) doc_id_set{};
+            for (const auto &node : search_result)
+                for (const auto &pair : node->_doc_id_map)
+                    doc_id_set.emplace(pair.first);
 
             for (auto intersection_doc_id_set_iter{std::begin(intersection_doc_id_set)};
                  intersection_doc_id_set_iter != std::end(intersection_doc_id_set);)
             {
                 const auto &doc_id{*intersection_doc_id_set_iter};
-                if (doc_id_map.count(doc_id) == 0)
+                if (doc_id_set.count(doc_id) == 0)
                 {
                     intersection_doc_id_set_iter = intersection_doc_id_set.erase(intersection_doc_id_set_iter);
                     continue;
@@ -287,7 +285,6 @@ namespace ti
                     });
         } 
         return result_intersection_set;
-        */
     }
 
     static constexpr frequency_t low_frequency{10};
@@ -298,12 +295,9 @@ namespace ti
         std::vector<token_relative_position_frequency_t> token_relative_position_frequency_vec{
             gen_token_relative_position_frequency_vec(query)
         };
-        return {};
-        /*
         if (token_relative_position_frequency_vec[0].frequency <= low_frequency)
             return low_frequency_retrieve_intersection(std::move(token_relative_position_frequency_vec), query_line);
         else
             return not_low_frequency_retrieve_intersection(std::move(token_relative_position_frequency_vec));
-        */
     }
 }
