@@ -87,7 +87,7 @@ namespace ti
         static constexpr int maxDist = 2;
         auto nfa{la::LevenshteinNFA::ConstructNFA(token, maxDist)};
         auto dfa{la::LevenshteinDFA::SubsetConstruct(nfa)};
-        std::list<std::string> output;
+        std::vector<la::trie_node *> output;
         dfa.Search(_inverted_index, dfa._start, _inverted_index._root_node, output);
         std::cout << "token: " << token << std::endl;
         for (auto & s: output)

@@ -50,15 +50,15 @@ int main(int argc, char *argv[])
 
         auto nfa{la::LevenshteinNFA::ConstructNFA(query, maxDist)};
         auto dfa{la::LevenshteinDFA::SubsetConstruct(nfa)};
-        std::list<std::string> output;
+        std::vector<la::trie_node *> output;
         std::cout << "Searching...\n";
         dfa.Search(tree, dfa._start, tree._root_node, output);
         duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - timer).count();
         totalTime += duration;
         std::cout << "Construction and Search complete! Time: " << duration << " Microseconds\n";
         /*
-        for(const auto &word : output)
-            std::cout<< word << '\n';
+        for(const auto &node : output)
+            std::cout<< node->_value << '\n';
         */
         std::cout << "Number of hits found: " << output.size() << '\n';
     }

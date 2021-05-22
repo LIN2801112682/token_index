@@ -142,12 +142,12 @@ namespace la
         }
         return epsilonClosure;
     }
-    void LevenshteinDFA::Search(const trie_tree &trie, int start, trie_node * node, std::list<std::string> &output)
+    void LevenshteinDFA::Search(const trie_tree &trie, int start, trie_node * node, std::vector<trie_node *> &output)
     {
         /**/
         if (std::find(_finalStates.begin(), _finalStates.end(), start) != _finalStates.end() &&node->_is_end_word )
         {
-            output.emplace_back(node->_value);
+            output.emplace_back(node);
         }
         std::list<char> inputs;
         for (std::list<char>::iterator it = _uniqueChars.begin(); it != _uniqueChars.end();++it)

@@ -1,5 +1,6 @@
 #include "levenshtein_automaton/trie_tree.h"
 #include "token_index/types.h"
+#include <stack>
 
 namespace la
 {
@@ -87,17 +88,25 @@ namespace la
 std::ostream &operator<<(std::ostream &os, const la::trie_node *tn)
 {
     if (tn->_is_end_word)
-        os << " {" << tn->_value << " : " << tn->_doc_id_map << "}," << std::endl;
-    for (const auto &child : tn->_children)
-        if (child != nullptr)
-            os << child;
+        // os << " {" << tn->_value << " : " << tn->_doc_id_map << "}," << std::endl;
+        os << " {" << tn->_value << " : " << "}," << std::endl;
     return os;
 }
 
-std::ostream &operator<<(std::ostream &os, const la::trie_tree &tn)
+std::ostream &operator<<(std::ostream &os, const la::trie_tree &tt)
 {
     os << "[" << std::endl;
-    os << tn._root_node;
+    std::stack<la::trie_node *> s{};
+    s.push(tt._root_node);
+    while (!s.empty())
+    {
+        la::trie_node *cur_node{s.top()};
+        s.pop();
+        os << cur_node;
+        for (const auto &child : cur_node->_children)
+            if (child != nullptr)
+                s.push(child);
+    }
     os << "]";
     return os;
 }
