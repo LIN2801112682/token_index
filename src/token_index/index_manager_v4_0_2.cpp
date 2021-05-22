@@ -81,43 +81,33 @@ namespace ti
         std::cout << _inverted_index << std::endl;
     }
 
-    doc_id_map_t
+    static constexpr int maxDist = 2;
+    std::vector<la::trie_node *>
     index_manager_v4_0_2::search(const str_t &token) const noexcept
     {
-        static constexpr int maxDist = 2;
+        std::vector<la::trie_node *> result;
         auto nfa{la::LevenshteinNFA::ConstructNFA(token, maxDist)};
         auto dfa{la::LevenshteinDFA::SubsetConstruct(nfa)};
-        std::vector<la::trie_node *> output;
-        dfa.Search(_inverted_index, dfa._start, _inverted_index._root_node, output);
-        std::cout << "token: " << token << std::endl;
-        for (auto & s: output)
-        {
-            std::cout << s << std::endl;
-        }
-        return {};
+        dfa.Search(_inverted_index, dfa._start, _inverted_index._root_node, result);
+        return result;
     }
 
     frequency_t
     index_manager_v4_0_2::calc_frequency(const str_t &token) const noexcept
     {
-        return 0;
-        /*
-        auto inverted_index_iter = _inverted_index.find(token);
-        if (std::end(_inverted_index) == inverted_index_iter)
-            return 0;
-
         frequency_t frequency{0};
-        for (const auto &doc_id_map_pair : inverted_index_iter->second)
-            frequency += doc_id_map_pair.second.size();
+        auto search_result{search(token)};
+        for (const auto &node : search_result)
+            for (const auto &doc_id_map_pair : node->_doc_id_map)
+                frequency += doc_id_map_pair.second.size();
         return frequency;
-        */
     }
 
     result_union_set_t
     index_manager_v4_0_2::retrieve_union(const query_t &query) const noexcept
     {
         for (auto & q : query)
-            search(q);
+            std::cout << calc_frequency(q) << std::endl;
         return {};
         /*
         result_union_set_t union_set{};
