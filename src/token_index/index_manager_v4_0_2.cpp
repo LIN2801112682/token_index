@@ -43,7 +43,7 @@ namespace ti
         bool is_find_begin{false};
         for (str_idx_t i{0}; i < new_line.size(); ++i)
         {
-            const ch_t &ch = new_line[i]; 
+            const ch_t &ch = new_line[i];
             if (ch != ' ')
             {
                 if (!is_find_begin)
@@ -82,6 +82,7 @@ namespace ti
     }
 
     static constexpr int maxDist = 2;
+
     std::vector<la::trie_node *>
     index_manager_v4_0_2::search(const str_t &token) const noexcept
     {
@@ -126,12 +127,13 @@ namespace ti
             const auto &token = query[relative_position];
             auto frequency = calc_frequency(token);
             token_relative_position_frequency_vec.emplace_back(
-                    token_relative_position_frequency_t{
-                            token, relative_position, frequency});
+                token_relative_position_frequency_t{
+                    token, relative_position, frequency});
         }
         std::sort(std::begin(token_relative_position_frequency_vec),
                   std::end(token_relative_position_frequency_vec),
-                  [](const auto &lhs, const auto &rhs) {
+                  [](const auto &lhs, const auto &rhs)
+                  {
                       if (lhs.frequency < rhs.frequency)
                           return true;
                       if (lhs.relative_position < rhs.relative_position)
@@ -145,25 +147,35 @@ namespace ti
     index_manager_v4_0_2::not_low_frequency_retrieve_intersection(
         std::vector<token_relative_position_frequency_t> &&token_relative_position_frequency_vec) const noexcept
     {
-        return {};
-        /*
         const auto &first_token_relative_position_frequency = token_relative_position_frequency_vec[0];
         const auto &first_token = first_token_relative_position_frequency.token;
         const auto &first_relative_position = first_token_relative_position_frequency.relative_position;
-        const auto &intersection_inverted_index_iter = _inverted_index.find(first_token);
-        if (std::end(_inverted_index) == intersection_inverted_index_iter)
-            return {};
-        auto intersection_doc_id_map{intersection_inverted_index_iter->second};
 
-        for (std::size_t i{1}; i < token_relative_position_frequency_vec.size(); ++i)
+        doc_id_map_t intersection_doc_id_map{};
+        auto first_search_result{search(first_token)};
+        for (const auto &node : first_search_result)
+            for (const auto &doc_id_map_pair : node->_doc_id_map)
+            {
+                auto &intersection_position_offset_vec{intersection_doc_id_map[doc_id_map_pair.first]};
+                for (const auto &position_offset : doc_id_map_pair.second)
+                    intersection_position_offset_vec.emplace_back(position_offset);
+            }
+
+       for (std::size_t i{1}; i < token_relative_position_frequency_vec.size(); ++i)
         {
             const auto &token_relative_position_frequency = token_relative_position_frequency_vec[i];
             const auto &token = token_relative_position_frequency.token;
             const auto &relative_position = token_relative_position_frequency.relative_position;
-            const auto &inverted_index_iter= _inverted_index.find(token);
-            if (std::end(_inverted_index) == inverted_index_iter)
-                return {};
-            const auto &doc_id_map{inverted_index_iter->second};
+
+            doc_id_map_t doc_id_map{};
+            const auto &search_result{search(token)};
+            for (const auto &node : search_result)
+                for (const auto &doc_id_map_pair : node->_doc_id_map)
+                {
+                    auto &position_offset_vec{intersection_doc_id_map[doc_id_map_pair.first]};
+                    for (const auto &position_offset : doc_id_map_pair.second)
+                        position_offset_vec.emplace_back(position_offset);
+                }
 
             for (auto intersection_doc_id_map_iter = std::begin(intersection_doc_id_map);
                  intersection_doc_id_map_iter != std::end(intersection_doc_id_map);)
@@ -224,7 +236,6 @@ namespace ti
         intersection_doc_id_map = temp_doc_id_map;
 
         return to_result_intersection_set_t(std::move(intersection_doc_id_map));
-        */
     }
 
     result_intersection_set_t
@@ -234,8 +245,9 @@ namespace ti
         const auto &first_token_relative_position_frequency = token_relative_position_frequency_vec[0];
         const auto &first_token = first_token_relative_position_frequency.token;
         const auto &first_relative_position = first_token_relative_position_frequency.relative_position;
-        auto first_search_result{search(first_token)};
+
         std::unordered_set<doc_id_t> intersection_doc_id_set{};
+        auto first_search_result{search(first_token)};
         for (const auto &node : first_search_result)
             for (const auto &pair : node->_doc_id_map)
                 intersection_doc_id_set.emplace(pair.first);
@@ -244,8 +256,9 @@ namespace ti
         {
             const auto &token_relative_position_frequency = token_relative_position_frequency_vec[i];
             const auto &token = token_relative_position_frequency.token;
-            auto search_result{search(token)};
+
             decltype(intersection_doc_id_set) doc_id_set{};
+            auto search_result{search(token)};
             for (const auto &node : search_result)
                 for (const auto &pair : node->_doc_id_map)
                     doc_id_set.emplace(pair.first);
@@ -283,7 +296,7 @@ namespace ti
                             offset_begin + query_line_size,
                         },
                     });
-        } 
+        }
         return result_intersection_set;
     }
 
@@ -293,8 +306,7 @@ namespace ti
     index_manager_v4_0_2::retrieve_intersection(const query_t &query, const str_t &query_line) const noexcept
     {
         std::vector<token_relative_position_frequency_t> token_relative_position_frequency_vec{
-            gen_token_relative_position_frequency_vec(query)
-        };
+            gen_token_relative_position_frequency_vec(query)};
         if (token_relative_position_frequency_vec[0].frequency <= low_frequency)
             return low_frequency_retrieve_intersection(std::move(token_relative_position_frequency_vec), query_line);
         else
