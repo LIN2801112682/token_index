@@ -53,7 +53,7 @@ void test_query_group(const ti::path_t &field_dir, const std::string &field, con
 {
     ti::field_manager manager{};
     manager.push_field_dir(field_dir);
-    manager.print_field_inverted_index(field);
+    // manager.print_field_inverted_index(field);
     auto [query_vec, query_line_vec] = ti::load_query_vec(query_path);
     std::ofstream ofs;
 
