@@ -19,7 +19,6 @@ namespace la
     public:
         static constexpr int ALPHABET_SIZE{40};
         trie_node(const char &key, std::string &&value);
-        ~trie_node();
         static std::size_t convertIndex(const char &c);
 
         std::array<trie_node *, ALPHABET_SIZE> _children;

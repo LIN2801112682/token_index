@@ -187,6 +187,8 @@ namespace ti
     index_manager_v4_0_2::not_low_frequency_retrieve_intersection(
         std::vector<token_relative_position_frequency_t> &&token_relative_position_frequency_vec) const noexcept
     {
+        return {};
+        /* has bug, need fix;
         const auto &first_token_relative_position_frequency = token_relative_position_frequency_vec[0];
         const auto &first_token = first_token_relative_position_frequency.token;
         const auto &first_relative_position = first_token_relative_position_frequency.relative_position;
@@ -276,6 +278,7 @@ namespace ti
         intersection_doc_id_map = temp_doc_id_map;
 
         return to_result_intersection_set_t(std::move(intersection_doc_id_map));
+        */
     }
 
     result_intersection_set_t

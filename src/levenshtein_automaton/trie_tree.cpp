@@ -9,13 +9,6 @@ namespace la
         _value{std::move(value)},
         _is_end_word{false},
         _children{nullptr} {}
-
-    trie_node::~trie_node()
-    {
-        for (auto &&child : _children)
-            if(child != nullptr)
-                delete child;
-    }
     
     std::size_t
     trie_node::convertIndex(const char &c)
@@ -34,13 +27,22 @@ namespace la
         return 0;
     }
 
-
     trie_tree::trie_tree()
         : _root_node{new trie_node{' ', ""}} {}
 
     trie_tree::~trie_tree()
     {
-        delete _root_node;
+        std::stack<la::trie_node *> s{};
+        s.push(_root_node);
+        while (!s.empty())
+        {
+            la::trie_node *cur_node{s.top()};
+            s.pop();
+            for (const auto &child : cur_node->_children)
+                if (child != nullptr)
+                    s.push(child);
+            delete cur_node;
+        }
     }
 
     void trie_tree::insert(std::string &&key)
