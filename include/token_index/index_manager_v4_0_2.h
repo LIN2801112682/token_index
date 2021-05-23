@@ -14,6 +14,8 @@ namespace ti
         void print_inverted_index() const noexcept;
         frequency_t calc_frequency(const str_t &token) const noexcept;
         result_union_set_t retrieve_union(const query_t &query) const noexcept;
+        result_union_set_t retrieve_union_test(const query_t &query) const noexcept;
+        result_union_set_with_position_t retrieve_union_test_with_position(const query_t &query) const noexcept;
         result_intersection_set_t retrieve_intersection(const query_t &query, const str_t &query_line) const noexcept;
     private:
         index_manager_v4_0_2(const index_manager_v4_0_2 &other) = delete;

@@ -118,6 +118,46 @@ namespace ti
         return union_set;
     }
 
+    result_union_set_t
+    index_manager_v4_0_2::retrieve_union_test(const query_t &query) const noexcept
+    {
+        result_union_set_t union_set{};
+        for (const auto &token : query)
+        {
+            std::vector<la::trie_node *> search_result;
+            auto nfa{la::LevenshteinNFA::ConstructNFA(token, maxDist)};
+            auto dfa{la::LevenshteinDFA::SubsetConstruct(nfa)};
+            dfa.Search(_inverted_index, dfa._start, _inverted_index._root_node, search_result);
+
+            for (const auto &node : search_result)
+                for (const auto &doc_id_map_pair : node->_doc_id_map)
+                    union_set.insert(doc_id_map_pair.first);
+        }
+        return union_set;
+    }
+
+    result_union_set_with_position_t
+    index_manager_v4_0_2::retrieve_union_test_with_position(const query_t &query) const noexcept
+    {
+        result_union_set_with_position_t union_set{};
+        for (const auto &token : query)
+        {
+            std::vector<la::trie_node *> search_result;
+            auto nfa{la::LevenshteinNFA::ConstructNFA(token, maxDist)};
+            auto dfa{la::LevenshteinDFA::SubsetConstruct(nfa)};
+            dfa.Search(_inverted_index, dfa._start, _inverted_index._root_node, search_result);
+
+            for (const auto &node : search_result)
+                for (const auto &doc_id_map_pair : node->_doc_id_map)
+                {
+                    auto &position_set{union_set[doc_id_map_pair.first]};
+                    for (const auto &position_offset : doc_id_map_pair.second)
+                        position_set.emplace(position_offset.position);
+                }
+        }
+        return union_set;
+    }
+
     std::vector<token_relative_position_frequency_t>
     index_manager_v4_0_2::gen_token_relative_position_frequency_vec(const query_t &query) const noexcept
     {

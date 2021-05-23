@@ -29,3 +29,9 @@ add_executable (test_la tests/test_la.cpp
     ${TOKEN_INDEX}
     ${BM}
 )
+
+add_executable (test_la_index_manager tests/test_la_index_manager.cpp
+    ${TOKEN_INDEX}
+    ${BM}
+    ${LEVENSHTEIN_AUTOMATON}
+)
