@@ -1,6 +1,7 @@
 #include "token_index/index_manager_v4_0.h"
 #include "token_index/types.h"
 #include "token_index/common.h"
+#include "common/scope_exit.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -16,13 +17,16 @@ namespace ti
     index_manager_v4_0::push_col_file(const path_t &col_file_path)
     {
         std::ifstream ifs{col_file_path, std::ifstream::in};
+        SCOPE_GUARD
+        {
+            ifs.close();
+        };
         str_t doc_line;
         while (getline(ifs, doc_line))
         {
             std::transform(std::begin(doc_line), std::end(doc_line), std::begin(doc_line), tolower);
             push_doc_line(doc_line);
         }
-        ifs.close();
     }
 
     void

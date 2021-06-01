@@ -1,5 +1,6 @@
 #include "token_index/common.h"
 #include "token_index/types.h"
+#include "common/scope_exit.h"
 #include <sstream>
 #include <fstream>
 #include <tuple>
@@ -41,6 +42,10 @@ namespace ti
         std::vector<query_t> query_vec;
         std::vector<str_t> query_line_vec;
         std::ifstream ifs{path, std::ifstream::in};
+        SCOPE_GUARD
+        {
+            ifs.close();
+        };
         str_t line;
         while (getline(ifs, line))
         {
@@ -48,7 +53,6 @@ namespace ti
             query_vec.push_back(line_to_query(line));
             query_line_vec.push_back(line);
         }
-        ifs.close();
         return {query_vec, query_line_vec};
     }
 }

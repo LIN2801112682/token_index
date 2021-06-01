@@ -1,3 +1,4 @@
+#include "common/scope_exit.h"
 #include <fstream>
 #include <string>
 #include <algorithm>
@@ -6,12 +7,18 @@ int main()
 {
     std::ifstream ifs{"../resource/depattern_doc-origin.txt", std::ifstream::in};
     std::ofstream ofs{"../resource/depattern_doc.txt", std::ofstream::out};
+    SCOPE_GUARD
+    {
+        ifs.close();
+        ofs.close();
+    };
     std::string line;
     while (getline(ifs, line))
     {
         replace_if(
             std::begin(line), std::end(line),
-            [](char c) {
+            [](char c)
+            {
                 if (isalnum(c))
                     return false;
                 switch (c)
@@ -30,7 +37,5 @@ int main()
             ' ');
         ofs << line << '\n';
     }
-    ifs.close();
-    ofs.close();
     return 0;
 }
