@@ -168,9 +168,10 @@ namespace ti
     {
         result_regex_t result_regex;
         std::smatch result;
-        for (const auto &[token, _] : _inverted_index)
+        for (const auto &[token, doc_id_umap] : _inverted_index)
             if (regex_match(token, result, pattern))
-                result_regex.emplace_back(token);
+                for (const auto &[doc_id, _] : doc_id_umap)
+                    result_regex.emplace(doc_id);
         return result_regex;
     }
 }

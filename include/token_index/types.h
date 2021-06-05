@@ -57,7 +57,7 @@ namespace ti
 
     using result_union_set_with_position_t = std::unordered_map<doc_id_t, std::unordered_set<position_t>>;
 
-    using result_regex_t = std::vector<std::string>;
+    using result_regex_t = std::unordered_set<doc_id_t>;
 
     struct token_relative_position_frequency_t
     {

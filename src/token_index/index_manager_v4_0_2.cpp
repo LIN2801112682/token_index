@@ -363,9 +363,13 @@ namespace ti
     result_regex_t
     index_manager_v4_0_2::retrieve_regex(const std::regex &pattern) const noexcept
     {
+        result_regex_t result_regex;
         std::smatch result;
-        return _inverted_index.dfs([&result, &pattern](const std::string &token){
-            return regex_match(token, result, pattern);
+        _inverted_index.dfs([&result_regex, &result, &pattern](const la::trie_node *node){
+            if (regex_match(node->_value, result, pattern))
+                for (const auto &[doc_id, _] : node->_doc_id_map)
+                    result_regex.emplace(doc_id);
         });
+        return result_regex;
     }
 }

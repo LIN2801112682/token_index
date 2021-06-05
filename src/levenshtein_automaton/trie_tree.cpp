@@ -87,7 +87,7 @@ namespace la
     }
 
     std::vector<std::string>
-    trie_tree::dfs(std::function<bool(const std::string &)> func) const
+    trie_tree::dfs(std::function<void(const trie_node *)> func) const
     {
         std::vector<std::string> result;
         std::stack<la::trie_node *> s{};
@@ -96,8 +96,8 @@ namespace la
         {
             la::trie_node *cur_node{s.top()};
             s.pop();
-            if (cur_node->_is_end_word && func(cur_node->_value))
-                result.emplace_back(cur_node->_value);
+            if (cur_node->_is_end_word)
+                func(cur_node);
             for (const auto &child : cur_node->_children)
                 if (child != nullptr)
                     s.push(child);
