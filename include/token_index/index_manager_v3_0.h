@@ -14,6 +14,7 @@ namespace ti
         frequency_t calc_frequency(const str_t &token) const noexcept;
         result_union_set_t retrieve_union(const query_t &query) const noexcept;
         result_intersection_set_t retrieve_intersection(const query_t &query, const str_t &) const noexcept;
+        result_regex_t retrieve_regex(const std::regex &pattern) const noexcept; 
     private:
         index_manager_v3_0(const index_manager_v3_0 &other) = delete;
         index_manager_v3_0(index_manager_v3_0 &&other) = delete;

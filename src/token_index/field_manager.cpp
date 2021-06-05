@@ -61,4 +61,14 @@ namespace ti
         auto p_index_manager = iter->second; 
         return p_index_manager->retrieve_intersection(query, query_line);
     }
+
+    result_regex_t 
+    field_manager::retrieve_field_regex(const std::string &field, const std::regex &pattern) const
+    {
+        auto iter = _field_map.find(field);
+        if (std::end(_field_map) == iter)
+            return {};
+        auto p_index_manager = iter->second; 
+        return p_index_manager->retrieve_regex(pattern);
+    }
 }

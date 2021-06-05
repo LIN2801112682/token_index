@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <map>
 #include <iostream>
+#include <regex>
 
 namespace ti
 {
@@ -55,6 +56,8 @@ namespace ti
     using result_intersection_set_t = std::unordered_map<doc_id_t, position_offset_vec_t>;
 
     using result_union_set_with_position_t = std::unordered_map<doc_id_t, std::unordered_set<position_t>>;
+
+    using result_regex_t = std::vector<std::string>;
 
     struct token_relative_position_frequency_t
     {

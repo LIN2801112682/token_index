@@ -55,4 +55,21 @@ namespace ti
         }
         return {query_vec, query_line_vec};
     }
+
+    std::vector<std::regex>
+    load_regex_vec(const path_t &path)
+    {
+        std::vector<std::regex> regex_vec;
+        std::ifstream ifs{path, std::ifstream::in};
+        SCOPE_GUARD
+        {
+            ifs.close();
+        };
+        str_t line;
+        while (getline(ifs, line))
+        {
+            regex_vec.emplace_back(std::regex{line});
+        }
+        return regex_vec;
+    }
 }

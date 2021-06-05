@@ -5,6 +5,8 @@
 #include <string>
 #include <array>
 #include <iostream>
+#include <vector>
+#include <functional>
 
 namespace la
 {
@@ -43,6 +45,7 @@ namespace la
         void insert(std::string &&key);
         bool search(const std::string &key);
         ti::doc_id_map_t& operator[](const std::string& key);
+        std::vector<std::string> dfs(std::function<bool(const std::string &)> func) const;
     };
 }
 

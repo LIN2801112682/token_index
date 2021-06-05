@@ -359,4 +359,13 @@ namespace ti
         else
             return not_low_frequency_retrieve_intersection(std::move(token_relative_position_frequency_vec));
     }
+
+    result_regex_t
+    index_manager_v4_0_2::retrieve_regex(const std::regex &pattern) const noexcept
+    {
+        std::smatch result;
+        return _inverted_index.dfs([&result, &pattern](const std::string &token){
+            return regex_match(token, result, pattern);
+        });
+    }
 }

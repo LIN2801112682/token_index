@@ -292,4 +292,15 @@ namespace ti
         else
             return not_low_frequency_retrieve_intersection(std::move(token_relative_position_frequency_vec));
     }
+
+    result_regex_t
+    index_manager_v4_0_1::retrieve_regex(const std::regex &pattern) const noexcept
+    {
+        result_regex_t result_regex;
+        std::smatch result;
+        for (const auto &[token, _] : _inverted_index)
+            if (regex_match(token, result, pattern))
+                result_regex.emplace_back(token);
+        return result_regex;
+    }
 }

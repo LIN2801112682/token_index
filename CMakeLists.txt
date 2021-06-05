@@ -35,3 +35,9 @@ add_executable (test_la_index_manager tests/test_la_index_manager.cpp
     ${BM}
     ${LEVENSHTEIN_AUTOMATON}
 )
+
+add_executable (test_field_regex tests/test_field_regex.cpp
+    ${TOKEN_INDEX}
+    ${BM}
+    ${LEVENSHTEIN_AUTOMATON}
+)

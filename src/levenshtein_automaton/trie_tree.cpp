@@ -85,6 +85,25 @@ namespace la
         cur_node->_is_end_word = true;
         return cur_node->_doc_id_map;
     }
+
+    std::vector<std::string>
+    trie_tree::dfs(std::function<bool(const std::string &)> func) const
+    {
+        std::vector<std::string> result;
+        std::stack<la::trie_node *> s{};
+        s.push(_root_node);
+        while (!s.empty())
+        {
+            la::trie_node *cur_node{s.top()};
+            s.pop();
+            if (func(cur_node->_value))
+                result.emplace_back(cur_node->_value);
+            for (const auto &child : cur_node->_children)
+                if (child != nullptr)
+                    s.push(child);
+        }
+        return result;
+    }
 }
 
 std::ostream &operator<<(std::ostream &os, const la::trie_node *tn)

@@ -20,6 +20,8 @@ namespace ti
         void print_field_inverted_index(const path_t &field) const;
         result_union_set_t retrieve_field_union(const path_t &field, const query_t &query) const;
         result_intersection_set_t retrieve_field_intersection(const path_t &field, const query_t &query, const str_t &query_line) const;
+        result_regex_t retrieve_field_regex(const std::string &field, const std::regex &pattern) const;
+
     private:
         field_manager(const field_manager &other) = delete;
         field_manager(field_manager &&other) = delete;
