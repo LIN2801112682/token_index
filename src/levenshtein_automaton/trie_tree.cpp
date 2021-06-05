@@ -96,7 +96,7 @@ namespace la
         {
             la::trie_node *cur_node{s.top()};
             s.pop();
-            if (func(cur_node->_value))
+            if (cur_node->_is_end_word && func(cur_node->_value))
                 result.emplace_back(cur_node->_value);
             for (const auto &child : cur_node->_children)
                 if (child != nullptr)
