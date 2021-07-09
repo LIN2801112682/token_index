@@ -71,6 +71,14 @@ void test_build_index(const ti::path_t &field_dir, const std::string &field)
     elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time);
     program_times = elapsed_time.count();
     std::cout << "Push time: " << program_times << std::endl;
+
+    ti::doc_id_t doc_id{1};
+    begin_time = std::chrono::high_resolution_clock::now();
+    bool has_deleted{manager.del_doc_by_id(field, doc_id)};
+    end_time = std::chrono::high_resolution_clock::now();
+    elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time);
+    program_times = elapsed_time.count();
+    std::cout << "Deleted time: " << program_times << " has_deleted: " << has_deleted << std::endl;
 }
 
 static const ti::path_t field{"query.txt"};
