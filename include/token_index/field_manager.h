@@ -17,6 +17,7 @@ namespace ti
         field_manager();
         ~field_manager();
         void push_field_dir(const path_t &field_dir_path);
+        void push_doc_line(const std::string &field, const str_t &doc_line);
         void print_field_inverted_index(const path_t &field) const;
         result_union_set_t retrieve_field_union(const path_t &field, const query_t &query) const;
         result_intersection_set_t retrieve_field_intersection(const path_t &field, const query_t &query, const str_t &query_line) const;

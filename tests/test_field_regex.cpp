@@ -54,6 +54,25 @@ void test_regex_group(const ti::path_t &field_dir, const std::string &field, con
     ofs.close();
 }
 
+void test_build_index(const ti::path_t &field_dir, const std::string &field)
+{
+    auto begin_time = std::chrono::high_resolution_clock::now();
+    ti::field_manager manager{};
+    manager.push_field_dir(field_dir);
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time);
+    auto program_times = elapsed_time.count();
+    std::cout << "Build time: " << program_times << std::endl;
+    
+    ti::str_t doc_line{"165201 neu"};
+    begin_time = std::chrono::high_resolution_clock::now();
+    manager.push_doc_line(field, doc_line);
+    end_time = std::chrono::high_resolution_clock::now();
+    elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time);
+    program_times = elapsed_time.count();
+    std::cout << "Push time: " << program_times << std::endl;
+}
+
 static const ti::path_t field{"query.txt"};
 static const ti::path_t field_dir{"../resources/field_dir"};
 static const ti::path_t regex_path{"../resources/regex.txt"};
@@ -62,5 +81,6 @@ static const ti::path_t regex_result_path{"../resources/regex_result.txt"};
 int main()
 {
     test_regex_group(field_dir, field, regex_path, regex_result_path);
+    test_build_index(field_dir, field);
     return 0;
 }

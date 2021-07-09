@@ -32,6 +32,16 @@ namespace ti
         }
     }
 
+    void 
+    field_manager::push_doc_line(const std::string &field, const std::string &doc_line)
+    {
+        auto iter = _field_map.find(field);
+        if (std::end(_field_map) == iter)
+            return;
+        auto p_index_manager = iter->second; 
+        p_index_manager->push_doc_line(doc_line);
+    }
+
     void
     field_manager::print_field_inverted_index(const std::string &field) const
     {
