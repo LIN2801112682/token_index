@@ -53,9 +53,7 @@ namespace ti
                 }
                 end = i;
             }
-            else
-            {
-                if (is_find_begin)
+            if (ch == ' ' || i == new_line.size() - 1 && is_find_begin)
                 {
                     is_find_begin = false;
                     token = new_line.substr(begin, end - begin + 1);
@@ -72,7 +70,6 @@ namespace ti
                 }
             }
         }
-    }
 
     bool
     index_manager_v4_1::del_doc_by_id(const doc_id_t &doc_id)
