@@ -58,23 +58,23 @@ namespace ti
                 end = i;
             }
             if (ch == ' ' || i == new_line.size() - 1 && is_find_begin)
-                {
-                    is_find_begin = false;
-                    token = new_line.substr(begin, end - begin + 1);
+            {
+                is_find_begin = false;
+                token = new_line.substr(begin, end - begin + 1);
 
-                    auto &doc_id_map{_inverted_index[token]};
-                    auto &position_offset_vec{doc_id_map[doc_id]};
+                auto &doc_id_map{_inverted_index[token]};
+                auto &position_offset_vec{doc_id_map[doc_id]};
 
-                    position_offset_vec.emplace_back(
-                        position_offset_t{
-                            position++,
-                            offset_t{
-                                begin,
-                                end,
-                            }});
-                }
+                position_offset_vec.emplace_back(
+                    position_offset_t{
+                        position++,
+                        offset_t{
+                            begin,
+                            end,
+                        }});
             }
         }
+    }
 
     bool
     index_manager_v4_0_2::del_doc_by_id(const doc_id_t &doc_id)
