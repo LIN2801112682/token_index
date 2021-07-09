@@ -79,6 +79,13 @@ namespace ti
         }
     }
 
+    bool
+    index_manager_v4_0_2::del_doc_by_id(const doc_id_t &doc_id)
+    {
+        // todo
+        return true;
+    }
+
     void
     index_manager_v4_0_2::print_inverted_index() const noexcept
     {

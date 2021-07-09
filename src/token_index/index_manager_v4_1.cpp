@@ -74,6 +74,35 @@ namespace ti
         }
     }
 
+    bool
+    index_manager_v4_1::del_doc_by_id(const doc_id_t &doc_id)
+    {
+        bool has_deleted{false};
+        for (auto inverted_index_iter{std::begin(_inverted_index)};
+             inverted_index_iter != std::end(_inverted_index);)
+        {
+            auto &doc_id_position_offset_vec{inverted_index_iter->second};
+            for (auto doc_id_position_offset_vec_iter{std::begin(doc_id_position_offset_vec)};
+                 doc_id_position_offset_vec_iter != std::end(doc_id_position_offset_vec);)
+            {
+                if (doc_id_position_offset_vec_iter->doc_id != doc_id)
+                {
+                    ++doc_id_position_offset_vec_iter;
+                    continue;
+                }
+                has_deleted = true;
+                doc_id_position_offset_vec_iter = doc_id_position_offset_vec.erase(doc_id_position_offset_vec_iter);
+            }
+            if (!doc_id_position_offset_vec.empty())
+            {
+                ++inverted_index_iter;
+                continue;
+            }
+            inverted_index_iter = _inverted_index.erase(inverted_index_iter);
+        }
+        return has_deleted;
+    }
+
     void
     index_manager_v4_1::print_inverted_index() const noexcept
     {

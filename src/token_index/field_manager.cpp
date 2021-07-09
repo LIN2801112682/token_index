@@ -42,6 +42,16 @@ namespace ti
         p_index_manager->push_doc_line(doc_line);
     }
 
+    bool
+    field_manager::del_doc_by_id(const std::string &field, const doc_id_t &doc_id)
+    {
+        auto iter = _field_map.find(field);
+        if (std::end(_field_map) == iter)
+            return false;
+        auto p_index_manager = iter->second; 
+        return p_index_manager->del_doc_by_id(doc_id);
+    }
+
     void
     field_manager::print_field_inverted_index(const std::string &field) const
     {
