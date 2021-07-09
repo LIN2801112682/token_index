@@ -87,7 +87,7 @@ void test_build_index(const ti::path_t &col_file_path)
     auto program_times = elapsed_time.count();
     std::cout << "Build time: " << program_times << std::endl;
 
-    ti::str_t doc_line{"165201 neu"};
+    ti::str_t doc_line{"999999 neu"};
     begin_time = std::chrono::high_resolution_clock::now();
     manager.push_doc_line(doc_line);
     end_time = std::chrono::high_resolution_clock::now();
@@ -101,7 +101,18 @@ void test_build_index(const ti::path_t &col_file_path)
     end_time = std::chrono::high_resolution_clock::now();
     elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time);
     program_times = elapsed_time.count();
-    std::cout << "Deleted time: " << program_times << " has_deleted: " << has_deleted << std::endl;
+    std::cout << "Delete time: " << program_times << " has_deleted: " << std::boolalpha << has_deleted << std::endl;
+
+    doc_id = 999999;
+    doc_line = "999999 happy";
+    begin_time = std::chrono::high_resolution_clock::now();
+    bool has_changed{manager.del_doc_by_id(doc_id)};
+    if (has_changed)
+        manager.push_doc_line(doc_line);
+    end_time = std::chrono::high_resolution_clock::now();
+    elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time);
+    program_times = elapsed_time.count();
+    std::cout << "Change time: " << program_times << " has_changed: " << std::boolalpha << has_changed << std::endl;
 }
 
 static const ti::path_t col_file_path{"../resources/field_dir/query.txt"};
