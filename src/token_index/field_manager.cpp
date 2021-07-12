@@ -32,6 +32,16 @@ namespace ti
         }
     }
 
+    void
+    field_manager::push_col_file(const std::string &field, const path_t col_file_path)
+    {
+        auto iter = _field_map.find(field);
+        if (std::end(_field_map) == iter)
+            return;
+        auto p_index_manager = iter->second;
+        p_index_manager->push_col_file(col_file_path);
+    }
+
     void 
     field_manager::push_doc_line(const std::string &field, const std::string &doc_line)
     {
@@ -40,6 +50,16 @@ namespace ti
             return;
         auto p_index_manager = iter->second; 
         p_index_manager->push_doc_line(doc_line);
+    }
+
+    void
+    field_manager::push_doc_line_by_id(const std::string &field, const doc_id_t &doc_id, const str_t &new_line)
+    {
+        auto iter = _field_map.find(field);
+        if (std::end(_field_map) == iter)
+            return;
+        auto p_index_manager = iter->second;
+        p_index_manager->push_doc_line_by_id(doc_id, new_line);
     }
 
     bool

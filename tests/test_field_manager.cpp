@@ -74,7 +74,7 @@ void test_query_group(const ti::path_t &field_dir, const std::string &field, con
     ofs.close();
 }
 
-void test_build_index(const ti::path_t &field_dir, const std::string &field)
+void test_build_insert_index(const ti::path_t &field_dir, const std::string &field, const ti::path_t &col_file_path)
 {
     auto begin_time = std::chrono::high_resolution_clock::now();
     ti::field_manager manager{};
@@ -83,44 +83,131 @@ void test_build_index(const ti::path_t &field_dir, const std::string &field)
     auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time);
     auto program_times = elapsed_time.count();
     std::cout << "Build time: " << program_times << std::endl;
-    
-    ti::str_t doc_line{"999999 neu"};
+
+    ti::doc_id_t doc_id{999999};
+    ti::str_t new_line{"neu"};
     begin_time = std::chrono::high_resolution_clock::now();
-    manager.push_doc_line(field, doc_line);
+    manager.push_col_file(field, col_file_path);
     end_time = std::chrono::high_resolution_clock::now();
     elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time);
     program_times = elapsed_time.count();
     std::cout << "Push time: " << program_times << std::endl;
+    //manager.print_field_inverted_index(field);
+}
 
-    ti::doc_id_t doc_id{1};
+void test_build_delete_index(const ti::path_t &field_dir, const std::string &field, const ti::path_t &query_path)
+{
+    auto begin_time = std::chrono::high_resolution_clock::now();
+    ti::field_manager manager{};
+    manager.push_field_dir(field_dir);
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time);
+    auto program_times = elapsed_time.count();
+    std::cout << "Build time: " << program_times << std::endl;
+
+    auto [query_vec, query_line_vec] = ti::load_query_vec(query_path);
+
     begin_time = std::chrono::high_resolution_clock::now();
-    bool has_deleted{manager.del_doc_by_id(field, doc_id)};
+    for (std::size_t i{0}; i < query_vec.size(); ++i)
+    {
+        const auto &query{query_vec[i]};
+        const auto &query_line{query_line_vec[i]};
+        auto begin_time = std::chrono::high_resolution_clock::now();
+        const auto &union_set = manager.retrieve_field_union(field, query);
+        auto set_size = union_set.size();
+        auto del_count{0u};
+        for (const auto&doc_id : union_set)
+        {
+            if (manager.del_doc_by_id(field, doc_id))
+            {
+                ++del_count;
+            }
+        }
+        auto end_time = std::chrono::high_resolution_clock::now();
+        auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time);
+        auto program_times = elapsed_time.count();
+        std::cout << "      Location time: " << program_times
+                  << ", Find doc size: " << set_size
+                  << ", Delete doc count: " << del_count << std::endl;
+    }
     end_time = std::chrono::high_resolution_clock::now();
     elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time);
     program_times = elapsed_time.count();
-    std::cout << "Delete time: " << program_times << " has_deleted: " << std::boolalpha << has_deleted << std::endl;
+    std::cout << "Location time: " << program_times << std::endl;
+    double avg_time;
+    if (query_vec.empty())
+        avg_time = 0.0;
+    else
+        avg_time = double(program_times) / double(query_vec.size());
+    std::cout << "Average location time: " << avg_time << std::endl;
+    manager.print_field_inverted_index(field);
+}
 
-    doc_id = 999999;
-    doc_line = "999999 happy";
+void test_build_update_index(const ti::path_t &field_dir, const std::string &field, const ti::path_t &query_path)
+{
+    ti::str_t new_line{"select"};
+
+    auto begin_time = std::chrono::high_resolution_clock::now();
+    ti::field_manager manager{};
+    manager.push_field_dir(field_dir);
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time);
+    auto program_times = elapsed_time.count();
+    std::cout << "Build time: " << program_times << std::endl;
+
+    auto [query_vec, query_line_vec] = ti::load_query_vec(query_path);
+
     begin_time = std::chrono::high_resolution_clock::now();
-    bool has_changed{manager.del_doc_by_id(field, doc_id)};
-    if (has_changed)
-        manager.push_doc_line(field, doc_line);
+    for (std::size_t i{0}; i < query_vec.size(); ++i)
+    {
+        const auto &query{query_vec[i]};
+        const auto &query_line{query_line_vec[i]};
+        auto begin_time = std::chrono::high_resolution_clock::now();
+        const auto &union_set = manager.retrieve_field_union(field, query);
+        auto set_size = union_set.size();
+        auto update_count{0u};
+        for (const auto&doc_id : union_set)
+        {
+            if (manager.del_doc_by_id(field, doc_id))
+            {
+                manager.push_doc_line_by_id(field, doc_id, new_line);
+                ++update_count;
+            }
+        }
+        auto end_time = std::chrono::high_resolution_clock::now();
+        auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time);
+        auto program_times = elapsed_time.count();
+        std::cout << "      Location time: " << program_times
+                  << ", Find doc size: " << set_size
+                  << ", Update doc count: " << update_count << std::endl;
+    }
     end_time = std::chrono::high_resolution_clock::now();
     elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time);
     program_times = elapsed_time.count();
-    std::cout << "Change time: " << program_times << " has_changed: " << std::boolalpha << has_changed << std::endl;
+    std::cout << "Location time: " << program_times << std::endl;
+    double avg_time;
+    if (query_vec.empty())
+        avg_time = 0.0;
+    else
+        avg_time = double(program_times) / double(query_vec.size());
+    std::cout << "Average location time: " << avg_time << std::endl;
+    manager.print_field_inverted_index(field);
 }
 
 static const ti::path_t field{"query.txt"};
+static const ti::path_t field2{"query2.txt"};
 static const ti::path_t field_dir{"../resources/field_dir"};
 static const ti::path_t query_path{"../resources/query.txt"};
+static const ti::path_t query2_path{"../resources/query2.txt"};
 static const ti::path_t union_result_path{"../resources/union_result.txt"};
 static const ti::path_t intersection_result_path{"../resources/intersection_result.txt"};
+static const ti::path_t col_file_path{"../resources/col_file.txt"};
 
 int main()
 {
     //test_query_group(field_dir, field, query_path, union_result_path, intersection_result_path);
-    test_build_index(field_dir, field);
+    test_build_insert_index(field_dir, field2, col_file_path);
+    test_build_delete_index(field_dir, field2, query2_path);
+    test_build_update_index(field_dir, field2, query2_path);
     return 0;
 }

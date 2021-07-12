@@ -17,7 +17,9 @@ namespace ti
         field_manager();
         ~field_manager();
         void push_field_dir(const path_t &field_dir_path);
+        void push_col_file(const std::string &field, const path_t col_file_path);
         void push_doc_line(const std::string &field, const str_t &doc_line);
+        void push_doc_line_by_id(const std::string &field, const doc_id_t &doc_id, const str_t &new_line);
         bool del_doc_by_id(const std::string &field, const doc_id_t &doc_id);
         void print_field_inverted_index(const path_t &field) const;
         result_union_set_t retrieve_field_union(const path_t &field, const query_t &query) const;

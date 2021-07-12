@@ -1,6 +1,7 @@
 #include "levenshtein_automaton/trie_tree.h"
 #include "token_index/types.h"
 #include <stack>
+#include <cassert>
 
 namespace la
 {

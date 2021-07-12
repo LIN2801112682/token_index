@@ -45,7 +45,7 @@ namespace ti
         bool is_find_begin{false};
         for (str_idx_t i{0}; i < new_line.size(); ++i)
         {
-            const ch_t &ch = new_line[i]; 
+            const ch_t &ch = new_line[i];
             if (ch != ' ')
             {
                 if (!is_find_begin)
@@ -56,23 +56,64 @@ namespace ti
                 end = i;
             }
             if (ch == ' ' || i == new_line.size() - 1 && is_find_begin)
-                {
-                    is_find_begin = false;
-                    token = new_line.substr(begin, end - begin + 1);
+            {
+                is_find_begin = false;
+                token = new_line.substr(begin, end - begin + 1);
 
-                    auto &doc_id_map{_inverted_index[token]};
-                    auto &position_offset_vec{doc_id_map[doc_id]};
+                auto &doc_id_map{_inverted_index[token]};
+                auto &position_offset_vec{doc_id_map[doc_id]};
 
-                    position_offset_vec.emplace_back(
+                position_offset_vec.emplace_back(
                         position_offset_t{
-                            position++,
-                            offset_t{
-                                begin,
-                                end,
-                            }});
-                }
+                                position++,
+                                offset_t{
+                                        begin,
+                                        end,
+                                }});
             }
         }
+    }
+
+    void
+    index_manager_v4_0_1::push_doc_line_by_id(const doc_id_t &doc_id, const str_t &new_line)
+    {
+        str_t token;
+        _doc_line_index.emplace(doc_id, new_line);
+
+        position_t position{0};
+        str_idx_t begin, end;
+        bool is_find_begin{false};
+        for (str_idx_t i{0}; i < new_line.size(); ++i)
+        {
+            const ch_t &ch = new_line[i];
+            if (ch != ' ')
+            {
+                if (!is_find_begin)
+                {
+                    is_find_begin = true;
+                    begin = i;
+                }
+                end = i;
+            }
+            if (ch == ' ' || i == new_line.size() - 1 && is_find_begin)
+            {
+                is_find_begin = false;
+                token = new_line.substr(begin, end - begin + 1);
+
+                auto &doc_id_map{_inverted_index[token]};
+                auto &position_offset_vec{doc_id_map[doc_id]};
+
+                position_offset_vec.emplace_back(
+                        position_offset_t{
+                                position++,
+                                offset_t{
+                                        begin,
+                                        end,
+                                }});
+            }
+        }
+    }
+
 
     bool
     index_manager_v4_0_1::del_doc_by_id(const doc_id_t &doc_id)

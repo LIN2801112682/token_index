@@ -42,6 +42,23 @@ namespace ti
         }
     }
 
+    void
+    index_manager_v3_1::push_doc_line_by_id(const doc_id_t &doc_id, const str_t &new_line)
+    {
+        str_t token;
+        std::istringstream iss{new_line};
+        doc_t doc{};
+        while (iss >> token)
+            doc.push_back(token);
+
+        for (position_t position{0}; position < doc.size(); ++position)
+        {
+            const auto &token{doc[position]};
+            auto &doc_id_map{_inverted_index[token]};
+            doc_id_map[doc_id].emplace(position);
+        }
+    }
+
     bool
     index_manager_v3_1::del_doc_by_id(const doc_id_t &doc_id)
     {
