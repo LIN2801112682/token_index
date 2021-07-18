@@ -194,20 +194,44 @@ void test_build_update_index(const ti::path_t &field_dir, const std::string &fie
     manager.print_field_inverted_index(field);
 }
 
+void test_frequency(const ti::path_t &col_file_path, const ti::path_t &query_path)
+{
+    ti::index_manager_v4_0_1 manager{};
+    manager.push_col_file(col_file_path);
+
+    auto [query_vec, query_line_vec] = ti::load_query_vec(query_path);
+
+    for (std::size_t i{0}; i < query_vec.size(); ++i)
+    {
+        const auto &query{query_vec[i]};
+        const auto &query_line{query_line_vec[i]};
+
+        std::cout << query_line << '\n';
+        for (const auto &token : query)
+        {
+            std::cout << "  " << token << ':' << manager.calc_frequency(token) << '\n';
+        }
+    }
+}
+
+
 static const ti::path_t field{"query.txt"};
 static const ti::path_t field2{"query2.txt"};
 static const ti::path_t field_dir{"../resources/field_dir"};
 static const ti::path_t query_path{"../resources/query.txt"};
 static const ti::path_t query2_path{"../resources/query2.txt"};
+static const ti::path_t query3_path{"../resources/query3.txt"};
 static const ti::path_t union_result_path{"../resources/union_result.txt"};
 static const ti::path_t intersection_result_path{"../resources/intersection_result.txt"};
 static const ti::path_t col_file_path{"../resources/col_file.txt"};
+static const ti::path_t col_file2_path{"../resources/field_dir/query.txt"};
 
 int main()
 {
     //test_query_group(field_dir, field, query_path, union_result_path, intersection_result_path);
-    test_build_insert_index(field_dir, field2, col_file_path);
-    test_build_delete_index(field_dir, field2, query2_path);
-    test_build_update_index(field_dir, field2, query2_path);
+    //test_build_insert_index(field_dir, field2, col_file_path);
+    //test_build_delete_index(field_dir, field2, query2_path);
+    //test_build_update_index(field_dir, field2, query2_path);
+    test_frequency(col_file2_path, query3_path);
     return 0;
 }
