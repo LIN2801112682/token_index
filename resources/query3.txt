@@ -1,10 +1,10 @@
-SELECT last(SL_1_Tag108) AS SL_1_Tag108
-SHOW TAG VALUES ON
-SZSSLKJYXGS_1OU7.autogen.
-WHERE gatewayId = '2c938083783650af01786535768406ac'
-SELECT last(SL_1_Tag118) AS SL_1_Tag118 FROM SZSSLKJYXGS_1OU7.autogen.
-WHERE gatewayId = '2c938083783650af01786535768406ac'
-last(SL_1_Tag18)
-count(C1_B1_G1_Tag3)
-hostname
-autogen
+select last sl_1_tag108 as sl_1_tag108 
+show tag values on 
+szsslkjyxgs_1ou7 autogen 
+where gatewayid 2c938083783650af01786535768406ac 
+select last sl_1_tag118 as sl_1_tag118 from szsslkjyxgs_1ou7 autogen 
+where gatewayid 2c938083783650af01786535768406ac 
+last sl_1_tag18 
+count c1_b1_g1_tag3 
+hostname 
+autogen 
